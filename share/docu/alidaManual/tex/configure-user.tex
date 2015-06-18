@@ -1,0 +1,75 @@
+\subsection{Configuring \alida}
+\label{subsec:configure-user}
+
+Sometimes it is desirable to configure 
+some properties of \alida or the general behavior of specific operators at
+runtime, e.g., to specify initial files or directories where operators should work on. 
+\alida basically supports two different ways for user specific configuration:
+\begin{itemize}
+    \item[a)] environment variables
+    \item[b)] properties of the Java virtual machine specified with the \\
+    	option \texttt{'-Dproperty=value'} upon invocation of the JVM
+\end{itemize}
+This order already reflects the priority of the options, i.e., environment
+variables overwrite JVM properties.
+If for a certain requested property no configuration values are provided by any of these ways,
+default settings are used.
+Some variables of general interest are used by \alida and are summarized
+below.
+Further variables may be introduced, e.g., by additional operators implemented in the framework.
+
+In the following list, both the environment variable and the name of the
+property are given in the form of \icode{property / environment variable}:
+\begin{description}
+ \item[\icode{alida.oprunner.level / ALIDA\_OPRUNNER\_LEVEL}] ~
+
+	Used by the graphical operator runner \icode{ALDOpRunnerGUI} and Grappa,
+	i.e., the application \icode{ALDGrappaRunner}, to configure which set of
+	operators is to be displayed initially in the selection menu.
+	Possible options are either all available operators ('standard')             
+	or just the ones categorized as being easier to use ('application').
+	The default is 'application'.
+
+ \item[\icode{alida.oprunner.favoriteops / ALIDA\_OPRUNNER\_FAVORITEOPS}] ~
+	Holds a colon separated list of filenames. Each file
+	contains lines of fully qualified operator names which will be unfolded
+	in the operator selection window when starting the graphical user interface
+	or \grappa (see Sec.~\ref{subsec:userGUI} and~\ref{subsec:grappa}).
+	The default is \icode{\$\{user.home\}/.alida/favoriteops}.
+
+ \item[\icode{alida.oprunner.operatorpath / ALIDA\_OPRUNNER\_OPERATORPATH}] ~
+	Here a colon separated list of packages may be specified.
+	Each package and all its sub-packages 
+	are searched for operators in the classpath.
+	These operators are incorporated in the tree of available operators
+	in the graphical user interface
+    and in \grappa.
+	This feature is useful to incorporate operators which are not compiled,
+	but just added within a jar-archive.
+	
+ \item[\icode{alida.oprunner.workflowpath / ALIDA\_OPRUNNER\_WORKFLOWPATH}] ~
+
+	Here a colon separated list of directories may be specified each of which
+	is searched for workflows saved in a file.
+	These workflows are incorporated in the tree of available operators
+	in the graphical user interface
+        in \grappa.
+	The default is \icode{\$\{user.home\}/.alida/workflows}.
+	
+
+	
+ \item[\icode{alida.versionprovider\_class / ALIDA\_VERSIONPROVIDER\_CLASS}] ~
+
+ Implementation of \icode{de.unihalle.informatik.Alida.ALDVersionProvider} to be used
+ for version information retrieval in process documentation
+ (Sec.~\ref{subsec:version}).
+ 
+ \item[\icode{alida.version} / --- ] ~
+ 
+ Only available as JVM property, this variable is used by
+ \icode{ALDVersionProviderCmdLine} to discover the software version to be stored
+ in the history. The class \icode{ALDVersionProviderCmdLine} implements the
+ \icode{ALDVersionProvider} interface and gets the version to be used from the
+ JVM.
+\end{description}
+

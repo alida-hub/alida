@@ -1,0 +1,513 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>de.unihalle.informatik.Alida</groupId>
+  <artifactId>alida</artifactId>
+  <version>2.6</version>
+  <packaging>jar</packaging>
+
+  <name>alida</name>
+  <description>Alida - Advanced Library for Integrated Development of Data Analysis Applications</description> 
+  <url>http://www.informatik.uni-halle.de/alida</url>
+  <inceptionYear>2010</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>GNU General Public License version 3.0</name>
+      <url>http://www.gnu.org/licenses/gpl-3.0.html</url>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>Martin Luther University Halle-Wittenberg, Institute of Computer Science, Pattern Recognition and Bioinformatics</name>
+    <url>http://www.informatik.uni-halle.de/arbeitsgruppen/mustererkennung/</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>moeller</id>
+      <email>birgit.moeller@informatik.uni-halle.de</email>
+      <name>Birgit Moeller</name>
+      <organization>Martin Luther University Halle-Wittenberg</organization>
+      <organizationUrl>http://www.informatik.uni-halle.de/moeller</organizationUrl>
+      <roles>
+	<role>Developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>posch</id>
+      <email>stefan.posch@informatik.uni-halle.de</email>
+      <name>Stefan Posch</name>
+      <organization>Martin Luther University Halle-Wittenberg</organization>
+      <organizationUrl>http://www.informatik.uni-halle.de/posch</organizationUrl>
+      <roles>
+	<role>Developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <YEAR>2015</YEAR>
+  </properties>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.6</version>
+        <executions>
+          <!-- files needed for execution -->
+          <execution>
+            <id>copy-resources-for-execution</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+	      <delimiters>
+	        <delimiter>${*}</delimiter> <!-- to keep the default behavior --> 
+	        <delimiter>@*@</delimiter>  <!-- to add Ant-like tokens style --> 
+	      </delimiters>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+              <resources>
+                <resource>
+	          <directory>src/main/resources</directory>
+	          <includes>
+                    <include>revision.txt</include>
+                    <include>LICENSE_alida.txt</include>
+	          </includes>
+	          <filtering>true</filtering>
+                  </resource>
+                <resource>
+	           <directory>src/main/resources</directory>
+	           <excludes>
+                     <exclude>revision.txt</exclude>
+	           </excludes>
+	           <filtering>false</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <!-- files needed to package -->
+          <execution>
+            <id>copy-resources-for-packaging</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+	      <delimiters>
+	        <delimiter>${*}</delimiter> <!-- to keep the default behavior --> 
+	        <delimiter>@*@</delimiter>  <!-- to add Ant-like tokens style --> 
+	      </delimiters>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+              <resources>
+                <resource>
+	          <directory>src/main/java</directory>
+	          <filtering>true</filtering>
+	          <includes>
+                    <include>**/*.java</include>
+	          </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+
+      <!-- prepare packaging, extract online help comments -->
+      <plugin>
+        <groupId>de.unihalle.informatik.AlidaMiToBo.maven.plugins.help</groupId>
+        <artifactId>comment-parser-maven-plugin</artifactId>
+        <version>1.6</version>
+	<executions>
+          <execution>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>parse-comments</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- copy dependencies incl. help jar to local folder -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <outputDirectory>
+            ${project.build.directory}/dependency-jars
+          </outputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>Copy dependency jars</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- update helpset archive and copy files to target/classes -->
+      <plugin>
+        <groupId>de.unihalle.informatik.AlidaMiToBo.maven.plugins.help</groupId>
+        <artifactId>helpset-file-injector-maven-plugin</artifactId>
+        <version>1.4</version>
+	<executions>
+          <execution>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>update-helpset</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<version>3.1</version>
+	<configuration>
+	  <source>1.6</source>
+	  <target>1.6</target>
+	  <encoding>${project.build.sourceEncoding}</encoding>
+	  <!-- Disable annotation processors during normal compilation! -->
+	  <compilerArgument>-proc:none</compilerArgument>
+	</configuration>
+      </plugin>
+      <plugin>
+	<!-- run annotation processing -->
+	<groupId>org.bsc.maven</groupId>
+	<artifactId>maven-processor-plugin</artifactId>
+	<version>2.2.4</version>
+	<executions>
+	  <execution>
+	    <id>process</id>
+	    <goals>
+	      <goal>process</goal>
+	    </goals>
+	    <phase>generate-sources</phase>
+	    <configuration>
+	      <compilerArguments>-encoding ${project.build.sourceEncoding}</compilerArguments>
+	    </configuration>
+	  </execution>
+	  <execution>
+	    <id>process-test</id>
+	    <goals>
+	      <goal>process-test</goal>
+	    </goals>
+	    <phase>generate-test-sources</phase>
+	    <configuration>
+	      <compilerArguments>-encoding ${project.build.sourceEncoding}</compilerArguments>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.4</version>
+      </plugin>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-site-plugin</artifactId>
+	<version>3.0-beta-3</version>
+      </plugin>
+      <plugin>
+	<!-- package binaries and sources into zip files;
+	     Attention: here we use our own assembly descriptors! -->
+	<artifactId>maven-assembly-plugin</artifactId>
+	<version>2.2</version>
+	<configuration>
+	  <descriptors>
+	    <descriptor>src/main/assembly/alida-bin.xml</descriptor>
+	    <descriptor>src/main/assembly/alida-src.xml</descriptor>
+	  </descriptors>
+	</configuration>
+	<executions>
+	  <execution>
+	    <id>assembly-distribution-Id</id>
+	    <phase>package</phase>
+	    <goals>
+	      <goal>single</goal>
+	    </goals>
+	  </execution>
+	</executions>
+      </plugin>
+      <plugin>
+	<!-- package javadocs -->
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-javadoc-plugin</artifactId>
+	<version>2.9.1</version>
+        <configuration>
+	  <stylesheet>java</stylesheet>
+<!--
+	  <additionalparam>-Xdoclint:none</additionalparam>
+-->
+          <taglets>
+            <taglet>
+              <tagletClass>latexlet.InlineLaTeXlet</tagletClass>
+              <tagletArtifact>
+                <groupId>latexlet</groupId>
+                <artifactId>latexlet</artifactId>
+                <version>1.2f7</version>
+              </tagletArtifact>
+            </taglet>
+            <taglet>
+              <tagletClass>latexlet.InlineBlockLaTeXlet</tagletClass>
+              <tagletArtifact>
+                <groupId>latexlet</groupId>
+                <artifactId>latexlet</artifactId>
+                <version>1.2f7</version>
+              </tagletArtifact>
+            </taglet>
+            <taglet>
+              <tagletClass>latexlet.BlockLaTeXlet</tagletClass>
+              <tagletArtifact>
+                <groupId>latexlet</groupId>
+                <artifactId>latexlet</artifactId>
+                <version>1.2f7</version>
+              </tagletArtifact>
+            </taglet>
+          </taglets>
+        </configuration>
+	<executions>
+	  <execution>
+	    <id>attach-javadocs</id>
+	    <goals>
+	      <goal>jar</goal>
+	    </goals>
+	  </execution>
+	</executions>
+      </plugin>
+      <!-- allow GUI operator runner for execution with Maven -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.3.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <mainClass>de.unihalle.informatik.Alida.tools.ALDOpRunnerGUI</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+
+    <pluginManagement>
+      <plugins>
+	<!--This plugin's configuration is used to store Eclipse m2e settings only. 
+	    It has no influence on the Maven build itself.-->
+	<plugin>
+	  <groupId>org.eclipse.m2e</groupId>
+	  <artifactId>lifecycle-mapping</artifactId>
+	  <version>1.0.0</version>
+	  <configuration>
+	    <lifecycleMappingMetadata>
+	      <pluginExecutions>
+		<pluginExecution>
+		  <pluginExecutionFilter>
+		    <groupId>
+		      org.apache.maven.plugins
+		    </groupId>
+		    <artifactId>
+		      maven-dependency-plugin
+		    </artifactId>
+		    <versionRange>[2.1,)</versionRange>
+		    <goals>
+		      <goal>copy-dependencies</goal>
+		    </goals>
+		  </pluginExecutionFilter>
+		  <action>
+		    <execute></execute>
+		  </action>
+		</pluginExecution>
+	      </pluginExecutions>
+	    </lifecycleMappingMetadata>
+	  </configuration>
+	</plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <repositories>
+    <repository>
+      <id>jboss</id>
+      <name>JBoss Thirdparty Releases</name>
+      <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
+      <layout>default</layout>
+    </repository>
+    <repository>
+      <id>jgit-repository</id>
+      <url>https://repo.eclipse.org/content/groups/releases/</url>
+      <layout>default</layout>
+    </repository>
+    <repository>
+      <id>snapshots</id>
+      <name>Archiva Snapshot Repository on 'moon'</name>
+      <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots/</url>
+      <layout>default</layout>
+    </repository>
+    <repository>
+      <id>internal</id>
+      <name>Archiva Internal Repository on 'moon'</name>
+      <url>https://moon.informatik.uni-halle.de/archiva/repository/internal/</url>
+      <layout>default</layout>
+    </repository>
+    <repository>
+      <id>releases</id>
+      <name>Archiva Release Repository on 'moon'</name>
+      <url>https://moon.informatik.uni-halle.de/archiva/repository/releases/</url>
+      <layout>default</layout>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>snapshots</id>
+      <name>Archiva Snapshot Repository on 'moon'</name>
+      <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots/</url>
+      <layout>default</layout>
+    </pluginRepository>
+    <pluginRepository>
+      <id>internal</id>
+      <name>Archiva Internal Repository on 'moon'</name>
+      <url>https://moon.informatik.uni-halle.de/archiva/repository/internal/</url>
+      <layout>default</layout>
+    </pluginRepository>
+    <pluginRepository>
+      <id>releases</id>
+      <name>Archiva Release Repository on 'moon'</name>
+      <url>https://moon.informatik.uni-halle.de/archiva/repository/releases/</url>
+      <layout>default</layout>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <dependencies>
+    <!-- Compile dependencies -->
+    <dependency>
+      <groupId>javax.help</groupId>
+      <artifactId>javahelp</artifactId>
+      <version>2.0.05</version>
+    </dependency>
+    <dependency>
+      <groupId>net.java.sezpoz</groupId>
+      <artifactId>sezpoz</artifactId>
+      <version>1.9</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sf</groupId>
+      <artifactId>jargs</artifactId>
+      <version>1.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.xmlbeans</groupId>
+      <artifactId>xmlbeans</artifactId>
+      <version>2.5.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.tinyjee.jgraphx</groupId>
+      <artifactId>jgraphx</artifactId>
+      <version>2.3.0.5</version> 
+<!--  <version>1.10.4.1</version> -->
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jgit</groupId>
+      <artifactId>org.eclipse.jgit</artifactId>
+      <version>3.1.0.201310021548-r</version>
+    </dependency>
+    <dependency>
+      <groupId>de.unihalle.informatik.Alida</groupId>
+      <artifactId>alida-xml</artifactId>
+      <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>de.unihalle.informatik.AlidaMiToBo</groupId>
+      <artifactId>help-resources</artifactId>
+      <version>1.6</version>
+    </dependency>
+<!--
+    <dependency> 
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.6</version>
+    </dependency>
+-->
+    <dependency> 
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.7.6</version>
+    </dependency>
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.7</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <scm>
+    <connection>scm:git:https://trac.informatik.uni-halle.de/git/alidaGit</connection>
+    <developerConnection>scm:git:https://trac.informatik.uni-halle.de/git/alidaGit</developerConnection>
+  </scm>
+
+  <profiles>
+    <profile>
+      <id>deploy-internal</id>
+      <activation>
+	<activeByDefault>true</activeByDefault>
+      </activation>
+      <distributionManagement>
+	<snapshotRepository>
+	  <id>snapshots</id>
+	  <name>Archiva Snapshot Repository on 'moon'</name>
+	  <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots/</url>
+	</snapshotRepository>
+	<repository>
+	  <id>internal</id>
+	  <name>Archiva Internal Repository on 'moon'</name>
+	  <url>https://moon.informatik.uni-halle.de/archiva/repository/internal/</url>
+	</repository>
+      </distributionManagement>
+    </profile>
+    <profile>
+      <id>deploy-release</id>
+      <activation>
+	<activeByDefault>false</activeByDefault>
+      </activation>
+      <distributionManagement>
+	<snapshotRepository>
+	  <id>snapshots</id>
+	  <name>Archiva Snapshot Repository on 'moon'</name>
+	  <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots/</url>
+	</snapshotRepository>
+	<repository>
+	  <id>releases</id>
+	  <name>Archiva Release Repository on 'moon'</name>
+	  <url>https://moon.informatik.uni-halle.de/archiva/repository/releases/</url>
+	</repository>
+      </distributionManagement>
+    </profile>
+  </profiles> 
+
+  <issueManagement>
+    <system>MantisBT</system>
+    <url>http://www2.informatik.uni-halle.de/agprbio/mitobo-bts/main_page.php</url>
+  </issueManagement>
+
+</project>

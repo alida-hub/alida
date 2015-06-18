@@ -1,0 +1,445 @@
+\subsection{\alida operators}
+\label{subsec:operators-programming}
+
+\subsubsection{Using operators}
+\label{subsec:using}
+To use an operator an object of the operator class needs to be instantiated,
+and input data as well as parameters have to be set for this object.
+Subsequently, the operator can be invoked using the method
+\icode{runOp()}.
+After return from that routine the results can be retrieved from the operator.
+
+\textbf{Important note:} Do no invoke an operator directly by its \icode{operate()} method
+as this will prevent the processing history from being constructed.
+Anyway, this only would be feasible from within the package of the operator
+as the abstract method \icode{operate()} is declared \icode{protected}.
+
+An example of how to use an operator is given in Fig.~\ref{exa:useop}.
+First, a new instance of the operator is created (line 1), and subsequently
+input parameters are set (lines 2 and 3).
+If all required input parameters have been assigned for the operator object,
+it can be invoked calling its \icode{runOp()} method (line 4). 
+Upon invocation of \icode{runOp()}  the validity of input parameters is checked. 
+Validity requires for an operator that all required input parameters
+have values different from '\icode{null}'.
+In addition, the implementation of an operator may impose further constraints
+which, e.g., may restrict the admissible interval of numerical parameters
+(see Sec~\ref{subsubsec:implOperators-advanced}).
+Subsequent to successful validation, the method 
+\icode{operate()}
+is invoked. Each operator is supposed to implement this method as it does the
+actual work. After return from \icode{runOp()}, the
+resulting output data can be retrieved from the operator either directly accessing the member
+variables or by getter methods as provided by the specific operator.
+Note that the value of the operator parameters may
+have changed upon return from \icode{runOp()} due 
+to modifications in the \icode{operate()} method.
+\icode{runOp()} may throw an exception if validation of inputs and parameters or
+data processing itself fails.\\
+
+\begin{figure}[hb]
+\lstinputlisting[xrightmargin=.\textwidth,
+xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/NormalizeExperimentalDataOp-use.snippet}
+\caption{\label{exa:useop}An example of how to use an operator, in this case
+	\icode{NormalizeExperimentalDataOp}.}
+\end{figure}
+
+For the \icode{runOp()} method two version are available.
+Besides the one mentioned above without arguments,
+the method \icode{runOp(hidingMode)} is available where the value of
+\icode{'hidingMode'} influences the visibility of the operator invocation in the
+history.
+If \icode{'hidingMode'} is \icode{VISIBLE} then the invocation of the operator
+is visible.
+If the value is \icode{HIDDEN} the invocation of the operator and all is children is hidden.
+Finally, if \icode{hidingMode} is set to \icode{HIDE\_CHILDREN} the operator itself is visible,
+but all its children are hidden from the history
+See Section~\ref{subsec:history} for more details.
+\TODO{more explanatiion?, example(s)}
+
+An operator object may be reused to invoke processing
+several times as long as input parameters are changed between
+subsequent calls of \icode{runOp()}.
+
+\subsubsection{Implementing operators: Basics}
+\label{subsubsec:implOperators-basics}
+
+Each operator in \alida is implemented by extending the abstract class \icode{ALDOperator}.
+The example given in Fig.~\ref{exa:defineOp}
+is the implementation of the demo operator \icode{MatrixSum},
+included in the package \icode{de.unihalle.informatik.Alida.demo}.
+It
+shows
+that an operator usually has to be annotated with the \texttt{@ALDAOperator}
+annotation provided by \alida.
+Some functionality of \alida, most importantly the  execution via automatically generated user interfaces,
+ requires this annotation
+to register the class as an \alida operator.
+If an operator is annotated with \texttt{@ALDAOperator}, a public standard
+constructor has to be supplied (see below), otherwise a compilation error will result.
+Note that abstract classes can not be annotated with \texttt{@ALDAOperator}.
+
+An operator may declare its preferences for generic execution, i.e., whether to
+be or not to be generically executed, by using the parameter
+\icode{'genericExecutionMode'} of the annotation. It currently supports four
+possible values:
+\begin{itemize}\itemseparation{0.1em}
+\item \icode{NONE (default)}, to prohibit generic execution completely
+\item \icode{SWING}, to allow generic execution via GUI only,
+\item \icode{CMDLINE}, to allow generic execution via command line only, and
+\item \icode{ALL}, to allow for generic execution in general.
+\end{itemize}
+
+Furthermore, operators can be categorized into \icode{'STANDARD'}
+or \icode{'APPLICATION'} using the parameter \icode{'level'}.
+The latter one is intended to subsume only operators that can easily be applied by non-expert users,
+while the first category subsumes all operators. The graphical operator runner included in \alida 
+provides two different view modes for either only operators annotated as
+\icode{'APPLICATION'}, or all operators registered according to the
+\texttt{@ALDAOperator} annotation.
+
+Finally, the annotation also allows to release an operator for batch
+processing. If the parameter \icode{'allowBatchMode'} is set to \icode{'true'},
+which is the default, the operator control frame triggered by the GUI operator
+runner will show the batch mode tab, and it is expected that the operator
+behaves reasonable in that mode. If the parameter is set to
+\icode{'false'}, batch mode execution will not be possible at all.
+
+\begin{figure}[h]
+\lstinputlisting[xrightmargin=.0\textwidth,
+xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/MatrixSum-declare.snippet}
+\caption{\label{exa:defineOp}Example deriving the operator \icode{MatrixSum}.}
+\end{figure}
+
+There are five issues which have to be taken care of when implementing
+an operator, namely
+\begin{itemize}\itemseparation{0.1em}
+\item	to define the parameters of the operator,
+\item	to implement the functionality of operation per se,
+\item 	to provide constructors, particularly a public one without arguments
+\item	to optionally constrain admissible parameter values,
+\item 	and to indicate whether
+          this operator prefers a complete processing history
+	or a processing history according to data dependencies.
+\end{itemize}
+The first three issues
+are described in the following,
+while the last two are deferred to Sec.~\ref{subsubsec:implOperators-advanced}.
+
+\paragraph{Parameters.}
+The common way to define the parameters of an operator is by annotation of
+corresponding member variables. In addition, since \alida 2.5 it is also possible to
+dynamically add and remove parameters via methods provided by \icode{ALDOperator}. For defining
+parameters via annotations currently a modified version of the annotation \icode{@Parameter} as under development for ImageJ
+2.0$\,$\footnote{ImageJ 2.0 project, \url{http://developer.imagej.net/about}} is used.
+The relevant fields of this annotation are listed below and will be detailed in
+the following:
+\begin{itemize}\itemseparation{0.1em}
+\item	\icode{direction} --- direction of the parameter, i.e., \icode{IN},
+\icode{INOUT} or \icode{OUT}
+\item	\icode{required} --- flag to mark required parameters
+\item	\icode{label} --- custom name of parameter
+\item	\icode{description} --- short descriptive explanation
+\item	\icode{supplemental} --- flag to mark supplemental parameters
+\item	\icode{mode} --- importance category of the parameter
+\item	\icode{dataIOOrder} --- I/O rank among all parameters of the operator
+\item	\icode{callback} --- name of a callback method to be automatically
+ invoked upon changes of the parameter's value
+%\item	\icode{info} --- parameter is a dummy parameter and exclusively used for
+% layout of user interfaces
+\item	\icode{modifiesParameterDefinitions} --- changing the parameter's value
+ may add or remove parameters of this operator
+\end{itemize}
+
+Fig.~\ref{exa:defineParameters} shows an example how parameters are defined this way.
+If the \icode{'direction'} of a parameter is set to \icode{'IN'} or
+\icode{'INOUT'}, the field \icode{'required'} defines whether this parameter is
+required or optional. 
+The field \icode{'description'}
+of the parameter gives a textual explanation, and the \icode{'label'} may be
+used for display purposes.
+Setting the field \icode{'supplemental'} to \icode{'true'} declares the
+corresponding parameter as supplemental.
+Via the Java inheritance mechanism an operator inherits all parameters defined
+in its super classes.
+
+\begin{figure}
+\lstinputlisting[xrightmargin=.\textwidth,
+xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/MatrixSum-parameters.snippet}
+\caption{\label{exa:defineParameters}Example defining the parameters of \icode{MatrixSum}.}
+\end{figure}
+
+The annotation parameter \icode{'dataIOOrder'} allows to rank parameters
+in interface generation. For example, in GUI generation it might be favorable to place the most important 
+parameters on top of the window, while parameters of minor importance only
+appear at the bottom. Likewise, in command line tools some parameters might be
+supposed to appear earlier in the help system than others.
+Such a ranking can be achieved by specifying an I/O order. Smaller values refer
+to a high importance of the corresponding parameter, larger values to minor importance.
+%If a parameter is annotated with \icode{'info'} as \icode{true} the parameter
+% is a dummy parameter with no value associated. Rather it is exclusively used to layout automatically
+%generated user interfaces. Currently only \icode{'info'} parameters of class
+% \icode{String} are supported.
+
+\alida allows to categorize operator parameters according to the level
+of knowledge required for their use. Often some parameters of operators are only of interest for experts, and non-expert users
+do not even have to be aware of them. To this end each parameter may be
+annotated as \icode{'STANDARD'} or \icode{'ADVANCED'}. Accordingly, \alida's graphical user
+interface allows to switch the view of parameters between showing only standard parameters and
+displaying all.
+
+The annotation parameter \icode{'callback'} allows to specifiy the name of a method of this operator
+which is to be automatically invoked by \alida if the annotated parameter's value is changed.
+Note the callback method is invoked automatically only when changing the
+parameter value using the \icode{setParameter()} method. Callback functions offer the possibility to
+dynamically reconfigure operators depending on the current context. In particular it is possible to
+add and remove parameters dynamically. Consider for example an operator allowing for different types
+of inputs, i.e.~arrays and lists. Each of these types requires specific treatment in data
+I/O, i.e.~the graphical user interface needs to provide two different graphical elements. Thus,
+to handle the different parameters one option would be to add two parameters of the two different
+types to the operator and always display both (although only one is needed at a time). Using
+callbacks a more elegant way to solve the problem is available. We can add another parameter
+\icode{'input mode'} to the operator which allows to select the type of input. If we furthermore
+define a callback function for that parameter the user interface of the operator can dynamically be
+reconfigured. Depending on the chosen input mode the corresponding input parameter can be added
+and the second one be removed dynamically. Adding and removing parameters can be accomplished with
+the methods \icode{'addParameter()'} and \icode{'removeParameter()'} of \icode{ALDOperator}.
+
+Note that changing the set of parameters of an operator
+dynamically requires \alida to update its internal representation and also graphical user interfaces
+attached to the operator. To this end the programmer is requested to let \alida know that a callback
+function changes the parameter set of an operator. This is to be accomplished using the
+annotation parameter \icode{modifiesParameterDefinitions} which is to be set to \icode{'true'} or
+\icode{'false'}. Note that if the parameter is set to false and a callback function nonetheless 
+modifies the parameters of an operator, undefined behaviour of the operator may result.
+
+\paragraph{Operator functionality.}
+The method \icode{operate()} implements the functionality of the operator. All data
+passed into and returned from the operator have to be passed through the parameters of the operator.
+They may be set and retrieved with the generic
+\icode{getParameter(name)} and \icode{setParameter(name,value)} methods
+of \icode{ALDOperator}, by specific setter- and getter-methods as provided by
+each operator, or by
+directly accessing the member fields if allowed.
+To invoke the processing within an operator, i.e., to run its \icode{operate()}
+routine, the final method \icode{runOp()} supplied by \icode{ALDOperator} needs to be called by the user of an operator.
+
+\paragraph{Constructors.}
+As noted above, 
+for automatic code generation and documentation capabilities as well as generic execution 
+of an operator,
+the operator class needs to implement 
+a public standard constructor 
+as shown in Fig.~\ref{exa:constructor}.
+This is, however, not necessary if the operator is only to be used explicitly
+by the programmer and is not annotated.
+Further convenience constructors may be implemented which additionally set
+parameters.
+
+\begin{figure}
+\lstinputlisting[xrightmargin=.\textwidth,
+xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/MatrixSum-constructor.snippet}
+\caption{\label{exa:constructor}Constructors of \icode{MatrixSum}.}
+\end{figure}
+
+\paragraph{Processing history.}
+As decribed in Sec~\ref{subsec:using} the visibility of an operator invocation in the
+processing history may be
+influcenced by the parameters of the  \icode{runOp()} method.
+By this means the visibility of each operator invocation may be set to
+icode{VISIBLE}, \icode{hidingMode}, or \icode{HIDE\_CHILDREN}.
+This only allows to determine the visibility of further operators directly
+invoked by their \icode{runOp()} method but not of operators indirectly invoked.
+Thus, the implementor of an operator may influence the visibility
+of its own invocation using the method \icode{setHidingMode(hidingMode)}.
+The main usage of this method is to set the operators visibility to \icode{HIDE\_CHILDREN}
+to hide recursive calls to further operators from the history.
+This also hides operator calls which are indirectly invoked arbitrary methods used when implementing
+the \icode{operate()} method.
+
+\textbf{Important note:} It is strongly recommended that an operator
+does not rely on specific initializations, e.g., of private fields, that are
+performed in a constructor and depend on the values of input parameters. Rather,
+it is advised that upon invocation of the \texttt{operate()} method an operator performs all necessary initializations according to the parameter settings.
+This allows to take into account changes of parameter values subsequent to
+construction of the operator object by using the \texttt{setParameter(\ldots)}
+method or dedicated setter methods.
+Otherwise generic execution of the operator is not feasible and
+the operator should not be released for generic execution.
+
+\begin{figure}[tb]
+\lstinputlisting[xrightmargin=.\textwidth,
+xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/ApplyToMatrix-parameters.snippet}
+\caption{\label{exa:operatorAsParameter}An example of an operator as a parameter in the operator \icode{ApplyToMatrix}}
+\end{figure}
+
+\subsubsection{Implementing operators: Advanced techniques}
+\label{subsubsec:implOperators-advanced}
+
+\paragraph{Operators as parameters.}
+\alida supports as parameters of an operator also any (other) \alida operator.
+This is shown for the demo operator \icode{ApplyToMatrix} in Fig.~\ref{exa:operatorAsParameter}.
+In this case, the class \icode{ALDSummarizeArrayOp} is an abstract operator 
+which takes a 1D array as input and returns a summarizing scalar.
+Now, one may implement concrete examples of such a summarizing operation. 
+As examples \alida ships with operators implementing
+the summation (\icode{ALDArraySum}), mean (\icode{ALDArrayMean}) and minimum
+(\icode{ALDArrayMin}) operations.
+Each operator implements the  \icode{operate()} method and has to supply a
+standard constructor.
+As shown in Fig.~\ref{exa:ALDArraySum},
+the  operator \icode{ALDArraySum} is declared as operator on the
+\icode{'STANDARD'} in contrast to \icode{'APPLICATION'} level, as
+it is not expected to be invoked as an application.
+However, setting the level to standard in the menu of the graphical user interface
+stills allows their direct execution.
+When extending the super class \icode{ALDSummarizeArrayOp}, it is necessary to
+annotate the class with \icode{@ALDDerivedClass} in order to allow \alida's data
+I/O mechanisms to find the derived class in automatically generated user
+interfaces.
+This holds for other parameter types as well, see Sec.~\ref{subsubsec:datatypes}.
+
+\begin{figure}
+\vspace{4mm}
+\lstinputlisting[xrightmargin=.\textwidth,
+xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/ALDArraySum-constructor.snippet}
+\caption{\label{exa:ALDArraySum}The operator \icode{ALDArraySum} as an operator in standard level.}
+\end{figure}
+
+\paragraph{Constraints on admissible parameter values.}
+
+The implementation of an operator may impose 
+custom constraints on the input parameters
+beyond the general requirement, that all required input parameters
+need to have non-null values.
+This is achieved by overriding the method \\
+\begin{lstlisting}[xrightmargin=.00\textwidth, xleftmargin=.0\textwidth,frame=single,numbers=none]
+  public void validateCustom() throws ALDOperatorException
+\end{lstlisting}
+which, e.g., may restrict the admissible interval of numerical parameters.
+This method is called by \icode{runOp()} prior to the invocation of the
+\icode{operate()} method of an operator. It is supposed to throw an exception
+of type \icode{ALDOperatorException} with type \icode{VALIDATION\_FAILED} and
+a striking error message if the validation was not successful.
+
+\paragraph{Preference for history graph construction.}
+Each operator may specify a preferred
+way to create the processing history by setting
+its member variable \icode{'completeDAG'}.
+The default mode is a complete processing history,
+i.e., \texttt{completeDAG == true}. This works in all cases,
+but potentially includes additional operator invocations as performed in the
+\icode{operate()} method which do not directly influence
+the values of the object for which the history is constructed.
+To generate a leaner history graph the programmer of an operator
+may choose to set \icode{'completeDAG'} to \icode{false}, see
+Section~\ref{subsec:history} for details.
+
+In case an implementor decides to completely disable the construction of the processing history 
+this can be accomplished with the static method \icode{setConstructionMode()} of
+the \icode{ALDOperator} class.
+
+
+\paragraph{Progress events.} \alida provides a mechanism for operators
+to send status and progress messages to the user during execution. These messages
+are shown in the status bar of the operator control windows
+(Sec.~\ref{subsubsec:controlWin}) and also in Grappa's log panel
+(Sec.~\ref{subsec:grappa}). Accordingly, in constrast to output to standard out,
+which is not guaranteed to reach the user, these messages will always be visible
+to the user. For triggering such messages, an operator has to fire an event of
+type \icode{ALDOperatorExecutionProgressEvent} using the method\\
+\begin{lstlisting}[xrightmargin=.00\textwidth, xleftmargin=.0\textwidth,frame=single,numbers=none]
+  protected void
+	  fireOperatorExecutionProgressEvent(ALDOperatorExecutionProgressEvent ev)
+\end{lstlisting}
+The event takes a message string as argument during construction which is then
+displayed to the user.
+
+\subsubsection{Implementing operators: Parameters}
+\label{subsubsec:datatypes}
+
+\paragraph{Derived classes.}
+As noted above, 
+if an instance of a class is to be supplied in an automatically
+generated user interface as a value for a parameter of one of its super classes,
+\alida requires the annotation \icode{@ALDDerivedClass}.
+
+\paragraph{Parameterized classes.}
+\alida provides automatic I/O of primitive data types, enumerations, arrays, collections,
+and operators.
+In addition, so called \textit{parameterized classes} are supported.
+Any Java class may be declared to be a parameterized class in \alida
+by annotating the class with \icode{@ALDParametrizedClass} as shown for the
+class \icode{ExperimentalData} in Fig.\ref{exa:parametrizedClass}.
+The class is annotated by \icode{@ALDParametrizedClass},
+and all members to be configured via \alida's user interfaces are
+to be annotated with \icode{@ALDClassParameter}. This annotation offers the
+following arguments:
+\begin{itemize}
+  \item \icode{'label'} --- name of the parameter, field has same
+	semantics as for parameters of operators
+  \item \icode{'dataIOOrder'} --- I/O rank of the parameter	 
+  \item \icode{'mode'} ---
+	importance of the parameter, i.e., \icode{'STANDARD'} or \icode{'ADVANCED'}	 
+  \item \icode{'changeValueHook'} --- post-processing routine after reload (see
+  below)
+\end{itemize}
+
+The first three annotations share their semantics with their counterparts in the
+\icode{@Parameter} annotation of operators
+(cf.~Sec.\ref{subsubsec:implOperators-basics}).
+Only the forth one is special to parameterized classes. On loading or saving
+operator configurations, i.e.~the values of its parameters, also objects of
+parameterized classes used as parameters have to be handled. To this end these
+are also converted to XML format. However, in doing so only {\em annotated}
+member variables of the parametrized class are taken into account. Consequently,
+also only these member variables of the object will get proper values after
+reload.
+In some cases, however, this might yield to inconsistencies in an object's state
+after reload. Consider for example a parameterized class representing a set of
+points. Most likely this class will define a member variable of a list type
+which holds the points, and as this member holds the core data of the data
+type, it will be annotated.
+Now, for efficiency of implementation it might be of advantage to define another
+member variable keeping track of the number of points in the list, usually not
+being annotated. To ensure that this variable is also correctly set on reload of
+the object, the \icode{'changeValueHook'} argument can be used. It expects a
+string defining a method of the class at hand which is to be called after all
+annotated member variables have been properly set during reload. The method may
+then perform some kind of post-processing of the object's configuration, i.e.,
+set the point counter variable to the number of points found in the given list.
+Note that the hook method should not expect any arguments.
+
+The above annotations are
+the only implementational overhead to allow \alida to automatically generate user interfaces where the parameterized class acts as a parameter.
+Operators acting as parameters of other operators may be viewed as
+special cases of parameterized classes.
+
+
+\begin{figure}
+\lstinputlisting[xrightmargin=.\textwidth,
+xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/ExperimentalData.snippet}
+\caption{\label{exa:parametrizedClass}The class \icode{ExperimentalData} as an example of a parameterized class.}
+\end{figure}
+
+\paragraph{Automatic documentation}
+
+The value of each \icode{'IN'} and \icode{'INOUT'} parameter is recorded
+upon invocation of an operator via its \icode{runOp()} method using the method \icode{toString()}
+of the parameter class for later storage in the processing history.
+Thus, it is recommended to supply an appropriate \icode{toString()}
+method for data types used as parameters to yield informative histories.
+
+If a parameter of an operator is expected to be documented in the data flow of
+the processing history, it
+may be of any Java class being uniquely
+identifiable. This excludes only primitive data types, interned strings
+and cached numerical objects.
+If the parameter need not to be part of the data flow, all classes are
+acceptable.
+
+Note that before returning from \icode{runOp()}, additional documentation is
+done for output objects derived from the abstract class \texttt{ALDData}.
+This class essentially features a property list which may 
+be used to augment data objects, e.g., by a filename or URL specifying 
+the origin of the data.

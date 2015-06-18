@@ -1,0 +1,38 @@
+\subsection{XML provider for external representation}
+
+XML providers are used to store and retrieve parameter configurations of
+operators and workflows.
+As a consequence, (typically) transient data are not stored (and retrieved).
+
+\icode{ALDXMLObjectType} is the base type of all Alida XML data types.
+In only contains the classname (fully qualified classname).
+Extending types will add the data itself.
+Such XML representations do not only contain the data itself,
+but allow to infer the class of the represented object. 
+Thus, it is feasible to instantiate the correct object and fill it with all
+data as stored in the XML object.
+
+Currently there exist the following extending types:
+
+\begin{tabular}{l|l}
+\icode{ALDXMLArrayType} & to hold 1D arrays and collections \\
+\icode{ALDXMLParametrizedType} & for parametrized classes holding a list of
+(key,value)-pairs,\\
+& where the values are of type \icode{ALDXMLObjectType} \\
+\icode{ALDXMLEnumType} & for an enum value, which is just represented by a string \\
+\icode{ALDXMLAnyType} & to hold any type, used, e.g., for primitive data
+types,\\ & numerical data types
+\end{tabular}
+
+For writing an XML provider on your own
+\begin{enumerate}
+\item	create an XML beans object which can hold the data item.
+	This may be a native XML beans data type like \icode{XmlInt} or
+	\icode{XmlString}, or a custom XML beans data type typically created via an
+	XML schema and the XML bean compiler (\icode{xmlbean} ant task).
+\item	create an object of type \icode{ALDXMLAnyType},
+	\begin{itemize}
+	\item	set its member \icode{'className'} to the class name of the data item
+	\item	set its value to the XML beams object created in step 1.
+	\end{itemize}
+\end{enumerate}

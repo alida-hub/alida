@@ -1,0 +1,71 @@
+\subsection{Configuring \alida}
+\label{subsec:configure-programmer}
+
+As described in Sec~\ref{subsec:configure-user}, \alida allows to configure
+some of its properties and general behaviours at run-time. To grant
+programmers easy access to this functionality for their own operators as
+well, the \alida library includes helper classes with a flexible API for
+run-time configuration from the environment. In particular, it provides the class
+\icode{ALDEnvironmentConfig} in the package \icode{de.unihalle.informatik.Alida.helpers}
+to ease run-time configuration via the probably most common ways of individual
+configuration, i.e., in terms of environment variables and properties of the
+Java Virtual Machine.
+
+The most general method, available in two versions, in class
+\icode{ALDEnvironmentConfig} is 
+\vspace*{0.5cm}
+\begin{code}
+	public static String getConfigValue( \
+												String prefix, String operator, String propname)
+
+	public static String getConfigValue( String operator, String propname)																
+\end{code}
+
+\vspace*{-0.25cm}
+These methods retrieve corresponding values from either environment variables or
+JVM properties, in exactly this order. The strings passed as arguments to the
+routines are concatenated and properly formatted according to the usual naming
+conventions in \alida and the operating system, respectively
+(cf.~Sec.~\ref{subsec:configure-user}). In detail, given a {\em prefix},
+{\em operator} and {\em property}, the method is searching for an environment
+variable named \icode{'PREFIX\_OPERATOR\_PROPERTY'}, or subsequently for a JVM property named
+\icode{'prefix.operator.property'}. Note that in the \alida context the string
+\icode{'prefix'} in the first method signature should usually be set to
+\icode{'alida'}. In the second method, where the prefix argument is missing,
+this is done by default.
+
+If the way how a certain property is specified, i.e., either as JVM property or
+environment variable, is known in advance, specific methods can be used:
+\vspace*{0.5cm}
+\begin{code}
+	public static String getEnvVarValue( String operator, String propname) 
+					
+	public static String getJVMPropValue(
+													String prefix, String operator, String propname)
+																				
+	public static String getJVMPropValue(String operator, String propname)	
+\end{code}
+
+\vspace*{-0.25cm}
+The first one just looks for environment variables, always assuming the prefix
+\icode{'ALIDA'}. The other two methods are exclusively accessing JVM properties
+where the first call allows to specify a custom prefix, while the second one
+assumes \icode{'alida'} by default.
+																										
+Note that if for a certain requested property no configuration values are
+provided by any of these ways, all methods return \icode{'null'} values and the
+requesting classes are supposed to fall back to default settings as
+defined by the programmer of an operator. In general, there is no limitation for an operator to access
+configuration variables of its choice. Usually they should just be properly
+documented in the Javadoc of the corresponding operator class.
+
+The naming of environment variables and properties is not strictly regularized
+and left free to the programmer of an operator. However, it is strongly
+recommended to adhere to the \alida naming conventions as this helps to avoid
+name clashes. In particular, have your variables start with prefix
+\icode{'alida'} and let the second part be the name of the class or operator
+using the variable. The third part is then the actual property. Make sure that
+new variables and properties do not collide with variables predefined in \alida
+which are listed in Sec~\ref{subsec:configure-user}.
+
+

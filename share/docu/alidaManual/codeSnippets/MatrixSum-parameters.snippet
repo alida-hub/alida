@@ -1,0 +1,20 @@
+  /**
+   * Input matrix
+   */
+  @Parameter( label= "Input matrix", required = true, 
+  		direction = Parameter.Direction.IN, description = "Input matrix.")
+  private Double[][] matrix;
+
+  /**
+   * Mode of summarizing
+   */
+  @Parameter( label= "Summarize mode", required = true, 
+  		direction = Parameter.Direction.IN, description = "Sum over columns or rows?")
+  private SummarizeMode summarizeMode = SummarizeMode.ROW;
+
+  /**
+   * 1D Array of sums.
+   */
+  @Parameter( label= "sums",  
+  		direction = Parameter.Direction.OUT, description = "Row or column wise sums.")
+  private transient Double[] sums = null;

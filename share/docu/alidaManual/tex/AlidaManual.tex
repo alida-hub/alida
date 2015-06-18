@@ -1,0 +1,69 @@
+% #####################################################
+% Alida Manual
+%
+% File:               AlidaManual.tex
+% Author:             Stefan Posch / Birgit Moeller
+% Date:               08.04.2011
+% last update:        February 2015
+% #####################################################
+
+\documentclass[twoside,11pt,a4paper,english]{article}
+
+\usepackage{amsmath}                   %% mathmatical symbols and formulas
+\usepackage[english]{babel}             %% german special signs
+\usepackage{epsfig}
+\usepackage{fancyheadings}             %% headings and footer
+\usepackage{graphics}                  %% inclusion of graphics
+\usepackage{graphicx}                  %%     "       "      "
+\usepackage{listings}
+\usepackage{color}
+\usepackage{subfigure}
+\usepackage{framed}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{xspace}
+\usepackage{wrapfig} 
+
+\input{defines}
+\input{format}
+
+\begin{document}
+
+%==================================
+\include{frontmatter}
+\include{intro}
+
+%==================================
+\cleardoublepage
+\section{The User's View}
+\label{sec:users}
+
+\input{quickstart}
+\input{operator-user}
+\input{oprunnergui-user}
+\input{grappa-user}
+\input{oprunner-user}
+\input{history-user}
+\input{configure-user}
+
+%==================================
+\cleardoublepage
+\section{The Programmer's View}
+\label{sec:programmers}
+
+\input{operator-programmer}
+\input{provider-programmer}
+\input{xmlprovider-programmer}
+\input{converter-programmer}
+\input{history-programmer}
+\input{configure-programmer}
+
+%==================================
+\cleardoublepage
+
+\begin{appendix}
+\input{Chipory}
+\end{appendix}
+
+\end{document}
+

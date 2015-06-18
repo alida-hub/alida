@@ -1,0 +1,84 @@
+\subsection{\alida operators}
+\label{subsec:operators-user}
+
+The heart of \alida's concept are operators that implement all data analysis capabilities. 
+Operators are the only places where data are processed and manipulated.
+Examples for data to be manipulated are, e.g., experimental measurements,
+sets of DNA sequences, or, for image analysis, images and sets of regions
+comprising a segmentation result. An operator receives zero or more input objects
+comprising all input data the operator is expected to work on.
+Operators with zero inputs are operators which for example create a data object
+for given parameters or read data from file.
+Further input to an operator are parameters, which configure or
+modify the processing on the input data.
+Examples are the selection of alternative processing procedures, e.g., if
+experimental measurements should be summarized by their mean or their median,
+a mask-size of a filter to be applied to an image, or the maximal number
+of iterations for a gradient descent algorithm.
+The distinction of an input acting as input data or as a parameter is not
+clear in all cases.
+As an abstract example consider an operator which is 
+to compute the scalar product of two vectors.
+In this case, both vectors are most likely considered as input data.
+However, if the operator is
+to normalize 
+a data vector by a scalar normalizing constant,
+this scaling factor may either be considered as an input or a parameter.
+Therefore, \alida does not distinguish between input data and input parameters.
+However, parameters of an operator may be optional, required or supplemental.
+
+An operator produces zero or more output objects  as the result of processing.
+%The types of these objects are the same as for input
+%objects since in virtually all cases an output of one operator may act as the input to
+%other operators.
+An operator with zero output objects will, e.g., write data to disk.
+
+All input and output data are denoted as {\em parameters} in \alida.
+The role of a parameter is identified by its direction,
+which may be input (\icode{IN}) or output (\icode{OUT}).
+In cases, where an input object should just be passed through the operator or is
+destructively modified, this parameter has the direction input and output
+(\icode{INOUT}). An example is a vector which is modified in place.
+
+
+%The behavior of operators is controlled or configured via parameters.
+%All Java classes as well as primitive data types are accepted as a parameter type.
+%Typical examples for parameters are the size of a kernel or structuring element, 
+%a filter mask, constants (or parameters)
+%which weight energy terms, step width of optimizers, or the maximal number
+%of iterations for a gradient descent algorithm.
+%%A threshold may either be considered as an input object or a parameter of the operator.}
+
+In addition to parameters providing the input data and configuration of the
+operator, and output parameters representing the results of processing, an
+operator may use supplemental parameters.  
+By definition, the setting of supplemental parameters must not influence the
+data processing nor the results returned as output data.
+Consequently, supplemental parameters are not documented in the processing
+history.
+Examples for such parameters include flags to control output or debugging
+information, and intermediate results produced by an operator.
+
+The relevant features defined for parameters in \alida are the following:
+\begin{itemize}\itemseparation{0.1em}
+\item	the direction of the parameter, which may be \icode{IN, OUT} or \icode{INOUT},
+\item	a boolean indicating whether the parameter is supplemental, 
+\item	a boolean indicating whether the parameter is required or optional
+	(which is only interpreted for non-supplemental \icode{IN and INOUT}
+	parameters) 
+\item	a label, e.g., used in the graphical user interfaces,
+\item	a textual explanation of the parameter, for example appearing in tooltips,
+\item   a data I/O order by which parameters can be ranked for generic GUI or
+command line interface generation, and
+\item   an expert mode which, e.g., allows to hide parameters for advanced configuration from non-expert users.
+\item   the name of a callback function which is called if the parameter's value is changed using
+	the \icode{setParameter()} method of the operator; the function can, e.g., be used to
+	automatically update other parameter values or to even modify the set of parameters of the
+	operator (refer to Sec.~\ref{subsubsec:implOperators-basics} for details)
+\end{itemize}
+
+The application of operators may be nested as one operator may call one or more
+other operators.
+At the top of this hierarchy we typically have appropriate user interfaces.
+Their parameter settings are facilitated via files, GUIs, command line, or
+via the console.

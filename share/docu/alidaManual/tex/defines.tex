@@ -1,0 +1,32 @@
+\newcommand{\alida}{{\bf \tt Alida}\xspace}
+\newcommand{\mitobo}{{\bf \tt MiToBo}\xspace}
+\newcommand{\grappa}{{\bf \tt Grappa}\xspace}
+\newcommand{\mtbimg}{\texttt{MTBImage}}
+\newcommand{\imgplus}{\texttt{ImagePlus}}
+\newcommand{\imgproc}{\texttt{ImageProcessor}}
+\newcommand{\mtbc}{{\bf \tt Chipory}\xspace}
+\newcommand{\chipo}{{\bf \tt Chipory}\xspace}
+\newcommand{\chipory}{{\bf \tt Chipory}\xspace}
+
+\newcommand{\TODO}[1]{\textcolor{red}{TODO:} \textit{#1}}
+\renewcommand{\TODO}[1]{}
+
+%%%% layout
+\newcommand{\itemseparation}[1]{\parskip#1\topsep#1\partopsep#1%
+    \parsep#1\itemsep#1}
+
+%%%% lstlisting
+\lstset{language=Java, columns=flexible, tabsize=2, numbers=left}
+
+%% inline code
+\newcommand{\icode}[1]{\lstinline[language=Clean]{#1}}
+\renewcommand{\icode}[1]{\texttt{#1}}
+
+\newcommand{\demoCodeDir}{../codeSnippets}
+
+\lstnewenvironment{code}
+  {~\\\noindent
+   \minipage{\linewidth} 
+   \vspace{0.5\baselineskip}
+\lstset{language=java,numbers=none,frame=single}}
+  {\endminipage\\}

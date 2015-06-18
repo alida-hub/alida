@@ -1,0 +1,57 @@
+\subsection{Automatic data type conversion}
+\label{subsec:converter}
+
+\alida features a generic mechanism for data type conversion.
+This conversion mechanism is currently used within the graphical workflow editor \grappa
+(see Sec.~\ref{subsec:grappa}).
+\grappa allows to connect an output port of one operator to the input port of another operator
+if the data types of the underlying parameters are compatible.
+The data types are defined as compatible if either the target data type is
+assignable from the source data type according to the Java class hierarchy or
+an appropriate data type converter is supplied.
+For example \alida ships with the converter 
+\icode{ALDNumberConverter} between numeric data types, obviously
+with potential loss of precision.
+Likewise conversion from vectors to 1D arrays is supported
+by the class \icode{ALDVectorNativeArrayConverter}.
+
+Similar to data I/O providers, data type converters are registered on start-up by 
+a singleton instance of the class \icode{ALDDataConverterManager}.
+This manager redirects conversion requests to appropriate
+converters.
+This requires each data type converter to implement the interface
+%%\vspace*{0.5cm}
+\begin{code}
+de.unihalle.informatik.Alida.dataconverter.ALDDataConverter
+\end{code}
+and to be annotated with the \alida annotation
+\icode{@ALDDataConverterProvider}.
+In analogy to \alida's data I/O provider a priority may be specified which is used
+by the converter manager to resolve competion between multiple converters for a
+given pair of data types to be converted.
+
+A data type converter has to implement the methods
+%%\vspace*{0.5cm}
+\begin{code}
+Collection<ALDDataConverterManager.ALDSourceTargetClassPair> providedClasses()
+boolean supportConversion(Class<?> sourceClass, Type[] sourceTypes, 
+                               Class<?> targetClass, Type[] targetTypes)
+\end{code}
+The first one is called upon start-up and it has to return pairs of source and
+target data types which the converter is able to handle.
+However for parameterized types this only indicates that the converter can in principle handle conversion 
+for these classes but depending on the type parameters still may refuse to do so.
+The second method, \icode{supportConversion} states precisely if conversion is supported
+taking also type parameters passed as arguments into account.
+
+The actual conversion is performed invoking the method
+\begin{code}
+Object convert(Object sourceObject, Type[] sourceTypes,
+               Class<?> targetClass, Type[] targetTypes)
+\end{code}
+As stated above this method is typically not invoked directly but via the 
+\icode{ALDDataConverterManager}.
+
+Note that both converters supplied by \alida are implemented as an \icode{ALDOpertor}.
+Thus the conversions are reflected within the processing history unless
+they are intentionally hidden (see Sec.~\ref{subsec:operators-programming} and \ref{subsec:history}).

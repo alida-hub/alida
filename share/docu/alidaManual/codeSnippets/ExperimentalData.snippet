@@ -1,0 +1,17 @@
+@ALDParametrizedClass
+public class ExperimentalData {
+    @ALDClassParameter(label="description")
+    private String description = null;
+
+    @ALDClassParameter(label="data")
+    private Double[][] data = null;
+
+    /** are the data normalized
+      */
+    @ALDClassParameter(label="Is normalized")
+    private boolean normalized = false;
+
+    /** Standard constructor is needed
+      */
+    public ExperimentalData() {
+    }

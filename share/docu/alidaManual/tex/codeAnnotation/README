@@ -1,0 +1,15 @@
+in the direcories there are toy operators intended
+- to be used as examples in the manual
+- to be used to generate graph examples
+- to test operator concepts
+
+Stefan
+
+---------------
+example for the manual
+
+java MTB_Median foo.pgm
+mv MTB_Median.mph nuc-corrected.mph
+
+java MTB_GammaCorrection nuc.pgm nuc-corrected.pgm
+java Cell_Segmentation nuc-corrected.pgm pb.pgm

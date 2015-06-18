@@ -1,0 +1,217 @@
+\subsection{Commandline user interface}
+\label{subsec:userCmdline}
+
+
+The command line user interface of \alida allows to invoke all \alida operators
+properly annotated to grant generic execution.
+In the following examples the operators \icode{MatrixSum}
+and \icode{ApplyToMatrix},
+included as demo operators in \alida, are used to explain the usage and
+features of this user interface.
+
+\paragraph{Basics.}
+
+You may invoke an operator by calling the command line operator runner:
+\vspace*{0.5cm}
+\begin{code}
+java de.unihalle.informatik.Alida.tools.ALDOpRunner [-u] [-v] [-n] [-r] [-s] \
+	  <classname> {parametername=valuestring}*
+\end{code}
+
+\vspace*{-0.25cm}
+It expects as arguments the name of the operator class to be executed and its
+parameters. The following options are available:
+\begin{itemize}
+  \item \icode{-u} / \icode{--usage} \hspace*{0.5cm} --- \hspace*{0.5cm}
+  	prints the help
+  \item \icode{-v} / \icode{--verbose} \hspace*{0.5cm} --- \hspace*{0.5cm}
+  	prints additional information during operator execution
+  \item \icode{-n} / \icode{--donotrun} \hspace*{0.5cm} --- \hspace*{0.5cm}
+  	does not execute the operator but rather prints its parameters
+  \item \icode{-r} / \icode{--useRegEx} \hspace*{0.5cm} --- \hspace*{0.5cm}
+        interprets the \icode{classname}  as a regular expression
+  \item \icode{-s} / \icode{--showProgress} \hspace*{0.5cm} --- \hspace*{0.5cm}
+        enables the display of progress messages on console \\
+        \hspace*{5.65cm}during operator execution
+  \item \icode{--noDefaultHistory} \hspace*{0.5cm} --- \hspace*{0.5cm}
+        if this flag is given, no history is read or written for input\\
+        \hspace*{4cm}and output parameters contrarily to \alida's standard
+        behaviour.
+\end{itemize}
+The operator \icode{MatrixSum} for row-wise summation of the elements within a
+matrix can be called as follows:
+\vspace*{0.5cm}
+\begin{code}
+java de.unihalle.informatik.Alida.tools.ALDOpRunner MatrixSum \
+      matrix='[[1,2,3],[4,5,6]]' sums=-
+\end{code}
+
+which returns as result on standard output
+\begin{code}
+sums = [6.0,15.0]
+\end{code}
+
+Parameter values are specified as name=value pairs.
+\alida's syntax for 2D array should be self-explanatory  from this example.
+As the mode of summation is not supplied as a parameter its default is used.
+
+The name of operators need not to be fully qualified if  they remain
+unambiguous.
+There are further options for abbreviation as well as regular expressions, see the help message of
+\icode{ALDOpRunner}.
+
+Note, that the command
+\begin{code}
+java de.unihalle.informatik.Alida.tools.ALDOpRunner MatrixSum matrix='[[1,2,3],[4,5,6]]' 
+\end{code}
+will return no output at all as the command line user interface returns only  those output parameters which have been requested by the user.
+This is facilitated providing a dummy value for an output parameter, which is
+\icode{-} in the example.
+
+The enumeration defined in \icode{MatrixSum} 
+for \icode{summarizeMode} 
+is set in the next example.
+If a wrong value for an enumeration is given the \icode{ALDOpRunner}
+prints a list of admissible values.
+The example also demonstrates redirection of output
+to a file, \icode{sums.out} in this case, which is the standard in \alida if the
+value of an output parameter is preceded with a '\icode{@}':\\[0.25cm]
+\begin{code}
+java de.unihalle.informatik.Alida.tools.ALDOpRunner MatrixSum matrix='[[1,2,3],[4,5,6]]' 
+	summarizeMode=COLUMN sums=@sums.out
+\end{code}
+
+Input can be read from file as well:
+\begin{code}
+java de.unihalle.informatik.Alida.tools.ALDOpRunner MatrixSum matrix=@data sums=-
+\end{code}
+
+where the file data contains the string defining the matrix, e.g.,
+\icode{[[1,2,3],[4,5,6]]}
+
+
+\paragraph{Derived classes}
+The demo operator \icode{ApplyToMatrix} takes as one parameter another
+operator.
+In this case this operator needs to extend the abstract class \icode{ALDSummarizeArrayOp}.
+When invoking the \icode{ApplyToMatrix} operator from command line
+we thus have to handle derived classes as value for parameters.
+In the graphical user interface \alida features a combo box where
+we may choose from.
+In the command line interface \alida allows to prefix the value of a parameter
+with a derived class to be passed to the operator.
+This is necessary as \alida has, of course, no way to itself
+decide if and which derived class is to be used.
+\alida's syntax is to enclose the class name in a dollar sign and a colon.
+The value of the parameter is empty in this example as the operator \icode{ALDArrayMean}
+can be instantiated with out arguments.
+As evident in the following example, abbreviations of the fully
+qualified class name are accepted as long as they are unambiguous.
+\begin{code}
+java de.unihalle.informatik.Alida.tools.ALDOpRunner ApplyToMatrix \
+	matrix='[[1,2,3],[4,5,6]]' \
+	summarizeMode=ROW \
+	summarizeOp='$ALDArrayMean:' \
+	summaries=-
+\end{code}
+results in
+\begin{code}
+summaries = [2.0,5.0]
+\end{code}
+
+
+\icode{ALDOpRunner} may be persuaded to show all operators derived from \icode{ALDSummarizeArrayOp}
+and known within the user interface if we enter an invalid class name:
+\begin{code}
+java de.unihalle.informatik.Alida.tools.ALDOpRunner ApplyToMatrix \
+        matrix='[[1,2,3],[4,5,6]]' \
+	summarizeMode=ROW summarizeOp='$dd:' \
+	summaries=-
+\end{code}
+yields
+\begin{code}
+ALDStandardizedDataIOCmdline::readData found 0 derived classes matching <dd>
+      derived classes available:
+	de.unihalle.informatik.Alida.demo.ALDArrayMean
+	de.unihalle.informatik.Alida.demo.ALDArrayMin
+	de.unihalle.informatik.Alida.demo.ALDArraySum
+\end{code}
+
+
+Supplemental parameters are handled like other parameters
+\begin{code}
+java de.unihalle.informatik.Alida.tools.ALDOpRunner ApplyToMatrix \
+	matrix='[[1,2,3],[4,5,6]]' \
+	summarizeMode=COLUMN \
+	summarizeOp='$ALDArrayMin:{}' \
+	summaries=- \
+	returnElapsedTime=true \
+	elapsedTime=-
+\end{code}
+gives
+\begin{code}
+	summaries = [1.0,2.0,3.0]
+	elapsedTime = 4
+\end{code}
+
+
+\paragraph{Parameterized classes}
+\alida supports so called \textit{parameterized classes}.
+A parameterized class is essentially just an ordinary class where
+however some member fields have been declared 
+to be required
+for an object of this class to be properly instantiated by \alida.
+These member fields resemble quite some analogy to parameters of operators
+and share some properties (see Sec.~\ref{subsubsec:implOperators-advanced} 
+for details).
+The syntax for parameterized classes is a comma separated list of name=value pairs
+enclosed in curly brackets where names refer to annotated member variables of
+the parameterized class.
+This is shown for the class \icode{ExperimentalData}
+which holds an array of experimental data and descriptive text as annotated member fields.
+
+\begin{code}
+java de.unihalle.informatik.Alida.tools.ALDOpRunner NormalizeExperimentalDataOp \
+	experiment='{data=[[1,2,3],[2,2,2],[100,103,110]],description="Demo experiment"}' \
+	result=-
+\end{code}
+yields
+\begin{code}
+result = { normalized = true , 
+          description = "Demo experiment" (Normalized) , 
+          data = [[-1.0,0.0,1.0],[0.0,0.0,0.0],
+                  [-4.333333333333329,-1.3333333333333286,5.666666666666671]] }
+\end{code}
+
+If a class derived from \icode{ExperimentalData} was to be supplied to the operator,
+the curly brackets can be prefixed by a derive class definition starting with a dollar sign
+and ending with a colon as shown for the summarizing operators above.
+
+\paragraph{Advanced examples} ~
+
+\TODO{some more elaborate examples}
+
+The following example shows, that the standard sytnax used  for file I/O
+may be nested
+\begin{code}
+  java de.unihalle.informatik.Alida.tools.ALDOpRunner NormalizeExperimentalDataOp \
+      experiment='{data=@myexp.data,description="Demo experiment"}' \ 
+      result=@normExp.data
+\end{code}
+Here, the parameter \icode{description} of the parametrized class \icode{ExperimentalData} 
+is directly parsed from the string given on the command line, while
+the parameter \icode{data} is parsed from the content of the file \icode{myexp.data}.
+
+Likewise, if an output parameter is a parametrized class, a subset of
+its parameters may be written to file, a part to standard output:
+\begin{code}
+  java de.unihalle.informatik.Alida.tools.ALDOpRunner ALDPCAOp \
+      experiment=@normExp.data result='{data=@pca.data,description=-}'
+\end{code}
+will return
+\begin{code}
+  result = { description="Demo experiment" (PCA) , data written using @pca.data }
+\end{code}
+which indicates that the data of the resulting experiment have been written
+to the file \icode{pca.data} as requested.
+

@@ -1,0 +1,30 @@
+############################################################################################
+#
+# Alida is a Java library for enhanced development of data analysis algorithms.
+# Alida is the acronym for 
+#   "Advanced Library for Integrated Development of Data Analysis Applications"  
+# It provides a framework for developing data analysis algorithms as operators and 
+# inherently adds automatic documentation of analysis processes and automatic generation 
+# of user interfaces to all operators.
+# 
+# For more information please visit 
+# http://www.informatik.uni-halle.de/alida
+# 
+# Please send questions and suggestions to
+# <alida@informatik.uni-halle.de>.
+# 
+# Please report bugs using 
+# http://www2.informatik.uni-halle.de/agprbio/mitobo-bts/bug_report_page.php
+# 
+# Alida is licensed under the GPL.
+# See the files 'LICENSE.txt' and 'gpl-3.0.txt' for more details.
+#
+############################################################################################
+
+==== PREREQUISITES ====
+Alida requires Java 1.6. Note that Java 1.7 is currently not (fully) supported.
+
+==== INSTALLATION INSTRUCTIONS ====
+Installation instructions for Alida can be found online at
+
+  http://www2.informatik.uni-halle.de/agprbio/alida/index.php/Installation

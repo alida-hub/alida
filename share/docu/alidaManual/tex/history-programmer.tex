@@ -1,0 +1,284 @@
+\subsection{The processing history}
+\label{subsec:history}
+
+Data processing pipelines in \alida build on the idea of operators that
+manipulate data objects. According to the specification of \alida operators
+(see Sec.~\ref{subsec:operators-user}), data objects that are to be manipulated by a
+certain operator will have to be stored in member variables of the
+operator annotated as operator parameters with direction '\icode{IN}' or '\icode{INOUT}'.
+Result data objects of an operator will be stored in member
+variables annotated as parameters with direction '\icode{OUT}' from where the user of
+the operator can access the result object for further processing tasks.
+
+Logging the complete processing history of individual objects enforces \alida
+to link data objects used as inputs or resulting as outputs from operator
+invocations directly to the manipulating operators. These links essentially form the
+base to lateron build the history graph representation for each object ever
+seen by any of the \alida operators during a processing chain.
+
+\subsubsection{Basics of the history concept}
+\label{subsubsec:basicshistory}
+The key for logging all operator invocations and the corresponding operator
+configurations during each run of a processing pipeline is \alida's
+port hash. Within this hash all objects participating in the
+processing pipeline are registered. 
+For each object a link to the relevant port of the most recent operator
+invocation, which manipulated or generated the object, is stored
+as a reference to a port object in a weak hash map. This kind of
+hash map only holds \textit{weak} references to objects, which allows the Java virtual machine
+to destroy the objects if they are not referenced somewhere else anymore. The
+port hashmap allows to link input and output ports of operators as well as data
+ports according to the data flow, and to lateron traceback the sequence of
+manipulations for each object manipulated during the course of the processing.
+
+The complete history of a data processing chain is only implicitly represented
+by the links between the different kinds of ports. Each operator invocation is
+represented by an object of type \icode{ALDOpNode} which consequently needs to
+store its current inputs and outputs. The \icode{ALDOpNode} class defines input
+and output ports for input and output objects of an operator. 
+Data ports represent newly created data objects that were not passed to an
+operator as input so far. Such objects appear, e.g., when a new data object is
+allocated to store the results of an operator. Altogether these ports provide
+the functionality to establish connections between new data and inputs and
+outputs of operators. 
+
+The history of a data object is built on
+request traversing the connections that are stored in \alida's port hash. While
+many different objects can be linked to a single processing chain, i.e.~can be
+manipulated by operators during one run of various operators, a single object
+has always its own individual manipulation history. This history is given by a
+certain path within the manipulation graph of the complete processing chain. 
+The starting point of the object's path is always the most recent operator
+invocation which involved manipulations of the object. Consequently, the link to
+the port associated with this operator invocation is the one stored in the port hash.
+Tracing back the history from this port then allows to recover all object
+manipulations and build up the final history graph. Neither the programmer nor
+the user of an operator have to take care of the data stored in the port hash or
+the correct logging of operator invocations. Object registration and the update of
+port links are done automatically each time an object is fed into an operator or
+taken out of an operator as result. In particular, the \icode{runOp()} method of
+\icode{ALDOperator} takes care of all this and handles the history data management
+internally. 
+
+The only situation when programmers get in touch with the processing history and the port
+hash is when the processing history of an object is to be created explicitly,
+e.g., to be saved to disk. While this
+is done automatically for some \alida data types which provide read and write
+methods, there is still the need for programmers to take care of
+this for own data types not providing appropriate read and write routines so far.
+
+\subsubsection{Accessing history data}
+At any point in time during data processing the processing history of
+any object manipulated is implicitly represented in the processing history graph. 
+To access this data and transfer the processing
+history from the implicit to an explicit representation, it is possible to 
+generate this history using the static method
+\icode{createGraphmlDocument()} of the class \icode{ALDProcessingDAG}.
+This creates the processing history associated with the object
+in a graph data structure as generated by
+\href{http://xmlbeans.apache.org/}{\em XmlBeans}
+\footnote{\url{http://xmlbeans.apache.org/}}. It is based on the XML schema definition of
+\href{http://graphml.graphdrawing.org/}{\em GraphML}
+\footnote{\url{http://graphml.graphdrawing.org/}} with \alida
+specific extensions. Although intended for writing and reading the history to or from file (see next paragraph) in the first place, this data structure may also be used to inspect the processing graph as constructed directly from Java.
+
+%Although all data about the processing history is stored in XML format, and
+%although the data could principally be extracted from the database directly as
+%XML tree, \alida currently only supports the saving to file. 
+%The main reason for
+%this is that graph visualization of the processing history is the most intuitive
+%way to explore such kinds of hierarchically structured data. While direct
+%analysis of the XML data might in principal allow for automatic history
+%analysis such a scenario will most probably rarely occur in practice.
+
+%The port hash providing the entry ports into the implicit processing history graph is implemented in
+%class \icode{ALDPortHash}. As this class is completely invisible from outside of the \icode{de.unihalle.informatik.Alida.operator}
+%package 
+To store the processing history in XML format, to be more precisely in
+{\em GraphML} format, the class \icode{ALDOperator}
+provides a static method to save the processing history of
+an object to an XML file:
+\begin{code}
+  public static void writeHistory( Object obj, String filename)
+\end{code}
+These files can then be opened,
+e.g., with \chipory (see Appendix~\ref{app:chipory}), to discover details of the
+analysis process.
+In subsequent processing chains, these histories
+can be 
+read from such a file using the following static method of \icode{ALDOperator}:
+\begin{code}
+  public static void readHistory( Object obj, String filename)
+\end{code}
+This reads the processing history of \icode{obj} from the specified file. If such a history 
+is present, this old history is attached to the newly created data port initially linked to this
+ object.
+Note that invoking the \icode{readHistory()} method on an object will trigger the
+registration of the object in the port hash if this did not happen before.
+
+
+\subsubsection{Different modes of processing graph construction}
+\label{subsec:graphdetails}
+
+There are two mechanisms to influence which operator invocations are to be included
+or excluded from a processing history.
+One is hiding of operator invocations by the user of an operator,
+the other to influence the explicit construction of the processing graph
+to a certain extent by the programmer of an operator.
+We discuss both issues in turn in the remainder of this section.
+
+Hiding of an individual invocation of a single operator is accomplished using
+\icode{runOp(HidingMode.HIDDEN)} as mentioned in Section~\ref{subsec:using}.
+This effectively excludes this invocation from any processing graph
+for an object which indeed depends on this operator invocation.
+Using \icode{runOp(HidingMode.HIDE\_CHILDREN)}  to invoke an operator will
+include this operator in the history, but recursively hide invocations inside
+this operator.
+%%One example where this might be adequate is a tool for interactively
+%%choosing and applying a global threshold on an image.
+%%Here a thresholding operator will be successively invoked
+%%for varying thresholds until the user is satisfied with the result.
+%%If all operator invocations would be documented in the history graph
+%%it would be cluttered with intermediate thresholding operations.
+This only allows to determine the visibility of further operators directly
+invoked by their \icode{runOp()} method but not of operators indirectly invoked.
+In addition, the operator may manipulate the visibility of further operators invoked
+from its \icode{runOp()} method
+using the method \icode{setHidingMode(hidingMode)}.
+The main usage of this method is to set the operators visibility to \icode{HIDE\_CHILDREN}
+to hide recursive calls to further operators from the history.
+This also hides operator calls which are indirectly invoked arbitrary methods used when implementing
+the \icode{operate()} method.
+
+This hiding of operator invocation can be ignored when creating the processing graph
+using the static method \icode{createGraphmlDocument()} of
+class \icode{ALDProcessingDAG} as described in the class documentation,
+e.g., for debugging purposes.
+
+The second mechanism to influence the processing graph is somewhat more involved.
+If the mode \icode{ALDProcessingDAG.HistoryType.COMPLETE} is used when constructing
+the history via \icode{ALDProcessingDAG.createGraphmlDocument()},
+for each operator invocation (i.e. each \icode{ALDOpNode}) included in the
+processing graph recursively all nested invocations of further operators are also
+included into the graph unless the invocation was hidden.
+%%For example, in the processing graph shown in Fig.~\ref{fig:DAG}
+%%including the \icode{ALDOpNode} for \icode{CellSegmentation} will recursively
+%%also include the nested operator invocations of \icode{MTBMedian},
+%%\icode{ActiveContours}, and \icode{DetectNuclei}.
+%This will be the case intended of the object, for which the history is to
+%be generated.
+%%Considering the object returned by \icode{CellSegmentation} via the
+%%output port \icode{resultImg} this is adequate without question,
+%%as is evident from the data flow depicted.
+
+However, 
+%%the situation is different with regard to
+%%the object returned via the output port \icode{medianImg} as
+%%its value does not depend on the manipulations of the
+%%operators \icode{ActiveContours} and \icode{DetectNuclei}.
+sometimes
+only the dependency as implied by the data flow should
+be reflected in the processing graph. This can be accomplished by 
+using the mode \icode{ALDProcessingDAG.HistoryType.DATADEPENDENCIES} on
+generation. 
+%%The history will then only include the invocation of
+%%\icode{MTBMedian}, but not \icode{ActiveContours} and \icode{DetectNuclei}.
+
+%%A typical example where data dependencies are not suited to
+%%yield a sensible history graph is the operator \icode{MTBMedian}.
+%%The data dependencies indicate a dependency of the output object from
+%%an internally created data port, however, do not reflect the dependency of the
+%%input image. This is indeed not possible if \icode{MTBMedian} is to not modify its input data
+%%and, thus, returns the filtered image in a  newly created data object.
+%%This example shows, that the generation of a processing graph will yield
+%%a sensible history in very rare cases using the mode \icode{DATADEPENDENCIES}.
+
+A third mode of generation is available, namely \icode{OPNODETYPE}.
+In this case when constructing the processing graph each \icode{ALDOpNode} decides
+whether all its directly nested operator invocations are to be considered,
+or only those which are connected via data dependencies.
+This decision is made by the programmer and the user of the operator
+by appropriately setting the protected member variable \icode{completeDAG}.
+%%If this variable is set to \icode{false} for the operator
+%%\icode{CellSegmentation} and the history is constructed in mode
+%%\icode{OPNODETYPE}, the history for the object returned via the port
+%%\icode{resultImg} will include all three nested operator invocations. 
+%%Contrary, the history for the object returned via \icode{medianImg} will only
+%%contain the invocation of \icode{MTBMedian}. 
+The same is true, if the history is not constructed for one of these two
+objects, but for another object which
+depends on one of them.
+
+In the abstract class \icode{ALDOperator} the member \icode{completeDAG} is
+set to true, thus, a complete history is the default.
+To be on the safe side the programmer of an operator may choose this
+default mode with the only penalty to potentially generate history graphs
+with non important operator invocations.
+If she or he is certain that the data dependencies of the operator yield
+all (intended) operator invocations setting the variable to false may
+yield leaner processing histories.
+
+\TODO{potentially example graphs for different construction modes}
+
+\subsubsection{Software version handling}
+\label{subsec:version}
+Documenting the processing history for data items requires not only to log all operator invocations and
+their parameter settings, but also to remember the software versions of the operators.
+Consequently, the method \icode{runOp()} of \icode{ALDOperator} retrieves upon invocation the current software version of
+an operator. Indeed, where this version is queried from can be specified by the user. Popular
+options are for example version control system like SVN, CVS or Git, but there are lots of
+alternatives as well. \alida implements a dynamic framework allowing for
+flexible runtime configuration of the software version retrieval procedure which
+is outlined below.
+
+The basis for runtime configuration in \alida is the abstract class \icode{ALDVersionProvider}
+in package \icode{de.unihalle.informatik.Alida.version} which all version provider classes have to extend. 
+\icode{ALDVersionProvider} mainly defines the method 
+
+\begin{code}
+  public String getVersion()
+\end{code}
+
+returning a string object, e.g., containing the software version or another identifier or tag. The concrete implementation of 
+\icode{ALDVersionProvider} to be used for version information retrieval can be specified at
+runtime by JVM properties or environment variables (cf.~Sections
+\ref{subsec:configure-user} and \ref{subsec:configure-programmer}). In
+particular, use the property \icode{alida.versionprovider\_class} to specify the desired class, e.g.:\\[0.1cm]
+\begin{code}
+  -Dalida.versionprovider_class=\
+       de.unihalle.informatik.Alida.version.ALDVersionProviderCmdLine
+\end{code}
+
+
+Of course, the class passed via this option needs to extend \icode{ALDVersionProvider}. If this is
+not the case a warning is printed to standard error and the version provider mechanism
+falls back to the dummy version provider \icode{de.uni\-hal\-le.in\-for\-ma\-tik.Alida.version.ALDVersionProviderDummy}
+shipped with \alida. It always returns the version identifier {\tt 'unknown'}.
+
+Internally, a factory named \icode{ALDVersionProviderFactory} extracts the desired implementation
+from the given environment variable or JVM property and creates corresponding
+objects. Note that by default a dummy version provider is initialized, i.e.~the
+version is always set to {\tt 'unknown'}. As default implementation
+\alida supplies the programmer with class \icode{de.unihalle.informatik.Alida.version.ALDVersionProviderReleaseJar} which 
+returns the \alida release identifier included in the current Alida.jar. 
+
+Alternatively, the class \icode{ALDVersionProviderCmdLine} can be used. 
+It allows reading version data from the environment. The class extracts version data from another JVM property 
+named \icode{version}. Hence, invoking \alida with the following options,\\[0.1cm]
+\begin{code}
+  -Dalida.versionprovider_class=\
+        de.unihalle.informatik.Alida.version.ALDVersionProviderCmdLine -Dversion=4711
+\end{code}
+will insert the version ID \icode{4711} into extracted processing history files.
+
+Since version 2.3 Alida ships with native support for extracting version information from Git repositories. 
+To extract version information from a Git repository use the following provider class:\\[0.1cm]
+\begin{code}
+  -Dalida.versionprovider_class=\
+        de.unihalle.informatik.Alida.version.ALDVersionProviderGit
+\end{code}
+
+To allow the provider to work properly, the environment variable {\tt
+'GIT\_DIR'} needs to be set to the Git repository directory. Note that it needs to point directly to the .git directory, not only to the parent folder.
+If the repository cannot be assessed, Alida looks for a local revision file. If this is neither available, 
+a dummy version string is returned.

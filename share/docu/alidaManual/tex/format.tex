@@ -1,0 +1,78 @@
+% graphics path
+\graphicspath{{../images/}}
+
+% margins
+\evensidemargin = -0.5cm
+\oddsidemargin = 0.0cm
+
+\textheight 23cm 
+\textwidth 16cm
+\topmargin -0.75cm
+\headsep 1cm
+\footskip 1.5cm
+
+%\parindent0pt                          %% no indent of new paragraphs
+\renewcommand{\baselinestretch}{1.2}   %% big lineskips
+
+\frenchspacing                         
+\sloppy                                %% newlines
+
+\setcounter{tocdepth}{3}               %% depth of table of contents
+
+\setlength\parskip{\medskipamount}     %% line skippings
+\parskip1.5ex plus 0.5ex minus 0.5ex   %%
+
+% standard headings and footer
+\renewcommand{\sectionmark}[1]{\markboth{\thesection\ #1}{}}
+\renewcommand{\sectionmark}[1]{\markleft{\thesection\ #1}{}}
+
+\pagestyle{fancy}
+\lhead[\fancyplain{}{}]{\fancyplain{}{}}
+\rhead[\fancyplain{}{}]{\fancyplain{}{}}
+\lhead[]{\rightmark\hfill\thepage}
+\chead{}
+\rhead[\thepage\hfill\leftmark]{}
+
+\lfoot[\fancyplain{\thepage}{\thepage}]{\fancyplain{}{}}
+\cfoot[\fancyplain{}{}]{\fancyplain{\thepage}{\thepage}}
+\rfoot[\fancyplain{}{}]{\fancyplain{}{}}
+
+% -------------------------------------
+% Figures
+\newcommand{\goodgap}{\quad}    % zwischen subfigs
+% 
+\setcounter{topnumber}{3}
+\renewcommand{\topfraction}{1.0}
+\setcounter{bottomnumber}{3}
+\renewcommand{\bottomfraction}{1.0}
+\setcounter{totalnumber}{6}
+\renewcommand{\textfraction}{0.0}
+\renewcommand{\floatpagefraction}{0.8}
+
+
+% small captions
+\makeatletter
+\renewcommand{\fnum@figure}[1]{\small\figurename~\thefigure:}
+\makeatother
+
+\makeatletter
+\renewcommand{\fnum@table}[1]{\small\tablename~\thetable:}
+\makeatother
+
+\hypersetup{
+  a4paper,
+  colorlinks=true,
+%  colorlinks=false,
+  linkbordercolor=1 1 1,
+  urlbordercolor= 1 1 1,
+  citecolor=blue,
+  %citecolor=black,
+  pagecolor=magenta,
+  %pagecolor=black,
+%  urlcolor=blue
+  urlcolor=blue,
+  anchorcolor=blue,
+  filecolor=black,
+  linkcolor=blue
+}
+

@@ -1,0 +1,12 @@
+/export
+/lib
+/depcache
+/docs
+/plugins
+/src-auto
+/target
+.classpath
+.factorypath
+.project
+.settings/
+/bin
