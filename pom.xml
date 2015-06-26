@@ -462,8 +462,8 @@
   </dependencies>
 
   <scm>
-    <connection>scm:git:https://trac.informatik.uni-halle.de/git/alidaGit</connection>
-    <developerConnection>scm:git:https://trac.informatik.uni-halle.de/git/alidaGit</developerConnection>
+    <connection>scm:git:https://github.com/alida-hub/alida.git</connection>
+    <developerConnection>scm:git:https://github.com/alida-hub/alida.git</developerConnection>
   </scm>
 
   <profiles>
