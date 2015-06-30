@@ -355,8 +355,8 @@
     </repository>
     <repository>
       <id>snapshots</id>
-      <name>Archiva Snapshot Repository on 'moon'</name>
-      <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots/</url>
+      <name>Archiva Public Snapshot Repository on 'moon'</name>
+      <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots-pub/</url>
       <layout>default</layout>
     </repository>
     <repository>
@@ -376,8 +376,8 @@
   <pluginRepositories>
     <pluginRepository>
       <id>snapshots</id>
-      <name>Archiva Snapshot Repository on 'moon'</name>
-      <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots/</url>
+      <name>Archiva Public Snapshot Repository on 'moon'</name>
+      <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots-pub/</url>
       <layout>default</layout>
     </pluginRepository>
     <pluginRepository>
@@ -475,8 +475,8 @@
       <distributionManagement>
 	<snapshotRepository>
 	  <id>snapshots</id>
-	  <name>Archiva Snapshot Repository on 'moon'</name>
-	  <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots/</url>
+	  <name>Archiva Public Snapshot Repository on 'moon'</name>
+	  <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots-pub/</url>
 	</snapshotRepository>
 	<repository>
 	  <id>internal</id>
@@ -493,8 +493,8 @@
       <distributionManagement>
 	<snapshotRepository>
 	  <id>snapshots</id>
-	  <name>Archiva Snapshot Repository on 'moon'</name>
-	  <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots/</url>
+	  <name>Archiva Public Snapshot Repository on 'moon'</name>
+	  <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots-pub/</url>
 	</snapshotRepository>
 	<repository>
 	  <id>releases</id>
