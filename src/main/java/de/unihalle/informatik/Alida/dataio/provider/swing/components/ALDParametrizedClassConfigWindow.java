@@ -223,8 +223,8 @@ public class ALDParametrizedClassConfigWindow
 				this.myObj = this.myclass.newInstance();
 				// get initial default values for object
 				this.myObj = 
-						ALDDataIOManagerSwing.getInstance().getInitialGUIValue(
-								null, this.myObj.getClass(), this.myObj, null);
+					ALDDataIOManagerSwing.getInstance().getInitialGUIValue(
+						null, this.myObj.getClass(), this.myObj, this.myDescriptor);
 				// set configuration in GUI
 				this.setValue(this.myObj);
 			} catch (Exception e) {

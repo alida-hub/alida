@@ -119,7 +119,7 @@ public class ALDParametrizedClassDataIOSwing implements ALDDataIOSwing {
  					currentValueClass = currentValue.getClass();
 				Object initialValue = 
 						ALDDataIOManagerSwing.getInstance().getInitialGUIValue(
-								f, currentValueClass, currentValue, null);
+								f, currentValueClass, currentValue, descr);
 				ALDParametrizedClassDataIOHelper.setValue(f, obj, initialValue);
 			} catch (Exception e) {
 				e.printStackTrace();
