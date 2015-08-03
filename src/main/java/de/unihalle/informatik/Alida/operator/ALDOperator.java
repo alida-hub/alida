@@ -283,16 +283,19 @@ public abstract class ALDOperator
 	 * <li> 2 = prevent implicit construction completely </li>
 	 * </dl>
 	 * 
-	 * @param constructionMode the constructionMode to set
+	 * @param cMode the constructionMode to set
 	 */
-	public static void setConstructionMode(int constructionMode)  {
-		switch ( constructionMode) {
+	public static void setConstructionMode(int cMode)  {
+		switch ( cMode) {
 		case 1:
 			ALDOperator.constructionMode = ConstructioMode.CONSIDER_HIDINGMODE;
+			break;
 		case 2:
 			ALDOperator.constructionMode =  ConstructioMode.NO_HISTORY;
+			break;
 		case 0:
 			ALDOperator.constructionMode =  ConstructioMode.COMPLETE_HISTORY;
+			break;
 //		default:
 //			throw new ALDOperatorException(
 //					ALDOperatorException.OperatorExceptionType.UNSPECIFIED_ERROR,
