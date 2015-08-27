@@ -504,8 +504,9 @@ public class ALDOperatorGUIExecutionProxy
 						String pname = paramArray[i];
 						// if the parameter does not exist anymore (e.g., due to 
 						// callback changes), skip it
-						if (   !op.hasParameter(pname)
-						    || !initialOp.hasParameter(pname))
+						if (    initialOp == null
+								|| !op.hasParameter(pname)
+								|| !initialOp.hasParameter(pname))
 							continue;
 						op.setParameter(pname, initialOp.getParameter(pname));
 					}
