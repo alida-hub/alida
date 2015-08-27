@@ -55,7 +55,7 @@ import net.java.sezpoz.Indexable;
  */
 
 
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Indexable(type=ALDOperator.class)
 @Documented

@@ -33,11 +33,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
 import de.unihalle.informatik.Alida.operator.*;
+import de.unihalle.informatik.Alida.annotations.ALDAOperator;
 import de.unihalle.informatik.Alida.annotations.ALDDataIOProvider;
 import de.unihalle.informatik.Alida.annotations.Parameter;
 import de.unihalle.informatik.Alida.annotations.Parameter.ExpertMode;
@@ -47,6 +51,7 @@ import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDOperator
 import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponent;
 import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponentComboBox;
 import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponentComboBoxItem;
+import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponentLabel;
 import de.unihalle.informatik.Alida.dataio.provider.swing.events.ALDSwingValueChangeEvent;
 import de.unihalle.informatik.Alida.dataio.provider.swing.events.ALDSwingValueChangeListener;
 import de.unihalle.informatik.Alida.dataio.provider.swing.events.ALDSwingValueChangeReporter;
@@ -140,6 +145,11 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 
 		// iterate over all parameters and request default values
 		ALDOperator givenOp = (ALDOperator)obj;
+		
+		// check if operator is released for GUI usage
+		if (!this.guiUsageAllowed(givenOp.getClass()))
+			return null;
+
 		Collection<String> params = givenOp.getInInoutNames();
 		// copy the collection, because iterating over a collection
 		// which could be meanwhile modified is a very bad idea!
@@ -226,6 +236,10 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
     	this.subClassHandler = new OperatorHierarchyConfigPanel();
 			return this.subClassHandler.createGUIElement(field, cl, obj, descr);
 		}
+		// check if operator class is released for GUI usage
+		if (!this.guiUsageAllowed(cl))
+			return new ALDSwingComponentLabel(
+				"     Parameter data type is not approved for GUI usage!     ");
     // return configuration button for this class
 	  this.confPanel = new OperatorConfigPanel(cl, descr);
 	  return this.confPanel;
@@ -297,6 +311,36 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 		LinkedList<Class<?>> classes = new LinkedList<Class<?>>();
 		classes.add(ALDOperator.class);
 		return classes;
+	}
+
+	/**
+	 * Internal helper to request GUI-suitability of an operator.
+	 * @param c Operator class to check.
+	 * @return	If true, usage in GUI is granted.
+	 */
+	private boolean guiUsageAllowed(Class<?> c) {
+		try {
+			Annotation anno = c.getAnnotation(ALDAOperator.class);
+			Class<? extends Annotation> type = anno.annotationType();
+			// request the value of the generic execution mode
+			Method m = type.getDeclaredMethod("genericExecutionMode");
+			Object value = m.invoke(anno, (Object[])null);
+			if (   value == ALDAOperator.ExecutionMode.ALL
+					|| value == ALDAOperator.ExecutionMode.SWING) {
+				return true;
+			}
+		}	catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	/**
@@ -1062,6 +1106,34 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 
 				// combo box for possible classes
 				this.availableClasses = ALDClassInfo.lookupExtendingClasses(cl);
+				@SuppressWarnings("rawtypes")
+				LinkedList<Class> filteredClasses =	new LinkedList<Class>();
+ 				// check if all these classes allow for GUI usage, if not, skip
+				for (Class<?> c: this.availableClasses) {
+					try {
+						// get the ALDAOperator annotation and its type
+						Annotation anno = c.getAnnotation(ALDAOperator.class);
+						Class<? extends Annotation> type = anno.annotationType();
+						// request the value of the generic execution mode
+						Method m = type.getDeclaredMethod("genericExecutionMode");
+						Object value = m.invoke(anno, (Object[])null);
+						if (   value == ALDAOperator.ExecutionMode.ALL
+								|| value == ALDAOperator.ExecutionMode.SWING)
+							filteredClasses.add(c);
+					}	catch (NoSuchMethodException e) {
+						e.printStackTrace();
+					} catch (SecurityException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					}
+				}
+				// replace old set with new filtered set of classes 
+				this.availableClasses = filteredClasses;
 				Vector<ALDSwingComponentComboBoxItem> comboFields = 
 						new Vector<ALDSwingComponentComboBoxItem>();
 				for (Class<?> c : this.availableClasses) {
