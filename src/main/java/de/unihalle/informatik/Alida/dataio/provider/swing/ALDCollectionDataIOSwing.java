@@ -323,6 +323,11 @@ public class ALDCollectionDataIOSwing
 		private final int frameWidth = 400;
 		
 		/**
+		 * Minimal height of the configuration window.
+		 */
+		private final int frameHeightMin = 300;
+		
+		/**
 		 * Main panel of main frame.
 		 */
 		private JPanel mainPanel = null;
@@ -417,7 +422,9 @@ public class ALDCollectionDataIOSwing
 			String type = this.elemClass.getSimpleName();
 			this.window.setTitle("Collection <" +title+ ">, "
 					+ "element type: <" + type + ">");
-			this.window.setSize(this.frameWidth,300);
+			this.window.setSize(this.frameWidth, this.frameHeightMin);
+			this.window.pack();
+			
 			this.elemComps.clear();
 			this.elemCounter = 0;
 			try {
@@ -598,7 +605,7 @@ public class ALDCollectionDataIOSwing
 
 			// editable list of elements
 			JPanel elementPanel = new JPanel(); 
-			GridLayout glep = new GridLayout(this.elemCounter,1);
+			GridLayout glep = new GridLayout(this.elemCounter, 1, 5, 1);
 			elementPanel.setLayout(glep);
 			for (ALDSwingComponent c: this.elemComps) {
 				elementPanel.add(c.getJComponent());
@@ -637,7 +644,10 @@ public class ALDCollectionDataIOSwing
 			this.window.add(this.mainPanel);
 			int maxWinHeight = 
 				(60 + this.elemCounter*25 > 500) ? 500 : 60 + this.elemCounter*25;
+			if (maxWinHeight < this.frameHeightMin)
+				maxWinHeight = this.frameHeightMin;
 			this.window.setSize(this.frameWidth, maxWinHeight);
+			this.window.pack();
 			// Attention! Never remove this, it is essential to update the window!
 			this.window.validate();
 			// trigger event
