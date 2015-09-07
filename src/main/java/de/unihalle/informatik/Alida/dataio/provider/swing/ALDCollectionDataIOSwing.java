@@ -40,6 +40,7 @@ import de.unihalle.informatik.Alida.operator.ALDParameterDescriptor;
 import javax.swing.*;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -313,24 +314,29 @@ public class ALDCollectionDataIOSwing
 		implements ActionListener, ALDSwingValueChangeListener {
 
 		/**
+		 * Fixed minimal width of window.
+		 */
+		private static final int frameWidthMin = 500;
+		
+		/**
+		 * Fixed minimal height of the configuration window.
+		 */
+		private static final int frameHeightMin = 300;
+		
+		/**
 		 * Main frame.
 		 */
 		private JFrame window;
 
 		/**
-		 * Fixed width of window.
-		 */
-		private final int frameWidth = 400;
-		
-		/**
-		 * Minimal height of the configuration window.
-		 */
-		private final int frameHeightMin = 300;
-		
-		/**
 		 * Main panel of main frame.
 		 */
 		private JPanel mainPanel = null;
+		
+		/**
+		 * Scroller element for collection elements.
+		 */
+		private JScrollPane scroller = null;
 		
 		/**
 		 * Button to add an element.
@@ -417,12 +423,15 @@ public class ALDCollectionDataIOSwing
 
 			// initialize the window
 			this.window = new JFrame();
+			this.window.setResizable(true);
 			String title = "unknown";
 			if (descr != null) title = descr.getLabel();
 			String type = this.elemClass.getSimpleName();
 			this.window.setTitle("Collection <" +title+ ">, "
 					+ "element type: <" + type + ">");
-			this.window.setSize(this.frameWidth, this.frameHeightMin);
+			this.window.setSize(frameWidthMin, frameHeightMin);
+			this.window.setPreferredSize(
+					new Dimension(frameWidthMin, frameHeightMin));
 			this.window.pack();
 			
 			this.elemComps.clear();
@@ -595,14 +604,48 @@ public class ALDCollectionDataIOSwing
 		 */
 		private void updateWindow() {
 			
-			// remove the old main panel
-			if (this.mainPanel != null)
-				this.window.remove(this.mainPanel);
+			int wWidth = this.window.getWidth() < frameWidthMin ? 
+					frameWidthMin : this.window.getWidth();
+			int wHeight = this.window.getHeight() < frameHeightMin ?
+					frameHeightMin : this.window.getHeight();
 
-			this.mainPanel = new JPanel();
-			BorderLayout bl = new BorderLayout();
-			this.mainPanel.setLayout(bl);
+			// on the first call, init the main panel
+			if (this.mainPanel == null) {
+				this.mainPanel = new JPanel();
+				BorderLayout bl = new BorderLayout();
+				this.mainPanel.setLayout(bl);
 
+				// add buttons
+				GridLayout gl = new GridLayout(1,5);
+				JPanel tmpPanel = new JPanel();
+				tmpPanel.setLayout(gl);
+				this.addButton = new JButton(" + ");
+				this.addButton.setActionCommand("addElement");
+				this.addButton.addActionListener(this);
+				this.delButton = new JButton(" - ");
+				this.delButton.setActionCommand("delElement");
+				this.delButton.addActionListener(this);
+				this.upButton = new JButton("Up");
+				this.upButton.setActionCommand("upElement");
+				this.upButton.addActionListener(this);
+				this.downButton = new JButton("Down");
+				this.downButton.setActionCommand("downElement");
+				this.downButton.addActionListener(this);
+				this.closeButton = new JButton("Close");
+				this.closeButton.setActionCommand("close");
+				this.closeButton.addActionListener(this);
+				tmpPanel.add(this.addButton);
+				tmpPanel.add(this.delButton);
+				tmpPanel.add(this.upButton);
+				tmpPanel.add(this.downButton);
+				tmpPanel.add(this.closeButton);
+				this.mainPanel.add(tmpPanel,BorderLayout.NORTH);
+				this.window.add(this.mainPanel);
+			}
+			else {
+				this.mainPanel.remove(this.scroller);
+			}
+			
 			// editable list of elements
 			JPanel elementPanel = new JPanel(); 
 			GridLayout glep = new GridLayout(this.elemCounter, 1, 5, 1);
@@ -610,49 +653,18 @@ public class ALDCollectionDataIOSwing
 			for (ALDSwingComponent c: this.elemComps) {
 				elementPanel.add(c.getJComponent());
 			}
+			this.scroller = new JScrollPane(elementPanel);  
+			this.mainPanel.add(this.scroller, BorderLayout.CENTER);
 			
-			// add buttons
-			GridLayout gl = new GridLayout(1,5);
-			JPanel tmpPanel = new JPanel();
-			tmpPanel.setLayout(gl);
-			this.addButton = new JButton(" + ");
-			this.addButton.setActionCommand("addElement");
-			this.addButton.addActionListener(this);
-			this.delButton = new JButton(" - ");
-			this.delButton.setActionCommand("delElement");
-			this.delButton.addActionListener(this);
-			this.upButton = new JButton("Up");
-			this.upButton.setActionCommand("upElement");
-			this.upButton.addActionListener(this);
-			this.downButton = new JButton("Down");
-			this.downButton.setActionCommand("downElement");
-			this.downButton.addActionListener(this);
-			this.closeButton = new JButton("Close");
-			this.closeButton.setActionCommand("close");
-			this.closeButton.addActionListener(this);
-			tmpPanel.add(this.addButton);
-			tmpPanel.add(this.delButton);
-			tmpPanel.add(this.upButton);
-			tmpPanel.add(this.downButton);
-			tmpPanel.add(this.closeButton);
-			
-			this.mainPanel.add(tmpPanel,BorderLayout.NORTH);
-			JScrollPane scroller = new JScrollPane(elementPanel);  
-			this.mainPanel.add(scroller,BorderLayout.CENTER);
-			
-			// add panel to window
-			this.window.add(this.mainPanel);
-			int maxWinHeight = 
-				(60 + this.elemCounter*25 > 500) ? 500 : 60 + this.elemCounter*25;
-			if (maxWinHeight < this.frameHeightMin)
-				maxWinHeight = this.frameHeightMin;
-			this.window.setSize(this.frameWidth, maxWinHeight);
-			this.window.pack();
-			// Attention! Never remove this, it is essential to update the window!
+			// scale window to a proper size
 			this.window.validate();
-			// trigger event
-//			this.handleValueChangeEvent(
-//				new ALDSwingValueChangeEvent(this, this.paramDescriptor));
+			int pWidth = 
+					this.window.getWidth() < wWidth ? wWidth : this.window.getWidth(); 
+			int pHeight =
+					this.window.getHeight() < wHeight ? wHeight : this.window.getHeight(); 
+			this.window.setPreferredSize(new Dimension(pWidth, pHeight));
+			this.window.pack();
+			this.window.repaint();
 		}
 		
 		@Override
