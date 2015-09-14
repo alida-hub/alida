@@ -129,28 +129,54 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 	
 	@Override
   public Object getInitialGUIValue(Field field, Class<?> cl, Object obj, 
-  		ALDParameterDescriptor descr) throws ALDDataIOProviderException {
-		if (obj == null)
-			return null;
-
-		if (Modifier.isAbstract(cl.getModifiers()))
-		    return null;
-
-		if (!(obj instanceof ALDOperator)) {
+  		ALDParameterDescriptor descr) throws ALDDataIOProviderException {		
+		
+		// check if type of provided object is consistent with provider type
+		if (obj != null && !(obj instanceof ALDOperator)) {
 			throw new ALDDataIOProviderException(
 					ALDDataIOProviderExceptionType.OBJECT_TYPE_ERROR,
 					"[" + this.getClass().getName() + "]" 
 						+ ": got invalid object type in getInitialGUIValue()!");
 		}
 
-		// iterate over all parameters and request default values
-		ALDOperator givenOp = (ALDOperator)obj;
+		// figure out which class to use for initial value
+		Class<?> valueClass = cl;
+		ALDOperator givenOp;
 		
+		// if object is null we have to initialize a new object, however,  
+		// that only works if requested class is not abstract
+		if (obj == null) {
+			if (Modifier.isAbstract(cl.getModifiers()))
+				return null;
+			valueClass = cl;
+			givenOp = null;
+		}
+		else {
+			valueClass = obj.getClass();
+			givenOp = (ALDOperator)obj;
+		}
+
+		// initialize initial object
+		ALDOperator initialOp;
+    try {
+    	initialOp = (ALDOperator)valueClass.newInstance();
+    	// if no operator was given, use the one created
+    	if (givenOp == null)
+    		givenOp = initialOp;
+    } catch (Exception e) {
+			throw new ALDDataIOProviderException(
+					ALDDataIOProviderExceptionType.UNSPECIFIED_ERROR,
+					"[" + this.getClass().getName() + "]" 
+							+ ": could not instantiate initial operator "
+							+ "of class <" + cl + ">...");
+    }
+    
 		// check if operator is released for GUI usage
-		if (!this.guiUsageAllowed(givenOp.getClass()))
+		if (!this.guiUsageAllowed(initialOp.getClass()))
 			return null;
 
-		Collection<String> params = givenOp.getInInoutNames();
+		// iterate over all parameters and request default values
+		Collection<String> params = initialOp.getInInoutNames();
 		// copy the collection, because iterating over a collection
 		// which could be meanwhile modified is a very bad idea!
 		String[] paramArray = new String[params.size()];
@@ -159,16 +185,6 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 			paramArray[i] = s;
 			++i;
 		}
-		ALDOperator initialOp;
-    try {
-	    initialOp = (ALDOperator)cl.newInstance();
-    } catch (Exception e) {
-			throw new ALDDataIOProviderException(
-					ALDDataIOProviderExceptionType.UNSPECIFIED_ERROR,
-					"[" + this.getClass().getName() + "]" 
-							+ ": could not instantiate initial operator "
-							+ "of class <" + cl + ">...");
-    }
 
 		ALDParameterDescriptor paramDescr = null; 
 		Class<?> paramClass = null;
@@ -179,7 +195,7 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 			if (!initialOp.hasParameter(pname))
 				continue;
 			try {
-				paramDescr = givenOp.getParameterDescriptor(pname);
+				paramDescr = initialOp.getParameterDescriptor(pname);
 				paramClass = paramDescr.getMyclass();
 				Object initialValue = 
 						ALDDataIOManagerSwing.getInstance().getInitialGUIValue(
@@ -202,6 +218,27 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 	@Override
   public ALDSwingComponent createGUIElement(
   		Field field, Class<?> cl, Object obj, ALDParameterDescriptor descr) {
+		return this.createGUIElement(field, cl, obj, descr, true);
+	}
+	
+  /**
+   * Method to actually create the GUI element for the parameter requested.
+   * <p>
+   * Most important here is the boolean to enable or disable checks of 
+   * derived classes. Particularly nested usage of operators or, e.g., using 
+   * operators as elements of collections requires to handle the existence
+   * of derived classes differently.  
+   * 
+   * @param field									Field of corresponding parameter.
+   * @param cl										Class of corresponding parameter.
+   * @param obj										Initial parameter value.
+   * @param descr									Corresponding parameter descriptor.
+   * @param checkDerivedClasses		If true, derived classes are checked.
+   * @return GUI element for configuration of the corresponding parameter.
+   */
+  public ALDSwingComponent createGUIElement(
+  		Field field, Class<?> cl, Object obj, ALDParameterDescriptor descr,
+  		boolean checkDerivedClasses) {
 		this.topLevelCall = false;
 		try {
 			if (obj != null) {
@@ -229,12 +266,14 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
     	this.subClassHandler = new OperatorHierarchyConfigPanel();
     	return this.subClassHandler.createGUIElement(field, cl, obj, descr);
     }
-    // check if the operator has derived classes
-		@SuppressWarnings("rawtypes")
-    Collection<Class> extClasses = ALDClassInfo.lookupExtendingClasses(cl);
-		if (extClasses.size() > 1) { // class itself is also found...
-    	this.subClassHandler = new OperatorHierarchyConfigPanel();
-			return this.subClassHandler.createGUIElement(field, cl, obj, descr);
+    // check if the operator has derived classes (if requested)
+		if (checkDerivedClasses) {
+			@SuppressWarnings("rawtypes")
+			Collection<Class> extClasses = ALDClassInfo.lookupExtendingClasses(cl);
+			if (extClasses.size() > 1) { // class itself is also found...
+				this.subClassHandler = new OperatorHierarchyConfigPanel();
+				return this.subClassHandler.createGUIElement(field, cl, obj, descr);
+			}
 		}
 		// check if operator class is released for GUI usage
 		if (!this.guiUsageAllowed(cl))
@@ -1110,6 +1149,9 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 				LinkedList<Class> filteredClasses =	new LinkedList<Class>();
  				// check if all these classes allow for GUI usage, if not, skip
 				for (Class<?> c: this.availableClasses) {
+					// skip abstract classes
+					if (Modifier.isAbstract(c.getModifiers()))
+						continue;
 					try {
 						// get the ALDAOperator annotation and its type
 						Annotation anno = c.getAnnotation(ALDAOperator.class);
@@ -1132,6 +1174,12 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 						e.printStackTrace();
 					}
 				}
+				
+				// make sure that class itself is also included if not abstract
+				if (   !Modifier.isAbstract(cl.getModifiers())
+						&& !filteredClasses.contains(cl))
+					filteredClasses.add(cl);
+				
 				// replace old set with new filtered set of classes 
 				this.availableClasses = filteredClasses;
 				Vector<ALDSwingComponentComboBoxItem> comboFields = 
@@ -1170,7 +1218,7 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
           }
 					this.configWins.put(c, 
 							(OperatorConfigPanel)new ALDOperatorDataIOSwing().
-									createGUIElement(field, c, winOp, descr));
+									createGUIElement(field, c, winOp, descr, false));
 					this.configWins.get(c).addValueChangeEventListener(this);
 				}
 				// sort (short) class names lexicographically
