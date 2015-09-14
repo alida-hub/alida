@@ -268,9 +268,13 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
     }
     // check if the operator has derived classes (if requested)
 		if (checkDerivedClasses) {
+			
 			@SuppressWarnings("rawtypes")
 			Collection<Class> extClasses = ALDClassInfo.lookupExtendingClasses(cl);
-			if (extClasses.size() > 1) { // class itself is also found...
+			
+			// class itself may also be found...
+			if (   ( extClasses.contains(cl) && extClasses.size() > 1)
+					|| (!extClasses.contains(cl) && extClasses.size() >=1)) {
 				this.subClassHandler = new OperatorHierarchyConfigPanel();
 				return this.subClassHandler.createGUIElement(field, cl, obj, descr);
 			}
@@ -1148,7 +1152,7 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 				@SuppressWarnings("rawtypes")
 				LinkedList<Class> filteredClasses =	new LinkedList<Class>();
  				// check if all these classes allow for GUI usage, if not, skip
-				for (Class<?> c: this.availableClasses) {
+				for (Class<?> c: this.availableClasses) {					
 					// skip abstract classes
 					if (Modifier.isAbstract(c.getModifiers()))
 						continue;
