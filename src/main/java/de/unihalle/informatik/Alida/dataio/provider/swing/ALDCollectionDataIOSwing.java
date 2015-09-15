@@ -188,7 +188,6 @@ public class ALDCollectionDataIOSwing
 		@Override
     public void disableComponent() {
 			this.confWin.disableComponent();
-			this.confButton.setEnabled(false);
     }
 
 		@Override
@@ -362,6 +361,11 @@ public class ALDCollectionDataIOSwing
 		 * Button to close the configuration window.
 		 */
 		private JButton closeButton;
+		
+		/**
+		 * Flag to remember if window is enabled or disabled.
+		 */
+		private boolean isEnabled;
 
 		/**
 		 * Stores the index of last element added (may vary due to element swaps).
@@ -450,13 +454,14 @@ public class ALDCollectionDataIOSwing
 					}
 				}
 			} catch (ALDDataIOException e) {
-			Object[] options = { "OK" };
-			JOptionPane.showOptionDialog(null, 
+				Object[] options = { "OK" };
+				JOptionPane.showOptionDialog(null, 
 					"Initializing collection view failed! Element invalid because...\n"+
-					e.getCommentString(), 
-					"Warning",JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,
-					null, options, options[0]);
+							e.getCommentString(), 
+							"Warning",JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,
+							null, options, options[0]);
 			}
+			this.isEnabled = true;
 		}
 		
 		/**
@@ -559,6 +564,7 @@ public class ALDCollectionDataIOSwing
 		 * Deactivates the configuration window to prohibit value changes.
 		 */
 		public void disableComponent() {
+			this.isEnabled = false;
 			for (ALDSwingComponent comp: this.elemComps)
 				comp.disableComponent();
 			if (this.downButton != null)
@@ -575,6 +581,7 @@ public class ALDCollectionDataIOSwing
 		 * Reactivates the configuration window to allow for value changes.
 		 */
 		public void enableComponent() {
+			this.isEnabled = true;
 			for (ALDSwingComponent comp: this.elemComps)
 				comp.enableComponent();
 			if (this.downButton != null)
@@ -675,6 +682,9 @@ public class ALDCollectionDataIOSwing
 				this.window.setVisible(true);
 			}
 			else if (cmd.equals("addElement")) {
+				// if window is disabled, ignore clicks
+				if (!this.isEnabled)
+					return;
 				try {
 					ALDSwingComponent comp = 
 							ALDDataIOManagerSwing.getInstance().createGUIElement(
@@ -694,6 +704,9 @@ public class ALDCollectionDataIOSwing
         }
 			}
 			else if (cmd.equals("delElement")) {
+				// if window is disabled, ignore clicks
+				if (!this.isEnabled)
+					return;
 				if (!(this.elemCounter==0)) {
 					// remove last element, dispose all its resources
 					ALDSwingComponent obsoleteComp = this.elemComps.removeLast();
@@ -704,6 +717,9 @@ public class ALDCollectionDataIOSwing
 			}
 			// move the recently added element one position up
 			else if (cmd.equals("downElement")) {
+				// if window is disabled, ignore clicks
+				if (!this.isEnabled)
+					return;
 				// check if element has meanwhile been deleted,
 				// if so, just ignore the request
 				if (this.lastAdded >= this.elemComps.size() - 1)
@@ -716,6 +732,9 @@ public class ALDCollectionDataIOSwing
 				this.updateWindow();
 			}
 			else if (cmd.equals("upElement")) {
+				// if window is disabled, ignore clicks
+				if (!this.isEnabled)
+					return;
 				if (this.lastAdded == 0)
 					return;
 				// check if element has meanwhile been deleted,
