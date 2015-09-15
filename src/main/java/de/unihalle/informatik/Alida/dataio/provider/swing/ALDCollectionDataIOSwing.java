@@ -242,7 +242,7 @@ public class ALDCollectionDataIOSwing
 			if (cmd.equals("showButtonPressed")) {
 				Collection<?> c = (Collection<?>)this.data;
 				JFrame win = new JFrame();
-				win.setSize(375, 25 * c.size());
+//				win.setSize(375, 25 * c.size());
 				JPanel winPanel = new JPanel();
 				GridLayout grl =  new GridLayout(c.size(),1);
 				winPanel.setLayout(grl);
@@ -297,9 +297,11 @@ public class ALDCollectionDataIOSwing
 				}
 				win.add(winPanel);
 				if (this.descriptor != null)
-					win.setTitle("Contents of collection linked to <" 
+					win.setTitle("Contents of collection <" 
 							+ this.descriptor.getLabel() + ">");
 				win.setVisible(true);
+				win.validate();
+				win.pack();
 			}
     }
 	}	

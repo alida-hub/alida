@@ -23,14 +23,6 @@
  *
  */
 
-/*
- * Most recent change(s):
- *
- * $Rev$
- * $Date$
- * $Author$
- *
- */
 package de.unihalle.informatik.Alida.demo;
 
 import java.util.Vector;
