@@ -364,6 +364,9 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 	private boolean guiUsageAllowed(Class<?> c) {
 		try {
 			Annotation anno = c.getAnnotation(ALDAOperator.class);
+			// check if the class is annotated, if not, usage is not possible
+			if (anno == null)
+				return false;
 			Class<? extends Annotation> type = anno.annotationType();
 			// request the value of the generic execution mode
 			Method m = type.getDeclaredMethod("genericExecutionMode");
