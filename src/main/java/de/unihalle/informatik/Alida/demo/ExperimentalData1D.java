@@ -50,6 +50,10 @@ import de.unihalle.informatik.Alida.operator.ALDData;
  *
  */
 //SNIPPETCODE:Begin
+/**
+ * @author posch
+ *
+ */
 @ALDParametrizedClass
 public class ExperimentalData1D extends ALDData {
 	
