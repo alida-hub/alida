@@ -51,7 +51,7 @@ import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
  */
 @ALDDerivedClass
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
-              level=ALDAOperator.Level.STANDARD)
+              level=ALDAOperator.Level.APPLICATION)
 public class SmoothData1D extends ALDOperator {
 
 	public enum SmoothingMethod {
@@ -243,6 +243,7 @@ public class SmoothData1D extends ALDOperator {
 			for ( int l = i - lowerHalfWidth ; l < data.length; l++) {
 				//System.out.println(l- (i-lowerHalfWidth));
 				sum += data[l] * kernel[l- (i-lowerHalfWidth)];
+				sumWeights += kernel[l- (i-lowerHalfWidth)];
 			}
 			smoothedData[i] = sum/sumWeights;
 		}
@@ -256,32 +257,102 @@ public class SmoothData1D extends ALDOperator {
 	 */
 	@SuppressWarnings("unused")
 	private void smoothingMethodChanged() throws ALDOperatorException {
-		try {
-			if (this.smoothingMethod == SmoothingMethod.GAUSSIAN) {
-				if (this.hasParameter("width")) {
-					this.removeParameter("width");
-				}
+//		try {
+//			if (this.smoothingMethod == SmoothingMethod.GAUSSIAN) {
+//				if (this.hasParameter("width")) {
+//					this.removeParameter("width");
+//				}
+//
+//				if (!this.hasParameter("sigma")) {
+//					this.addParameter("sigma");
+//				}
+//			} else {
+//				if (this.hasParameter("sigma")) {
+//					this.removeParameter("sigma");
+//				}
+//
+//				if (!this.hasParameter("width")) {
+//					this.addParameter("width");
+//				}
+//			}
+//
+//		} catch (SecurityException e) {
+//			throw new ALDOperatorException(OperatorExceptionType.OPERATE_FAILED,
+//					"[SmoothData1D::smoothingMethodChanged()] failedl!");
+//		} catch (ALDOperatorException e) {
+//			throw new ALDOperatorException(OperatorExceptionType.OPERATE_FAILED,
+//					"[SmoothData1D::smoothingMethodChanged()] failedl!");
+//		}
+	}
 
-				if (!this.hasParameter("sigma")) {
-					this.addParameter("sigma");
-				}
-			} else {
-				if (this.hasParameter("sigma")) {
-					this.removeParameter("sigma");
-				}
+	/**
+	 * @return the experiment
+	 */
+	public ExperimentalData1D getExperiment() {
+		return experiment;
+	}
 
-				if (!this.hasParameter("width")) {
-					this.addParameter("width");
-				}
-			}
+	/**
+	 * @param experiment the experiment to set
+	 */
+	public void setExperiment(ExperimentalData1D experiment) {
+		this.experiment = experiment;
+	}
 
-		} catch (SecurityException e) {
-			throw new ALDOperatorException(OperatorExceptionType.OPERATE_FAILED,
-					"[SmoothData1D::smoothingMethodChanged()] failedl!");
-		} catch (ALDOperatorException e) {
-			throw new ALDOperatorException(OperatorExceptionType.OPERATE_FAILED,
-					"[SmoothData1D::smoothingMethodChanged()] failedl!");
-		}
+	/**
+	 * @return the smoothingMethod
+	 */
+	public SmoothingMethod getSmoothingMethod() {
+		return smoothingMethod;
+	}
+
+	/**
+	 * @param smoothingMethod the smoothingMethod to set
+	 */
+	public void setSmoothingMethod(SmoothingMethod smoothingMethod) {
+		this.smoothingMethod = smoothingMethod;
+	}
+
+	/**
+	 * @return the width
+	 */
+	public Integer getWidth() {
+		return width;
+	}
+
+	/**
+	 * @param width the width to set
+	 */
+	public void setWidth(Integer width) {
+		this.width = width;
+	}
+
+	/**
+	 * @return the sigma
+	 */
+	public Float getSigma() {
+		return sigma;
+	}
+
+	/**
+	 * @param sigma the sigma to set
+	 */
+	public void setSigma(Float sigma) {
+		this.sigma = sigma;
+	}
+
+	/**
+	 * @return the smoothedExperiment
+	 */
+	public ExperimentalData1D getSmoothedExperiment() {
+		return smoothedExperiment;
+	}
+
+	/**
+	 * @param smoothedExperiment the smoothedExperiment to set
+	 */
+	public void setSmoothedExperiment(ExperimentalData1D smoothedExperiment) {
+		this.smoothedExperiment = smoothedExperiment;
 	}
 
 

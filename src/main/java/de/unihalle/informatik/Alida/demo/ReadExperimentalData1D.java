@@ -54,7 +54,7 @@ import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
  */
 @ALDDerivedClass
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
-              level=ALDAOperator.Level.STANDARD)
+              level=ALDAOperator.Level.APPLICATION)
 public class ReadExperimentalData1D extends ALDOperator {
 	/** Filename
 	 */
