@@ -72,13 +72,13 @@ public class DetectLocalExtrema1D extends ALDOperator {
 			dataIOOrder = 2)
 	ExtremaType extremaType = ExtremaType.MINIMUM;
 
-	/** Positions, i.e. indices, of local extrema detected
+	/** Local extrema detected
 	 */
-	@Parameter( label= "Positions of Extrema",  
+	@Parameter( label= "Extrema",  
 			direction = Parameter.Direction.OUT, 
-			description = "Positions of local Extrema",
+			description = "Local Extrema",
 			dataIOOrder = 1)
-	protected Integer[] extremaPositions;
+	protected Extrema1D extrema;
 
 	/**
 	 * Default constructor.
@@ -97,7 +97,7 @@ public class DetectLocalExtrema1D extends ALDOperator {
 	
 	@Override
 	protected void operate() {
-		LinkedList<Integer> extrema = new LinkedList<Integer>();
+		extrema = new Extrema1D();
 		
 		Double[] data = experiment.getData();
 		Comparator<Double> comparator;
@@ -128,7 +128,7 @@ public class DetectLocalExtrema1D extends ALDOperator {
 						state = State.EQUAL;
 						numEqualStates = 1;
 					} else {
-						extrema.add( i-1);
+						extrema.addPoint( new Double(i-1), data[i-1]);
 						state = State.DEPARTING;
 					}
 					break;
@@ -140,7 +140,7 @@ public class DetectLocalExtrema1D extends ALDOperator {
 						state = State.EQUAL;
 						numEqualStates++;
 					} else {
-						extrema.add( i-1-numEqualStates/2);
+						extrema.addPoint( new Double(i-1-numEqualStates/2), data[i-1-numEqualStates/2]);
 						state = State.DEPARTING;
 					}
 					break;
@@ -157,7 +157,6 @@ public class DetectLocalExtrema1D extends ALDOperator {
 				}
 			}
 		}
-		extremaPositions = extrema.toArray(new Integer[0]);
 	}
 
 	/**
@@ -191,15 +190,8 @@ public class DetectLocalExtrema1D extends ALDOperator {
 	/**
 	 * @return the extremaPositions
 	 */
-	public Integer[] getExtremaPositions() {
-		return extremaPositions;
-	}
-
-	/**
-	 * @param extremaPositions the extremaPositions to set
-	 */
-	public void setExtremaPositions(Integer[] extremaPositions) {
-		this.extremaPositions = extremaPositions;
+	public Extrema1D getExtrema() {
+		return extrema;
 	}
 
 	/**

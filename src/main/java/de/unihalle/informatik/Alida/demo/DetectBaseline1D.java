@@ -64,9 +64,6 @@ public class DetectBaseline1D extends ALDOperator {
 			dataIOOrder = 1)
 	protected ExperimentalData1D experiment;
 	
-	
-
-	
 	/**
 	 * The baseline detected
 	 */
@@ -90,15 +87,15 @@ public class DetectBaseline1D extends ALDOperator {
 		detectExtremaOp.setExperiment( experiment);
 		detectExtremaOp.setExtremaType(ExtremaType.MINIMUM);
 		detectExtremaOp.runOp();
-		Integer[] extrema = detectExtremaOp.getExtremaPositions();
+		Extrema1D minima = detectExtremaOp.getExtrema();
 		
-		if ( extrema.length >= 2) {
-			double[] x = new double[extrema.length];
-			double[] y = new double[extrema.length];
+		if ( minima.size() >= 2) {
+			double[] x = new double[minima.size()];
+			double[] y = new double[minima.size()];
 			
-			for ( int i=0 ; i < extrema.length ; i++) {
-				x[i] = extrema[i];
-				y[i] = experiment.getData()[extrema[i]];
+			for ( int i=0 ; i < minima.size() ; i++) {
+				x[i] = minima.getX(i);
+				y[i] = minima.getY(i);
 			}
 
 			baseline = fit( x, y);
@@ -140,5 +137,4 @@ public class DetectBaseline1D extends ALDOperator {
 		double slope = xybar / xxbar;
 		return new Baseline1D( slope, ybar - slope * xbar); 
 	}
-	
 }

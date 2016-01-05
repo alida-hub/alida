@@ -34,13 +34,14 @@
 
 package de.unihalle.informatik.Alida.demo;
 
+import java.util.ArrayList;
+
 import de.unihalle.informatik.Alida.annotations.ALDClassParameter;
 import de.unihalle.informatik.Alida.annotations.ALDParametrizedClass;
 import de.unihalle.informatik.Alida.operator.ALDData;
 
 /**
- * This class holds a baseline for 1D data which essentially is a
- * straight line as a 1D function.
+ * This class holds a set of extrema with x and y coordinate of a 1D function.
  * <p>
  * Currently no unit of measurement are supported.
  *  
@@ -53,52 +54,75 @@ import de.unihalle.informatik.Alida.operator.ALDData;
  *
  */
 @ALDParametrizedClass
-public class Baseline1D extends ALDData {
+public class Extrema1D extends ALDData {
 	
-	/** slope
+	/** x coordinates
 	 */
-    @ALDClassParameter(label="slope",
+    @ALDClassParameter(label="x",
     		dataIOOrder = 1)
-    private Double slope;
-
-    /** intercept
+    private ArrayList<Double> x;
+    /** y coordiates
      */
-    @ALDClassParameter(label="intercept",
+    @ALDClassParameter(label="y",
     		dataIOOrder = 2)
-    private Double intercept;
+    private ArrayList<Double> y;
 
     /** 
      * Standard constructor is required
       */
-    public Baseline1D() {
+    public Extrema1D() {
+    	x = new ArrayList<Double>();
+    	y = new ArrayList<Double>();
     }
 
-    public Baseline1D( Double slope, Double intercept) {    
-        this.slope = slope;
-        this.intercept = intercept;
+    /** Add an extremal point {@code (x,y)}
+     * 
+     * @param x
+     * @param y
+     */
+    public void addPoint( Double x, Double y) {
+    	this.x.add(x);
+    	this.y.add(y);
+    }
+    
+    /** Return the x coordinate of the i-th extremal point
+     * 
+     * @param i
+     * @return
+     */
+    public Double getX( int i) {
+    	assert i>= 0 && i < x.size();
+    	return x.get(i);
+    }
+    
+    /** Return the y coordinate of the i-th extremal point
+     * 
+     * @param i
+     * @return
+     */
+    public Double getY( int i) {
+    	assert i>= 0 && i < y.size();
+    	return y.get(i);
+    }
+    
+    /** Return the number of extremal points
+     * @return
+     */
+    public int size() {
+    	return x.size();
     }
 
 	/**
-	 * @return the slope
+	 * @return the x
 	 */
-	public Double getSlope() {
-		return slope;
+	public ArrayList<Double> getX() {
+		return x;
 	}
 
 	/**
-	 * @return the intercept
+	 * @return the y
 	 */
-	public Double getIntercept() {
-		return intercept;
-	}
-	
-	/** Return the function value of this baseline for 
-	 * coordinate {@code x}.
-	 * 
-	 * @param x
-	 * @return
-	 */
-	public Double getY( Double x) {
-		return this.slope * x - this.intercept;
+	public ArrayList<Double> getY() {
+		return y;
 	}
 }

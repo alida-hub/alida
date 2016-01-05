@@ -61,21 +61,21 @@ import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
 public class RefineLocalExtrema1D extends ALDOperator {
 
 
-	/** Positions, i.e. indices, of local extrema detected
+	/** Local extrema detected
 	 */
-	@Parameter( label= "Positions of Extrema",  
+	@Parameter( label= "Extrema",  
 			direction = Parameter.Direction.IN, required = true,
-			description = "Positions of local Extrema in un-smoothed data",
+			description = "Local Extrema in un-smoothed data",
 			dataIOOrder = 1)
-	protected Integer[] extremaPositions;
+	protected Extrema1D extrema;
 
-	/** Positions, i.e. indices, of local extrema detected in smoothed data
+	/** Local extrema detected in smoothed data
 	 */
-	@Parameter( label= "Positions of SmoothExtrema",  
+	@Parameter( label= "Smoothed extrema",  
 			direction = Parameter.Direction.IN, required = true,
-			description = "Positions of local Extrema in smoothed data",
+			description = "Local Extrema in smoothed data",
 			dataIOOrder = 2)
-	protected Integer[] smoothedExtremaPositions;
+	protected Extrema1D smoothedExtrema;
 
 	/** Size of neighborhood is {@code 2*epsilon+1}
 	 */
@@ -91,7 +91,7 @@ public class RefineLocalExtrema1D extends ALDOperator {
 			direction = Parameter.Direction.OUT, required = true,
 			description = "Refined positions of Extrema",
 			dataIOOrder = 1)
-	protected Integer[] refinedExtremaPositions;
+	protected Extrema1D refinedExtrema;
 
 
 	/**
@@ -112,22 +112,29 @@ public class RefineLocalExtrema1D extends ALDOperator {
 	
 	@Override
 	protected void operate() {
-		LinkedList<Integer> extrema = new LinkedList<Integer>();
-		List<Integer> extremaPositionsList = Arrays.asList( extremaPositions);
-		for ( int i = 0 ; i < smoothedExtremaPositions.length ; i++) {
-			Integer pos = smoothedExtremaPositions[i];
+		refinedExtrema = new Extrema1D();
+		
+		List<Integer> extremaPositionsList = new LinkedList<Integer>();
+		for ( int i = 0 ; i < extrema.size() ; i++ ) {
+			extremaPositionsList.add( extrema.getX(i).intValue());
+		}
+		
+		for ( int i = 0 ; i < smoothedExtrema.size() ; i++) {
+			Integer pos = smoothedExtrema.getX( i).intValue();
 			for ( int d = 0 ; d <= this.epsilon ; d++) {
 				if ( extremaPositionsList.contains(pos+d) ) {
-					extrema.add(pos+d);
+					int l = extremaPositionsList.lastIndexOf(pos+d);
+					refinedExtrema.addPoint( new Double( pos+d), extrema.getY(l));
 					break;
 				}
 				if ( extremaPositionsList.contains(pos-d) ) {
-					extrema.add(pos-d);
+					int l = extremaPositionsList.lastIndexOf(pos-d);
+
+					refinedExtrema.addPoint( new Double( pos-d),  extrema.getY(l));
 					break;
 				}
 			}
 		}
-		refinedExtremaPositions = extrema.toArray(new Integer[0]);
 	}
 
 }
