@@ -73,7 +73,7 @@ public class SmoothData1D extends ALDOperator {
 			callback = "smoothingMethodChanged",
 			description = "Smoothing method",
 			dataIOOrder = 2)
-	SmoothingMethod smoothingMethod = SmoothingMethod.MEDIAN;
+	SmoothingMethod smoothingMethod = null;
 
 	/** Window width
 	 */
@@ -105,6 +105,7 @@ public class SmoothData1D extends ALDOperator {
 	 * @throws ALDOperatorException
 	 */
 	public SmoothData1D() throws ALDOperatorException {
+		this.setParameter( "smoothingMethod", SmoothingMethod.MEDIAN);
 	}
 
 	@Override
@@ -257,32 +258,32 @@ public class SmoothData1D extends ALDOperator {
 	 */
 	@SuppressWarnings("unused")
 	private void smoothingMethodChanged() throws ALDOperatorException {
-//		try {
-//			if (this.smoothingMethod == SmoothingMethod.GAUSSIAN) {
-//				if (this.hasParameter("width")) {
-//					this.removeParameter("width");
-//				}
-//
-//				if (!this.hasParameter("sigma")) {
-//					this.addParameter("sigma");
-//				}
-//			} else {
-//				if (this.hasParameter("sigma")) {
-//					this.removeParameter("sigma");
-//				}
-//
-//				if (!this.hasParameter("width")) {
-//					this.addParameter("width");
-//				}
-//			}
-//
-//		} catch (SecurityException e) {
-//			throw new ALDOperatorException(OperatorExceptionType.OPERATE_FAILED,
-//					"[SmoothData1D::smoothingMethodChanged()] failedl!");
-//		} catch (ALDOperatorException e) {
-//			throw new ALDOperatorException(OperatorExceptionType.OPERATE_FAILED,
-//					"[SmoothData1D::smoothingMethodChanged()] failedl!");
-//		}
+		try {
+			if (this.smoothingMethod == SmoothingMethod.GAUSSIAN) {
+				if (this.hasParameter("width")) {
+					this.removeParameter("width");
+				}
+
+				if (!this.hasParameter("sigma")) {
+					this.addParameter("sigma");
+				}
+			} else {
+				if (this.hasParameter("sigma")) {
+					this.removeParameter("sigma");
+				}
+
+				if (!this.hasParameter("width")) {
+					this.addParameter("width");
+				}
+			}
+
+		} catch (SecurityException e) {
+			throw new ALDOperatorException(OperatorExceptionType.OPERATE_FAILED,
+					"[SmoothData1D::smoothingMethodChanged()] failedl!");
+		} catch (ALDOperatorException e) {
+			throw new ALDOperatorException(OperatorExceptionType.OPERATE_FAILED,
+					"[SmoothData1D::smoothingMethodChanged()] failedl!");
+		}
 	}
 
 	/**
@@ -354,6 +355,4 @@ public class SmoothData1D extends ALDOperator {
 	public void setSmoothedExperiment(ExperimentalData1D smoothedExperiment) {
 		this.smoothedExperiment = smoothedExperiment;
 	}
-
-
 }
