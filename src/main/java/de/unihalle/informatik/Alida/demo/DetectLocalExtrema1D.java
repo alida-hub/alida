@@ -43,10 +43,14 @@ import de.unihalle.informatik.Alida.annotations.ALDAOperator;
 import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
 
 /**
- * Operator to detect local extrema in the data of an ExperimentalData1D
+ * Operator to detect local extrema in the data of an {@link ExperimentalData1D}.
+ * <p>
+ * If a local extremum is formed by consecutive identical values,
+ * the mid of theses positions yields one local extremum.
  * 
  * @author posch
  */
+
 @ALDDerivedClass
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
               level=ALDAOperator.Level.APPLICATION)
@@ -88,9 +92,7 @@ public class DetectLocalExtrema1D extends ALDOperator {
 	}
 
 	/**
-	 * @author posch
-	 *
-	 * are we approaching the next extremum, are numbers equal, or
+	 * are we approaching the next extremum, are values equal, or
 	 * are we departing the last extremum?
 	 */
 	private enum State {APPROACHING, EQUAL, DEPARTING};
@@ -109,7 +111,7 @@ public class DetectLocalExtrema1D extends ALDOperator {
 		State state;
 		int numEqualStates = 0;
 		
-		if ( data.length > 1) {
+		if ( data.length > 2) {
 			if ( comparator.compare(data[0], data[1]) > 0 ) {
 				state = State.APPROACHING;
 			} else if ( comparator.compare(data[0], data[1]) == 0 ) {
@@ -216,7 +218,7 @@ public class DetectLocalExtrema1D extends ALDOperator {
 	 * @author posch
 	 *
 	 * Return {@code +1} if approaching the next maximum, {@code -1} if departing a maximum,
-	 * i.e. approaching a minimum, and {@code 0} if the numbers are equal.
+	 * i.e. approaching a maximum, and {@code 0} if the numbers are equal.
 	 */
 	private class ApproachMax implements Comparator<Double> {
 		@Override

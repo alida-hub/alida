@@ -41,6 +41,7 @@ import java.util.LinkedList;
 
 import de.unihalle.informatik.Alida.datatypes.ALDFileString;
 import de.unihalle.informatik.Alida.exceptions.ALDOperatorException;
+import de.unihalle.informatik.Alida.exceptions.ALDOperatorException.OperatorExceptionType;
 import de.unihalle.informatik.Alida.operator.ALDOperator;
 import de.unihalle.informatik.Alida.operator.events.ALDOperatorExecutionProgressEvent;
 import de.unihalle.informatik.Alida.annotations.Parameter;
@@ -48,10 +49,19 @@ import de.unihalle.informatik.Alida.annotations.ALDAOperator;
 import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
 
 /**
- * Operator to smooth the data of an ExperimentalData1D
+ * Operator to read {@code ExperimentalData1D} from a file.
+ * <p>
+ * Subsequent lines at the beginning of the file with a leading {@code #} are interpreted as comment lines.
+ * The following lines are assumed to contain exactly one double number, which represent
+ * the measurements.
+ * The first comment line, if present, excluding the leading {@code #} is interpreted as the 
+ * description of the experiment.
+ * <p>
+ * Currently no unit of measurement is supported.
  * 
  * @author posch
  */
+
 @ALDDerivedClass
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
               level=ALDAOperator.Level.APPLICATION)
@@ -63,7 +73,6 @@ public class ReadExperimentalData1D extends ALDOperator {
 			description = "Filename",
 			dataIOOrder = 1)
 	ALDFileString filename;
-
 
 	/** 1D Experiment
 	 */
@@ -81,17 +90,17 @@ public class ReadExperimentalData1D extends ALDOperator {
 	}
 
 	@Override
-	protected void operate() {
+	protected void operate() throws ALDOperatorException {
 		this.fireOperatorExecutionProgressEvent(
 				new ALDOperatorExecutionProgressEvent(this, 
-						"Starting to read 1D Data..."));
+						"Starting to read 1D Experiment..."));
 		
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(filename.getFileName()));
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			throw new ALDOperatorException(OperatorExceptionType.OPERATE_FAILED,
+					"ReadExperimentalData1D can not open file " + filename);
 		}
 		
 		String descr;
@@ -100,7 +109,7 @@ public class ReadExperimentalData1D extends ALDOperator {
 			//first line is description if starting with '#'
 			str = reader.readLine();
 			if ( str != null && str.length() > 0 && str.charAt(0) == '#') {
-				descr = str;
+				descr = str.substring( 1);
 				str = reader.readLine();
 			} else {
 				descr = "";
@@ -120,10 +129,9 @@ public class ReadExperimentalData1D extends ALDOperator {
 			}
 			
 			experiment = new ExperimentalData1D(descr, values.toArray( new Double[0]));
-			experiment.print();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ALDOperatorException(OperatorExceptionType.OPERATE_FAILED,
+					"ReadExperimentalData1D failed to parse an ExperimentalData1D from file " + filename);
 		}
 	}
 }

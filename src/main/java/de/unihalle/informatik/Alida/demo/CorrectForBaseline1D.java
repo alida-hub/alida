@@ -33,7 +33,6 @@
  */
 package de.unihalle.informatik.Alida.demo;
 
-import de.unihalle.informatik.Alida.demo.DetectLocalExtrema1D.ExtremaType;
 import de.unihalle.informatik.Alida.exceptions.ALDOperatorException;
 import de.unihalle.informatik.Alida.exceptions.ALDProcessingDAGException;
 import de.unihalle.informatik.Alida.operator.ALDOperator;
@@ -49,12 +48,13 @@ import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
  * 
  * @author posch
  */
+
 @ALDDerivedClass
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
               level=ALDAOperator.Level.APPLICATION)
 public class CorrectForBaseline1D extends ALDOperator {
 	
-	/** Local extrema 
+	/** Extrema 
 	 */
 	@Parameter( label= "Extrema",  
 			direction = Parameter.Direction.IN, required = true,
@@ -68,7 +68,7 @@ public class CorrectForBaseline1D extends ALDOperator {
 	@Parameter( label= "Baseline",  
 			direction = Parameter.Direction.IN, required = true, 
 			description = "Baseline",
-			dataIOOrder = 1)
+			dataIOOrder = 2)
 	protected Baseline1D baseline;
 
 	/** Corrected extrema 
@@ -93,6 +93,41 @@ public class CorrectForBaseline1D extends ALDOperator {
 		for( int i = 0 ; i < extrema.size() ; i++) {
 			correctedExtrema.addPoint( extrema.getX(i), extrema.getY(i) - baseline.getY(extrema.getX(i)));
 		}
+	}
+
+	/**
+	 * @return the extrema
+	 */
+	public Extrema1D getExtrema() {
+		return extrema;
+	}
+
+	/**
+	 * @param extrema the extrema to set
+	 */
+	public void setExtrema(Extrema1D extrema) {
+		this.extrema = extrema;
+	}
+
+	/**
+	 * @return the baseline
+	 */
+	public Baseline1D getBaseline() {
+		return baseline;
+	}
+
+	/**
+	 * @param baseline the baseline to set
+	 */
+	public void setBaseline(Baseline1D baseline) {
+		this.baseline = baseline;
+	}
+
+	/**
+	 * @return the correctedExtrema
+	 */
+	public Extrema1D getCorrectedExtrema() {
+		return correctedExtrema;
 	}
 	
 }

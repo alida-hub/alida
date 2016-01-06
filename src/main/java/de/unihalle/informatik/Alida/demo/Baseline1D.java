@@ -42,16 +42,12 @@ import de.unihalle.informatik.Alida.operator.ALDData;
  * This class holds a baseline for 1D data which essentially is a
  * straight line as a 1D function.
  * <p>
- * Currently no unit of measurement are supported.
+ * Currently no unit of measurement is supported.
  *  
  * @author posch
  *
  */
 
-/**
- * @author posch
- *
- */
 @ALDParametrizedClass
 public class Baseline1D extends ALDData {
 	
@@ -99,6 +95,6 @@ public class Baseline1D extends ALDData {
 	 * @return
 	 */
 	public Double getY( Double x) {
-		return this.slope * x - this.intercept;
+		return this.slope * x + this.intercept;
 	}
 }

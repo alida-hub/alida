@@ -45,10 +45,11 @@ import de.unihalle.informatik.Alida.annotations.ALDAOperator;
 import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
 
 /**
- * Operator to smooth the data of an ExperimentalData1D
+ * Operator to smooth the data of an {@link ExperimentalData1D}.
  * 
  * @author posch
  */
+
 @ALDDerivedClass
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
               level=ALDAOperator.Level.APPLICATION)
@@ -79,7 +80,7 @@ public class SmoothData1D extends ALDOperator {
 	 */
 	@Parameter( label = "Window width", required = true,
 			direction = Parameter.Direction.IN,
-			description = "Smoothing method (should be uneven)",
+			description = "Window width (should be uneven)",
 			dataIOOrder = 3)
 	Integer width = 3;
 
@@ -105,6 +106,7 @@ public class SmoothData1D extends ALDOperator {
 	 * @throws ALDOperatorException
 	 */
 	public SmoothData1D() throws ALDOperatorException {
+		// necessary handle dynamic parameters correctly
 		this.setParameter( "smoothingMethod", SmoothingMethod.MEDIAN);
 	}
 
@@ -143,7 +145,6 @@ public class SmoothData1D extends ALDOperator {
 
 				for ( int i = 0 ; i < width ; i++)
 					kernel[i] /= sum;
-
 			}
 
 			if ( verbose ) {
@@ -161,6 +162,8 @@ public class SmoothData1D extends ALDOperator {
 
 	/** Compute the median of {@code data} within a window of width {@code width}. Values outside the range
 	 * of {@code data} are ignored.
+	 * <p>
+	 * Ties and windows with even width are handled simplistic.
 	 * 
 	 * @param data
 	 * @param width
@@ -347,12 +350,5 @@ public class SmoothData1D extends ALDOperator {
 	 */
 	public ExperimentalData1D getSmoothedExperiment() {
 		return smoothedExperiment;
-	}
-
-	/**
-	 * @param smoothedExperiment the smoothedExperiment to set
-	 */
-	public void setSmoothedExperiment(ExperimentalData1D smoothedExperiment) {
-		this.smoothedExperiment = smoothedExperiment;
 	}
 }

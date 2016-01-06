@@ -43,16 +43,12 @@ import de.unihalle.informatik.Alida.operator.ALDData;
 /**
  * This class holds a set of extrema with x and y coordinate of a 1D function.
  * <p>
- * Currently no unit of measurement are supported.
+ * Currently no unit of measurement is supported.
  *  
  * @author posch
  *
  */
 
-/**
- * @author posch
- *
- */
 @ALDParametrizedClass
 public class Extrema1D extends ALDData {
 	
@@ -61,6 +57,7 @@ public class Extrema1D extends ALDData {
     @ALDClassParameter(label="x",
     		dataIOOrder = 1)
     private ArrayList<Double> x;
+    
     /** y coordiates
      */
     @ALDClassParameter(label="y",
@@ -113,14 +110,14 @@ public class Extrema1D extends ALDData {
     }
 
 	/**
-	 * @return the x
+	 * @return all x coordinates
 	 */
 	public ArrayList<Double> getX() {
 		return x;
 	}
 
 	/**
-	 * @return the y
+	 * @return all y coordinates
 	 */
 	public ArrayList<Double> getY() {
 		return y;

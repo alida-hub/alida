@@ -49,11 +49,7 @@ import de.unihalle.informatik.Alida.operator.ALDData;
  * @author posch
  *
  */
-//SNIPPETCODE:Begin
-/**
- * @author posch
- *
- */
+
 @ALDParametrizedClass
 public class ExperimentalData1D extends ALDData {
 	
@@ -84,10 +80,10 @@ public class ExperimentalData1D extends ALDData {
       */
     public ExperimentalData1D() {
     }
-//SNIPPETCODE:End
 
     /** Constructor for an experiment.
-      * Normalized is assumed to be false.
+      * Baseline correction is assumed to be false and nothung known about
+      * the time resolution.
       *
       * @param  description   a textual description of the experiment
       * @param  data   measurements
@@ -101,6 +97,7 @@ public class ExperimentalData1D extends ALDData {
       * @param  description   a textual description of the experiment
       * @param  data   measurements
       * @param  baselineCorrected   true if the data are baseline corrected
+      * @param timeResolution time resolution in millisecconds
       */
     public ExperimentalData1D( String description, Double[] data, boolean baselineCorrected, Float timeResolution) {    
         this.baselineCorrected = baselineCorrected;
@@ -165,9 +162,4 @@ public class ExperimentalData1D extends ALDData {
 	public boolean isBaselineCorrected() {
 		return baselineCorrected;
 	}
-
 }
-/*BEGIN_MITOBO_ONLINE_HELP
-
-<p>This class demonstrates the use of parametrized classes as operator parameters. Its member are annotated as Alida class parameters which allow the graphical operator runner to automatically configure and generate objects of this type, and pass them to an operator.</p>
-END_MITOBO_ONLINE_HELP*/

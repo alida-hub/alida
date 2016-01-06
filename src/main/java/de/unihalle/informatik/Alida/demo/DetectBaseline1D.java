@@ -46,11 +46,12 @@ import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
  * <p>
  * This is accomplished first detecting local minima in the data
  * and then fitting a line through these minima.
- * If less then 2 minima are detected a line is least square fit through the first
- * and last data point of the smoothed data.
+ * If less then two minima are detected a line is fit through the first
+ * and last data point of the data.
  * 
  * @author posch
  */
+
 @ALDDerivedClass
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
               level=ALDAOperator.Level.APPLICATION)

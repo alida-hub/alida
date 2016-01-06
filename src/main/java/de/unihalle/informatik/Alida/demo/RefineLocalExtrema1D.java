@@ -33,9 +33,6 @@
  */
 package de.unihalle.informatik.Alida.demo;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,33 +44,35 @@ import de.unihalle.informatik.Alida.annotations.ALDAOperator;
 import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
 
 /**
- *  Refine extrema found in smoothed data by extrema of the un-smoothed
+ *  Refine extrema {@code smoothedExtrema} found in smoothed data by extrema {@code extrema} of the un-smoothed
  *  data within a given epsilon neighborhood.
  *  <p>
  *  For each extremum of the smoothed data the neighborhood of {@code +/- epsilon}
  *  positions is considered. Of the extrema of the un-smoothed within this neighborhood
- *  the closest wrt to positions is returned, if any.
+ *  the closest with respect to positions is returned, if any.
+ *  
  * @author posch
  */
+
 @ALDDerivedClass
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
               level=ALDAOperator.Level.APPLICATION)
 public class RefineLocalExtrema1D extends ALDOperator {
 
 
-	/** Local extrema detected
+	/** Extrema of un-smoothed data
 	 */
 	@Parameter( label= "Extrema",  
 			direction = Parameter.Direction.IN, required = true,
-			description = "Local Extrema in un-smoothed data",
+			description = " Extrema in un-smoothed data",
 			dataIOOrder = 1)
 	protected Extrema1D extrema;
 
-	/** Local extrema detected in smoothed data
+	/** Extrema detected in smoothed data
 	 */
 	@Parameter( label= "Smoothed extrema",  
 			direction = Parameter.Direction.IN, required = true,
-			description = "Local Extrema in smoothed data",
+			description = "Extrema in smoothed data",
 			dataIOOrder = 2)
 	protected Extrema1D smoothedExtrema;
 
