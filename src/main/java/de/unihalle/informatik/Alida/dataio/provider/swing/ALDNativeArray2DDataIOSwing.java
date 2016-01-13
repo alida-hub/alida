@@ -248,6 +248,11 @@ public class ALDNativeArray2DDataIOSwing
 		public void setValue(Field field, Class<?> cl, Object value) {
 			if (this.confWin != null)
 				this.confWin.setValue(field, cl, value);
+			else {
+				this.confWin = 
+						new ArrayConfigWindow(field, cl, value, this.arrayDescriptor);
+				this.confWin.addValueChangeEventListener(this);
+			}
 		}
 
 		/**
