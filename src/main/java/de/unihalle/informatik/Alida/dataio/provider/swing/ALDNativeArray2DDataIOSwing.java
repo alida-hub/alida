@@ -1696,6 +1696,8 @@ public class ALDNativeArray2DDataIOSwing
 			// load table data from file in TSV format
 			else if (e.getActionCommand().equals("load")) {
 				this.loadTable();
+				this.fireALDSwingValueChangeEvent(
+						new ALDSwingValueChangeEvent(this, this.descriptor));
 			}		
 			// add a column
 			if (command.equals("addCol")) {
