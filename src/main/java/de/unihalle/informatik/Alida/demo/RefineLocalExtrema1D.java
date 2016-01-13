@@ -44,8 +44,8 @@ import de.unihalle.informatik.Alida.annotations.ALDAOperator;
 import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
 
 /**
- *  Refine extrema {@code smoothedExtrema} found in smoothed data by extrema {@code extrema} of the un-smoothed
- *  data within a given epsilon neighborhood.
+ *  Refine extrema {@code extremaSmoothedData} found in smoothed data 
+ *  using extrema {@code extrema} of the un-smoothed.
  *  <p>
  *  For each extremum of the smoothed data the neighborhood of {@code +/- epsilon}
  *  positions is considered. Of the extrema of the un-smoothed within this neighborhood
@@ -70,11 +70,11 @@ public class RefineLocalExtrema1D extends ALDOperator {
 
 	/** Extrema detected in smoothed data
 	 */
-	@Parameter( label= "Smoothed extrema",  
+	@Parameter( label= "Extrema in smoothed data",  
 			direction = Parameter.Direction.IN, required = true,
 			description = "Extrema in smoothed data",
 			dataIOOrder = 2)
-	protected Extrema1D smoothedExtrema;
+	protected Extrema1D extremaSmoothedData;
 
 	/** Size of neighborhood is {@code 2*epsilon+1}
 	 */
@@ -118,8 +118,8 @@ public class RefineLocalExtrema1D extends ALDOperator {
 			extremaPositionsList.add( extrema.getX(i).intValue());
 		}
 		
-		for ( int i = 0 ; i < smoothedExtrema.size() ; i++) {
-			Integer pos = smoothedExtrema.getX( i).intValue();
+		for ( int i = 0 ; i < extremaSmoothedData.size() ; i++) {
+			Integer pos = extremaSmoothedData.getX( i).intValue();
 			for ( int d = 0 ; d <= this.epsilon ; d++) {
 				if ( extremaPositionsList.contains(pos+d) ) {
 					int l = extremaPositionsList.lastIndexOf(pos+d);
