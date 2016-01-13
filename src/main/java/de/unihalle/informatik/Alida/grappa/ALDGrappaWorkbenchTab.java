@@ -301,6 +301,7 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 		// get all the nodes of the graph
 		Object [] allCells = 
 				this.graph.getChildVertices(this.graph.getDefaultParent());
+		LinkedList<mxCell> failedCells = new LinkedList<mxCell>();
 		for (Object o : allCells) {
 			if (((mxCell)o).isVertex()) {
 				mxCell node = (mxCell)o;
@@ -309,11 +310,11 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 				if (logger.isDebugEnabled()) {
 					logger.debug(" Found node: {}", nodeInfo.getNodeName());
 				}
-
+				
 				ALDWorkflowNodeID nodeID = 
 						this.alidaWorkflow.getNodeIdDuringLoading(
 								nodeInfo.getRefID());
-
+				
 				if (logger.isDebugEnabled()) {
 					logger.debug(" -> ID is = {}", nodeID.id);
 				}
@@ -353,8 +354,57 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 						}
 					}
 				}
+				// node ID is null, i.e. node has not been found in ALDWorkflow
+				// (happens, e.g., if class is not present anymore)
+				else {
+					// store node for later problem solving
+					failedCells.push(node);
+				}
+			}
+		} // end of for-loop over all cells present in JGraphX graph
+		
+		// delete cells which could not be associated with nodes in ALDWorkflow
+		Object[] obsoleteCells = new Object[failedCells.size()];
+		Object[] edgesToRemove;
+
+		int i=0;
+		for (mxCell node: failedCells) {
+			obsoleteCells[i] = node;
+			++i;
+			
+			// check for childs (ports) and connected edges to remove them
+			for (int c = 0; c<node.getChildCount(); ++c) {
+				mxCell child = (mxCell)node.getChildAt(c);
+				
+				// array to store edges to remove
+				edgesToRemove = new Object[child.getEdgeCount()];
+				for (int e = 0; e<child.getEdgeCount(); ++e) {
+					mxCell edge = (mxCell)child.getEdgeAt(e);
+					ALDGrappaNodeInfo edgeInfo = 
+							(ALDGrappaNodeInfo)edge.getValue();
+					ALDWorkflowEdgeID edgeID = 
+							this.alidaWorkflow.getEdgeIdDuringLoading(
+									edgeInfo.getRefID());
+					// just to make sure that everything is fine...
+					if (edgeID != null) {
+						System.err.println("[ALDGrappaWorkbenchTab::restoreIDs()] " +
+								"found edge connected to non-existing node...!?");
+						try {
+							System.in.read();
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					}
+					else {
+						edgesToRemove[e] = edge;
+					}
+				}
+				// delete all edges of this node
+				this.graph.removeCells(edgesToRemove);
 			}
 		}
+		// delete all the cells
+		this.graph.removeCells(obsoleteCells);
 	}
 	
 	/**
