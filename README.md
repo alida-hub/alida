@@ -6,4 +6,4 @@ defines a concept for designing libraries and toolkits in data analysis. It supp
 The Alida concept is independent of a specific programming language, however, relies on an object-oriented design. Moreover, in particular Java renders it quite easy to implement the conceptual features of Alida due to its reflection and annotation mechanisms. Anyway the concept has been implemented in two different programming languages.
 
 
-
+The main project homepage is located [**here**](http://www.informatik.uni-halle.de/alida)
