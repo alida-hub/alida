@@ -36,9 +36,8 @@ import org.junit.Test;
 
 import de.unihalle.informatik.Alida.dataio.ALDDataIOManagerCmdline;
 import de.unihalle.informatik.Alida.dataio.ALDDataIOManagerXmlbeans;
-//import de.unihalle.informatik.Alida.demo.AnalyzeExperiment;
-import de.unihalle.informatik.Alida.demo.ExperimentalData;
-import de.unihalle.informatik.Alida.demo.NormalizeExperimentalDataOp;
+import de.unihalle.informatik.Alida.demo.ExperimentalData1D;
+import de.unihalle.informatik.Alida.demo.SmoothData1D;
 import de.unihalle.informatik.Alida.exceptions.ALDDataIOManagerException;
 import de.unihalle.informatik.Alida.exceptions.ALDDataIOProviderException;
 import de.unihalle.informatik.Alida.exceptions.ALDOperatorException;
@@ -104,18 +103,14 @@ public class TestALDWorkflowDataIOXmlbeans {
 			ALDDataIOProviderException, ALDWorkflowException {
 		ALDWorkflow workflow = new ALDWorkflow( "Test work flow",  ALDWorkflowContextType.OTHER);
 
-		ExperimentalData experiment = 
-				(ExperimentalData) ALDDataIOManagerCmdline.getInstance().readData( null, ExperimentalData.class,
-						"{description=test experiment,data=[[1.0,2.0,3.0],[11.1,12.2,15.55]]}");
-		NormalizeExperimentalDataOp normalizeOp = new NormalizeExperimentalDataOp( experiment);
-		normalizeOp.setVerbose(true);
-		ALDWorkflowNodeID normId = workflow.createNode(normalizeOp);
-
-//		AnalyzeExperiment analyzeOp = new AnalyzeExperiment();
-//		ALDWorkflowNodeID analyzeId = workflow.createNode(analyzeOp);
-//
-////		System.out.println("XX " + normId + " " + analyzeId);
-//		workflow.createEdge(normId, "result", analyzeId, "experiment");
+		ExperimentalData1D experiment = 
+				(ExperimentalData1D) ALDDataIOManagerCmdline.getInstance().readData( null, ExperimentalData1D.class,
+						"{ baselineCorrected=false , description=# experiment , timeResolution=NaN , data=[1.0,2.0,2.2,3.3,2.0,1.0,1.0,1.0,1.0,2.0,2.2,3.3,2.0,2.0,2.2,3.3,2.0,2.0,2.2,3.3,3.0,2.0,2.2,3.3,2.0] }"
+				);
+		SmoothData1D smoothOp = new SmoothData1D();
+		smoothOp.setExperiment(experiment);
+		smoothOp.setVerbose(true);
+		ALDWorkflowNodeID normId = workflow.createNode(smoothOp);
 
 		if ( debug ) {
 			workflow.print();
