@@ -30,8 +30,8 @@ import java.io.*;
 import de.unihalle.informatik.Alida.version.ALDVersionProvider;
 
 /**
- * Info class which provides Alida operators with version information from 
- * a version file distributed with the release jar archive.
+ * Info class which provides Alida operators with version information  
+ * from a version file distributed with the release jar archive.
  *
  * @author moeller
  */
@@ -73,20 +73,38 @@ public class ALDVersionProviderReleaseJar extends ALDVersionProvider {
 
 		// initialize file reader 
 		try { 
-			is= 
-				ALDVersionProviderReleaseJar.class.getResourceAsStream("/" + infofile);
+			is= ALDVersionProviderReleaseJar.class.getResourceAsStream(
+						"/" + infofile);
 			br= new BufferedReader(new InputStreamReader(is));
 			vLine= br.readLine();
 			if (vLine == null) {
-				System.err.println("[ALDVersionProviderReleaseJar] getReleaseVersion():"
-						+ " Warning - version file is empty...!?");
+				System.err.println("[ALDVersionProviderReleaseJar] " + 
+						"getReleaseVersion(): Warning - version file is empty...!?");
+				br.close();
+				// remember version for upcoming requests
+				ALDVersionProviderReleaseJar.releaseVersion = dummy;
 				return dummy;
 			}	
+			br.close();
+			ALDVersionProviderReleaseJar.releaseVersion = vLine;
 			return vLine;
 		}
 		catch (Exception e) {
-			System.err.println("[ALDVersionProviderReleaseJar] getReleaseVersion(): "
-					+ "Warning - something went wrong on reading the version file...");
+			System.err.println("[ALDVersionProviderReleaseJar] " + 
+					"getReleaseVersion(): Warning - " + 
+							"something went wrong on reading the version file...");
+			try {
+				if (br != null)
+					br.close();
+				if (is != null)
+					is.close();
+			} catch (IOException ee) {
+				System.err.println(
+						"[ALDVersionProviderReleaseJar::getReleaseVersion] "
+							+ "problems on closing the file handles...");
+				ee.printStackTrace();
+			}
+			ALDVersionProviderReleaseJar.releaseVersion = dummy;
 			return dummy;
 		}
 	}
@@ -97,10 +115,11 @@ public class ALDVersionProviderReleaseJar extends ALDVersionProvider {
 	 * Note that the tag or release information is assumed to be found in a 
 	 * file named "revision.txt" in the given jar archive.
 	 * 
-	 * @param infofile 	File where to find the version/tag information.
 	 * @return Tag or release version.
 	 */
 	private static String getReleaseVersion() {
-		return ALDVersionProviderReleaseJar.getReleaseVersion("revision.txt");
+		ALDVersionProviderReleaseJar.releaseVersion = 
+				ALDVersionProviderReleaseJar.getReleaseVersion("revision.txt");
+		return ALDVersionProviderReleaseJar.releaseVersion;
 	}
 }
