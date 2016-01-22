@@ -42,6 +42,20 @@
         <include>run*</include>
       </includes>
     </fileSet>
+    <fileSet>
+      <directory>share/examples/workflows</directory>
+      <outputDirectory>share/examples/workflows</outputDirectory>
+      <includes>
+        <include>*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>share/examples/data</directory>
+      <outputDirectory>share/examples/data</outputDirectory>
+      <includes>
+        <include>*</include>
+      </includes>
+    </fileSet>
   </fileSets>
 
   <dependencySets>
