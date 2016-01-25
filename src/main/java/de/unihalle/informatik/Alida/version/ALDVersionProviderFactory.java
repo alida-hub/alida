@@ -32,19 +32,19 @@ import de.unihalle.informatik.Alida.helpers.ALDEnvironmentConfig;
 /**
  * Factory for dynamic instantiation of version providers at runtime.
  * <p>
- * Here JVM properties are evaluated to dynamically configure the way, how 
- * Alida handles software versions. Usually there are different possibilities 
- * from where to get software version information. The probably most popular 
- * way is to query software repositories like CVS, SVN or Git. However, other
- * options can be imagined as well.
+ * Here JVM properties are evaluated to dynamically configure the way, 
+ * how Alida handles software versions. Usually there are different 
+ * possibilities from where to get software version information. 
+ * The probably most popular way is to query software repositories like 
+ * CVS, SVN or Git. However, other options can be imagined as well.
  * <p>
- * Alida supports dynamic configuration of the version data handling. This 
- * factory instantiates a concrete version provider based on the 
- * environment property <i>alida_versionprovider_class</i>. This property 
- * should contain the name of a class extending base class 
- * {@link ALDVersionProvider}. The generated instance of this class will be 
- * used for all software version requests triggered during Alida operator
- * invocations.  
+ * Alida supports dynamic configuration of the version data handling. 
+ * This factory instantiates a concrete version provider based on the 
+ * environment property <i>alida_versionprovider_class</i>. 
+ * This property should contain the name of a class extending base class 
+ * {@link ALDVersionProvider}. The generated instance of this class will 
+ * be used for all software version requests triggered during Alida 
+ * operator invocations.  
  * 
  * @author moeller
  */
@@ -54,7 +54,7 @@ public class ALDVersionProviderFactory {
 	 * Fallback provider if nothing else specified.
 	 */
 	private static final String defaultVersionProvider =
-		"de.unihalle.informatik.Alida.version.ALDVersionProviderDummy";
+		"de.unihalle.informatik.Alida.version.ALDVersionProviderReleaseJar";
 	
 	/**
 	 * Stores name of current version provider class.
@@ -64,8 +64,8 @@ public class ALDVersionProviderFactory {
 	/**
 	 * Hashmap with global version provider objects.
 	 */
-	private static Hashtable<String, ALDVersionProvider> providerInstances = 
-		new Hashtable<String, ALDVersionProvider>();
+	private static Hashtable<String, ALDVersionProvider> 
+		providerInstances = new Hashtable<String, ALDVersionProvider>();
 	
 	/**
 	 * Returns a reference to the currently selected provider object.
@@ -92,7 +92,8 @@ public class ALDVersionProviderFactory {
 	 * @param providerClass 		Name of desired provider class.
 	 * @return Corresponding provider object.
 	 */
-	public static ALDVersionProvider getProviderInstance(String providerClass) {
+	public static ALDVersionProvider getProviderInstance(
+			String providerClass) {
 		if (providerClass == null)
 			return null;
 		// check if provider object is already in hash; if not instantiate it
@@ -100,7 +101,8 @@ public class ALDVersionProviderFactory {
 				&& !providerInstances.containsKey(providerClass)) {
 			Object instance = instantiateObject(providerClass);
 			if (instance != null) {
-				providerInstances.put(providerClass, (ALDVersionProvider)instance);
+				providerInstances.put(
+						providerClass, (ALDVersionProvider)instance);
 				return (ALDVersionProvider)instance;
 			}
 			return null;
@@ -111,7 +113,8 @@ public class ALDVersionProviderFactory {
 	/**
 	 * Explicitly request a certain class from the code.
 	 * <p>
-	 * Note: this setting overrides potentially existing environment settings!
+	 * Note: this setting overrides potentially existing 
+	 * 	environment settings!
 	 *  
 	 * @param pclass	Desired class for provider objects.
 	 */
@@ -122,7 +125,8 @@ public class ALDVersionProviderFactory {
 	/**
 	 * Instantiates an object of the specified version provider class.
 	 * 
-	 * @param	providerClass		Identifier for provider class to be instantiated.
+	 * @param	providerClass		
+	 * 						Identifier for provider class to be instantiated.
 	 * @return Instantiated provider class object, null in case of failure.
 	 */
 	private static Object instantiateObject(String providerClass) {
@@ -155,11 +159,14 @@ public class ALDVersionProviderFactory {
 	}
 
 	/**
-	 * Returns version provider class according to environment configuration.
+	 * Returns version provider class according to 
+	 * environment configuration.
+	 * 
+	 * @return Name of version provider class. 
 	 */
 	protected static String getClassName() {
 		String env = ALDEnvironmentConfig.getConfigValue("alida","",
-																											"versionprovider_class");
+																							"versionprovider_class");
 		if (env == null)
 			return currentVersionProvider;
 		return env;
@@ -167,14 +174,15 @@ public class ALDVersionProviderFactory {
 	
 	/**
 	 * Returns true if the factory can be properly configured.
+	 * @return True if factory can be configured.
 	 */
 	public static boolean isClassNameSpecified() {
 		if (currentVersionProvider != null)
 			return true;
 		if (    ALDEnvironmentConfig.getConfigValue("alida","", 
-																				"versionprovider_class") != null
+																	"versionprovider_class") != null
     		&& !ALDEnvironmentConfig.getConfigValue("alida","", 	
-    																		"versionprovider_class").isEmpty()) {
+																	"versionprovider_class").isEmpty()) {
 			return true;
 		}
 		return false;
