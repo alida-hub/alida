@@ -82,7 +82,8 @@ public class TestALDVersionProviderFactory {
 			Process p;
 			String [] results = new String[3];
 			String[] expected = new String[]{	"false", "null", 
-			 	"de.unihalle.informatik.Alida.version.ALDVersionProviderDummy"};
+			 	"de.unihalle.informatik.Alida.version." 
+			 			+ "ALDVersionProviderReleaseJar"};
 
 			// if nothing is set, class name is null, but dummy is returned
 			p = pb.start();
@@ -116,7 +117,7 @@ public class TestALDVersionProviderFactory {
 		  	"de.unihalle.informatik.Alida.version.ALDVersionProviderNonExisting");
 			expected = new String[]{	"true", 
 				"de.unihalle.informatik.Alida.version.ALDVersionProviderNonExisting", 
-				"de.unihalle.informatik.Alida.version.ALDVersionProviderDummy"};
+				"de.unihalle.informatik.Alida.version.ALDVersionProviderReleaseJar"};
 			p = pb.start();
 			input = new BufferedReader(new InputStreamReader(	p.getInputStream()));
 			i = 0;
