@@ -43,6 +43,7 @@ import de.unihalle.informatik.Alida.operator.events.ALDOperatorExecutionProgress
 import de.unihalle.informatik.Alida.annotations.Parameter;
 import de.unihalle.informatik.Alida.annotations.ALDAOperator;
 import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
+import de.unihalle.informatik.Alida.annotations.Parameter.ParameterModificationMode;
 
 /**
  * Operator to smooth the data of an {@link ExperimentalData1D}.
@@ -73,8 +74,9 @@ public class SmoothData1D extends ALDOperator {
 			direction = Parameter.Direction.IN,
 			callback = "smoothingMethodChanged",
 			description = "Smoothing method",
+			paramModificationMode = ParameterModificationMode.MODIFIES_INTERFACE,
 			dataIOOrder = 2)
-	SmoothingMethod smoothingMethod = null;
+	SmoothingMethod smoothingMethod = SmoothingMethod.MEDIAN;
 
 	/** Window width
 	 */
@@ -107,7 +109,7 @@ public class SmoothData1D extends ALDOperator {
 	 */
 	public SmoothData1D() throws ALDOperatorException {
 		// necessary handle dynamic parameters correctly
-		this.setParameter( "smoothingMethod", SmoothingMethod.MEDIAN);
+		smoothingMethodChanged();
 	}
 
 	@Override
@@ -262,7 +264,15 @@ public class SmoothData1D extends ALDOperator {
 	@SuppressWarnings("unused")
 	private void smoothingMethodChanged() throws ALDOperatorException {
 		try {
-			if (this.smoothingMethod == SmoothingMethod.GAUSSIAN) {
+			if (this.smoothingMethod == null ) {
+				if (this.hasParameter("width")) {
+					this.removeParameter("width");
+				}
+				if (this.hasParameter("sigma")) {
+					this.removeParameter("sigma");
+				}
+
+			} else if (this.smoothingMethod == SmoothingMethod.GAUSSIAN) {
 				if (this.hasParameter("width")) {
 					this.removeParameter("width");
 				}
