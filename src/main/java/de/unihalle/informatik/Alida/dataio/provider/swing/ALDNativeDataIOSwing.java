@@ -375,8 +375,13 @@ public class ALDNativeDataIOSwing implements ALDDataIOSwing {
 	 */
 	private String reformatInfoString(String infoMsg) {
 		String newInfoMsg = infoMsg;
-		if (infoMsg.contains("\n")) {
+		if (infoMsg.contains("<html>"))
+			return newInfoMsg;
+		else if (infoMsg.contains("\n")) {
 			newInfoMsg = "<html>" + infoMsg.replace("\n", "<br>") + "</html>";
+		}
+		else {
+			newInfoMsg = "<html>" + infoMsg + "</html>";
 		}
 		return newInfoMsg;
 	}
