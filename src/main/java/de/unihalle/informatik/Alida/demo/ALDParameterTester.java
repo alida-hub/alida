@@ -45,6 +45,10 @@ import de.unihalle.informatik.Alida.annotations.Parameter;
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.SWING)
 public class ALDParameterTester extends ALDOperator {
 
+  @Parameter( label= "Info-String", required = false, dataIOOrder = -1,
+  		direction = Parameter.Direction.IN,	description = "Dummy parameter.",
+  		info = true)
+	private String infoString = "<i>Info</i> - Set of parameters to test: ";
   @Parameter( label= "String", required = false, dataIOOrder = 0,
   		direction = Parameter.Direction.IN,	description = "Dummy parameter.")
   private String param_String = null;
