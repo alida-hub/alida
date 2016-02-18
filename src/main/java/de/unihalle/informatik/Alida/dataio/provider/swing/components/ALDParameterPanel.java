@@ -252,13 +252,20 @@ public class ALDParameterPanel extends ALDSwingValueChangeReporter
 	 */
 	private void registerGUIElement(ALDParameterDescriptor descr) {
 		try {
-			// check if descriptor is already registered, if not, create new element
+			// check if descriptor is already registered, 
+			// if not, create new element
 			if (this.compMap.get(descr) == null) {
 				if (logger.isDebugEnabled())
 					logger.debug("Requesting GUI element for parameter {} "
-						+ " of class {}...", descr.getName(), descr.getMyclass().getName());
-				JPanel paramPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
-				JLabel nameLabel = new JLabel(descr.getLabel());
+						+ " of class {}...", descr.getName(), 
+							descr.getMyclass().getName());
+				JPanel paramPanel = 
+						new JPanel(new FlowLayout(FlowLayout.LEADING));
+				String labelText = descr.getLabel();
+				// check if we have an info parameter, if so, omit label
+				if (descr.isInfo())
+					labelText = new String();
+				JLabel nameLabel = new JLabel(labelText);
 				this.labelMap.put(descr, nameLabel);
 				nameLabel.setToolTipText("<html>" + "Class: "
 						+ descr.getMyclass().getSimpleName() + "<br>"
