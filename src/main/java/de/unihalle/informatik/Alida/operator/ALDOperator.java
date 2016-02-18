@@ -345,13 +345,8 @@ public abstract class ALDOperator
 					String explanation;
 					explanation = pAnnotation.description();
 
-					String label;
-					if (pAnnotation.label().trim().equals("")) {
-						label = name;
-					} else {
-						label = pAnnotation.label();
-					}
-
+					String label = pAnnotation.label();
+					
 					if (pAnnotation.direction() != Parameter.Direction.UNKNOWN) {
 						// this is the current version of parameter annotation
 						ALDOpParameterDescriptor parameterDescriptor = new ALDOpParameterDescriptor(
