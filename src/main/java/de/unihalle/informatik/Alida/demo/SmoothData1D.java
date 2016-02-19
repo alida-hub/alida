@@ -181,6 +181,9 @@ public class SmoothData1D extends ALDOperator {
 		for ( int i = 0 ; i < lowerHalfWidth ; i++ ) {
 			window.clear();
 			for ( int l = 0 ; l <= i + upperHalfWidth ; l++) {
+				// if window exceeds end of data, ignore position 
+				if (l >= data.length)
+					continue;
 				window.add( data[l]);
 			}
 			Collections.sort(window);
@@ -189,8 +192,12 @@ public class SmoothData1D extends ALDOperator {
 
 		for ( int i = lowerHalfWidth ; i < data.length - upperHalfWidth ; i++) {
 			window.clear();
-			for ( int l = i - lowerHalfWidth ; l <= i + upperHalfWidth ; l++)
+			for ( int l = i - lowerHalfWidth ; l <= i + upperHalfWidth ; l++) {
+				// if window exceeds end of data, ignore position 
+				if (l >= data.length)
+					continue;
 				window.add( data[l]);
+			}
 
 			Collections.sort(window);
 			smoothedData[i] = window.get(window.size()/2);
@@ -198,8 +205,12 @@ public class SmoothData1D extends ALDOperator {
 
 		for ( int i =data.length - upperHalfWidth ; i < data.length ; i++) {
 			window.clear();
-			for ( int l = i - lowerHalfWidth ; l < data.length; l++) 
+			for ( int l = i - lowerHalfWidth ; l < data.length; l++) { 
+				// if window exceeds end of data, ignore position 
+				if (l < 0)
+					continue;
 				window.add( data[l]);
+			}
 
 			Collections.sort(window);
 			smoothedData[i] = window.get(window.size()/2);
