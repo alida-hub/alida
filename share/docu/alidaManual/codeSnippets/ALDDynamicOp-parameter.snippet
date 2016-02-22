@@ -1,0 +1,5 @@
+	@Parameter( label= "useRealData", required = true, dataIOOrder = 2,
+			paramModificationMode = ParameterModificationMode.MODIFIES_INTERFACE,
+			callback = "initDataType", direction = Parameter.Direction.IN,	
+			description = "Should we use real or integral data?.")
+	private boolean useRealData = false;

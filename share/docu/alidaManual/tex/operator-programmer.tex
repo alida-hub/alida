@@ -194,24 +194,56 @@ Note the callback method is invoked automatically only when changing the
 parameter value using the \icode{setParameter()} method. Callback functions offer the possibility to
 dynamically reconfigure operators depending on the current context. In particular it is possible to
 add and remove parameters dynamically. Consider for example an operator allowing for different types
-of inputs, i.e.~arrays and lists. Each of these types requires specific treatment in data
+of inputs, r.g.~an \icode{int} or a \icode{float} value. Each of these types requires specific treatment in data
 I/O, i.e.~the graphical user interface needs to provide two different graphical elements. Thus,
 to handle the different parameters one option would be to add two parameters of the two different
 types to the operator and always display both (although only one is needed at a time). Using
 callbacks a more elegant way to solve the problem is available. We can add another parameter
-\icode{'input mode'} to the operator which allows to select the type of input. If we furthermore
+\icode{'useRealData'} to the operator which allows to select the type of input
+(see Fig.~\ref{exa:callback-define}). If we furthermore
 define a callback function for that parameter the user interface of the operator can dynamically be
 reconfigured. Depending on the chosen input mode the corresponding input parameter can be added
 and the second one be removed dynamically. Adding and removing parameters can be accomplished with
 the methods \icode{'addParameter()'} and \icode{'removeParameter()'} of \icode{ALDOperator}.
 
+\begin{figure}[h]
+\lstinputlisting[xrightmargin=.0\textwidth,
+xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/ALDDynamicOp-parameter.snippet}
+\caption{\label{exa:callback-define}Example declaring a parameter which dynamically reconfigures an operator.}
+\end{figure}
+
+
 Note that changing the set of parameters of an operator
 dynamically requires \alida to update its internal representation and also graphical user interfaces
 attached to the operator. To this end the programmer is requested to let \alida know that a callback
 function changes the parameter set of an operator. This is to be accomplished using the
-annotation parameter \icode{modifiesParameterDefinitions} which is to be set to \icode{'true'} or
-\icode{'false'}. Note that if the parameter is set to false and a callback function nonetheless 
-modifies the parameters of an operator, undefined behaviour of the operator may result.
+annotation parameter \icode{modifiesParameterDefinitions} which is to be set to \icode{MODIFIES\_INTERFACE}.
+If changing the parameter value does only modify the values of other parameters,
+but not the set of configured parameters,
+\icode{modifiesParameterDefinitions}  is to be set to \icode{MODIFIES\_VALUES\_ONLY}.
+Note if \icode{modifiesParameterDefinitions} is set incorrectly,
+undefined behaviour of the operator may result.
+The callback method handling the modification of current parameters known by the operator
+should for safety not assume a consistent configuration of the parameters.
+For example upon instantiation inconstitent state my exist temporarily.
+Care has been taken to consistently configure the operator in the constructors of the operator.
+
+\begin{figure}[h]
+\lstinputlisting[xrightmargin=.0\textwidth,
+xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/ALDDynamicOp.snippet}
+\caption{\label{exa:callback-method}Example of a callback method modifying known parameters of an operator.}
+\end{figure}
+
+Finally it should be noted that in general care has to be taken when using and implementing callback functions
+and reconfiguring the parameter.
+For example, mutual calls of different callback functions need to avoid infinite calls.
+Consider two parameters \icode{width} and \icode{height} which should adhere a given aspct ratio.
+Thus each of the two parameters is supplied with a callback function which sets the 
+other parameter according to the new value and the aspect ratio.
+If this is however done via the \icode{setParamteter()} method this will provoke infinite recursion.
+To avoid this either the parameter can be changed using directly assigning a value,
+or -- probably the better choice -- only in case that the value indeed needs to be set to a new value.
+Otherwise, if old an dnew values are identical, nothing is to be done.
 
 \paragraph{Operator functionality.}
 The method \icode{operate()} implements the functionality of the operator. All data
@@ -417,8 +449,8 @@ special cases of parameterized classes.
 
 
 \begin{figure}
-\lstinputlisting[xrightmargin=.\textwidth,
-xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/ExperimentalData.snippet}
+%\lstinputlisting[xrightmargin=.\textwidth,
+%xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/ExperimentalData.snippet}
 \caption{\label{exa:parametrizedClass}The class \icode{ExperimentalData} as an example of a parameterized class.}
 \end{figure}
 
