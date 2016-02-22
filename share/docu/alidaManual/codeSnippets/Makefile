@@ -7,7 +7,8 @@ DERIVED = NormalizeExperimentalDataOp-use.snippet \
 		ApplyToMatrix-parameters.snippet \
 		ALDArraySum-constructor.snippet \
 		ALDDynamicOp.snippet \
-		ALDDynamicOp-parameters.snippet
+		ALDDynamicOp-parameters.snippet \
+		ExperimentalData1D.snippet
 
 all: $(DERIVED)
 

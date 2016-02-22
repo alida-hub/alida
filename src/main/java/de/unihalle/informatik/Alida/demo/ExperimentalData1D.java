@@ -50,29 +50,24 @@ import de.unihalle.informatik.Alida.operator.ALDData;
  *
  */
 
+//SNIPPETCODE:Begin
 @ALDParametrizedClass
 public class ExperimentalData1D extends ALDData {
 	
-	/** Description
-	 */
-    @ALDClassParameter(label="description",
-    		dataIOOrder = 1)
+	/** Description */
+    @ALDClassParameter(label="description", dataIOOrder = 1)
     private String description = null;
 
-    /** The data
-     */
-    @ALDClassParameter(label="data",
-    		dataIOOrder = 2)
+    /** The data  */
+    @ALDClassParameter(label="data", dataIOOrder = 2)
     private Double[] data = null;
 
-    /** Are the data baseline corrected?
-     */
+    /** Are the data baseline corrected? */
     @ALDClassParameter(label="Baseline corrected",
     			dataIOOrder = 3)
     private boolean baselineCorrected = false;
     
-    @ALDClassParameter(label="Time resolution in milliseconds",
-    		dataIOOrder = 4)
+    @ALDClassParameter(label="Time resolution in milliseconds", dataIOOrder = 4)
     private Float timeResolution = Float.NaN;
 
     /** 
@@ -80,7 +75,8 @@ public class ExperimentalData1D extends ALDData {
       */
     public ExperimentalData1D() {
     }
-
+    //SNIPPETCODE:End
+    
     /** Constructor for an experiment.
       * Baseline correction is assumed to be false and nothung known about
       * the time resolution.
