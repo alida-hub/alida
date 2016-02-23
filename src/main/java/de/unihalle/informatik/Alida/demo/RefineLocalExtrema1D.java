@@ -136,4 +136,53 @@ public class RefineLocalExtrema1D extends ALDOperator {
 		}
 	}
 
+	/**
+	 * @return the extrema
+	 */
+	public Extrema1D getExtrema() {
+		return extrema;
+	}
+
+	/**
+	 * @param extrema the extrema to set
+	 */
+	public void setExtrema(Extrema1D extrema) {
+		this.extrema = extrema;
+	}
+
+	/**
+	 * @return the extremaSmoothedData
+	 */
+	public Extrema1D getExtremaSmoothedData() {
+		return extremaSmoothedData;
+	}
+
+	/**
+	 * @param extremaSmoothedData the extremaSmoothedData to set
+	 */
+	public void setExtremaSmoothedData(Extrema1D extremaSmoothedData) {
+		this.extremaSmoothedData = extremaSmoothedData;
+	}
+
+	/**
+	 * @return the epsilon
+	 */
+	public Integer getEpsilon() {
+		return epsilon;
+	}
+
+	/**
+	 * @param epsilon the epsilon to set
+	 */
+	public void setEpsilon(Integer epsilon) {
+		this.epsilon = epsilon;
+	}
+
+	/**
+	 * @return the refinedExtrema
+	 */
+	public Extrema1D getRefinedExtrema() {
+		return refinedExtrema;
+	}
+
 }

@@ -20,7 +20,7 @@ example).
 
 \begin{figure}[t]
 \begin{center}
-\centerline{\framebox{\includegraphics[clip, trim= 10 40 30 70, width=0.9\textwidth]{analyzeData-collapsed-edited}}}
+\centerline{\framebox{\includegraphics[clip, trim= 10 40 30 100, width=\textwidth]{Exp1-correctedMaxima-txt-rearranged.png}}}
 \end{center}
 \vspace*{-0.75cm}
 \caption[Example of a processing graph.]{\label{fig:DAG2}
@@ -66,11 +66,8 @@ classname in the bottom line.
 For each input and output parameter object the operator node features input and output ports which may be conceived as the entry or exit points of data into and out of the operator. These ports are depicted as filled ellipses in light green (input ports) and dark green (output ports),
 respectively. Each input port has exactly one incoming edge, while an output
 port may be connected to multiple target ports,
-depending on where the data is passed to. In Fig.~\ref{fig:DAG2} the result
-\icode{'clusters'} produced in the operator \icode{ALDClusterExperiment}
-is handed over to the operator \icode{SummarizeClusters} as well as
-returned as a result of the operator
-\icode{AnalyzeExperiment}. Each port of an operator has an individual name indicating the input or output object associated
+depending on where the data is passed to. 
+Each port of an operator has an individual name indicating the input or output object associated
 with the port. 
 
 In addition to operator nodes and their ports there are also data nodes in the

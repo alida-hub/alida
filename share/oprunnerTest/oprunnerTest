@@ -19,3 +19,30 @@ java de.unihalle.informatik.Alida.tools.ALDOpRunner ALDCalcMeanArray \
 java de.unihalle.informatik.Alida.tools.ALDOpRunner ALDCalcMeanArray \
 	data='[1,x,3]' mean=-
 
+## ExperimentatData1D
+java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
+	experiment='{ baselineCorrected=false , \
+                      description="my experiment" , \
+                      data=[1.0,2.0,2.2,3.3,2.0,1.0,1.0,1.0,1.0,2.0,3.3,2.0] }' \
+        smoothingMethod=MEAN width=3 \
+        smoothedExperiment=-
+
+java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
+	experiment=@../examples/data/Exp1.data  \
+        smoothedExperiment=@Exp1-smooth-txt
+
+java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
+	experiment=@Exp1-txt  \
+        smoothedExperiment=@Exp1-smooth-txt
+
+java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
+	experiment='{data=@myexp.data,description="Demo experiment"}' \
+        smoothedExperiment=@Exp1-smooth-txt
+
+java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
+	experiment='{data=@myexp.data,description="Demo experiment"}' \
+        smoothedExperiment='{data=@myexp-smooth.data,description=-}'
+
+java de.unihalle.informatik.Alida.tools.ALDOpRunner DemoWorkflow1D \
+	experiment=@Exp1-txt  smoothedExperiment=@Exp1-smooth-txt \
+	correctedExtrema=@Exp1-correctedMaxima-txt

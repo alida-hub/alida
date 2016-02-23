@@ -167,23 +167,25 @@ for details).
 The syntax for parameterized classes is a comma separated list of name=value pairs
 enclosed in curly brackets where names refer to annotated member variables of
 the parameterized class.
-This is shown for the class \icode{ExperimentalData}
-which holds an array of experimental data and descriptive text as annotated member fields.
+This is shown for the class \icode{ExperimentalData1D}
+which holds an 1D array of experimental data and descriptive text as annotated member fields.
 
-\begin{code}
-java de.unihalle.informatik.Alida.tools.ALDOpRunner NormalizeExperimentalDataOp \
-	experiment='{data=[[1,2,3],[2,2,2],[100,103,110]],description="Demo experiment"}' \
-	result=-
-\end{code}
+\begin{codecsh}
+java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
+	experiment='{ baselineCorrected=false , \
+		description="my experiment", \
+			data=[1.0,2.0,2.2,3.3,2.0,1.0,1.0,1.0,1.0,2.0,3.3,2.0]}' \
+	smoothingMethod=MEAN width=3 \
+	smoothedExperiment=-
+\end{codecsh}
 yields
 \begin{code}
-result = { normalized = true , 
-          description = "Demo experiment" (Normalized) , 
-          data = [[-1.0,0.0,1.0],[0.0,0.0,0.0],
-                  [-4.333333333333329,-1.3333333333333286,5.666666666666671]] }
+smoothedExperiment = { baselineCorrected=false , 
+    data=[1.5,1.73,2.5,2.5,2.1,1.33,1.0,1.0,1.33,2.10,2.43,2.65] , 
+    timeResolution=NaN , description="my experiment" (smoothed) }
 \end{code}
 
-If a class derived from \icode{ExperimentalData} was to be supplied to the operator,
+If a class derived from \icode{ExperimentalData1D} was to be supplied to the operator,
 the curly brackets can be prefixed by a derive class definition starting with a dollar sign
 and ending with a colon as shown for the summarizing operators above.
 
@@ -194,24 +196,27 @@ and ending with a colon as shown for the summarizing operators above.
 The following example shows, that the standard sytnax used  for file I/O
 may be nested
 \begin{code}
-  java de.unihalle.informatik.Alida.tools.ALDOpRunner NormalizeExperimentalDataOp \
-      experiment='{data=@myexp.data,description="Demo experiment"}' \ 
-      result=@normExp.data
+java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
+        experiment='{data=@myexp.data,description="Demo experiment"}' \
+        smoothedExperiment=@Exp1-smooth.txt
 \end{code}
 Here, the parameter \icode{description} of the parametrized class \icode{ExperimentalData} 
 is directly parsed from the string given on the command line, while
 the parameter \icode{data} is parsed from the content of the file \icode{myexp.data}.
+The resulting \icode{smoothedExperiment=@Exp1} is written to the file \icode{Exp1-smooth.txt}.
 
-Likewise, if an output parameter is a parametrized class, a subset of
+Likewise, if an output parameter is a parametrized class, as in this example, a subset of
 its parameters may be written to file, a part to standard output:
 \begin{code}
-  java de.unihalle.informatik.Alida.tools.ALDOpRunner ALDPCAOp \
-      experiment=@normExp.data result='{data=@pca.data,description=-}'
+java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
+        experiment='{data=@myexp.data,description="Demo experiment"}' \
+        smoothedExperiment='{data=@myexp-smooth.data,description=-}'
 \end{code}
 will return
 \begin{code}
-  result = { description="Demo experiment" (PCA) , data written using @pca.data }
+smoothedExperiment = { data written using @myexp-smooth.data , 
+          description="Demo experiment" (smoothed) }
 \end{code}
-which indicates that the data of the resulting experiment have been written
-to the file \icode{pca.data} as requested.
+which indicates that the data of the smoothed experiment have been written
+to the file \icode{@myexp-smooth.data} as requested.
 

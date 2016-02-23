@@ -59,7 +59,7 @@ public class ALDDynamicOp extends ALDOperator {
 	@Parameter( label="Info:", info=true, required=true, direction=Direction.IN, dataIOOrder=1)
 	private String info= "This might be an explanation,\n I think!";
 	
-	//SNIPPETCODE:parameterBegin
+	//SNIPPETCODE:parametersBegin
 	@Parameter( label= "useRealData", required = true, dataIOOrder = 2,
 			paramModificationMode = ParameterModificationMode.MODIFIES_INTERFACE,
 			callback = "initDataType", direction = Parameter.Direction.IN,	
