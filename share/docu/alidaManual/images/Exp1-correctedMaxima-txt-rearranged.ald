@@ -27,10 +27,10 @@
   <key id="aldClassname" for="node" attr.name="aldClassname" attr.type="string"/>
   <graph id="" edgedefault="undirected">
     <node id="n0">
-      <data key="x">322</data>
-      <data key="y">9</data>
-      <data key="height">517</data>
-      <data key="width">805</data>
+      <data key="x">289</data>
+      <data key="y">11</data>
+      <data key="height">432</data>
+      <data key="width">430</data>
       <data key="color">14 112 130</data>
       <data key="borderColor">177 83 112</data>
       <data key="text">Workflow1D</data>
@@ -117,10 +117,10 @@
           <data key="shape">Ellipse</data>
         </node>
         <node id="n0:n2">
-          <data key="x">29</data>
-          <data key="y">455</data>
-          <data key="height">22</data>
-          <data key="width">141</data>
+          <data key="x">26</data>
+          <data key="y">372</data>
+          <data key="height">20</data>
+          <data key="width">118</data>
           <data key="color">255 255 0</data>
           <data key="borderColor">14 112 130</data>
           <data key="text">correctedExtrema</data>
@@ -140,11 +140,11 @@
           <data key="shape">Ellipse</data>
         </node>
         <node id="n0:n3">
-          <data key="x">291</data>
-          <data key="y">100</data>
-          <data key="height">133</data>
-          <data key="width">206</data>
-          <data key="color">14 112 130</data>
+          <data key="x">151</data>
+          <data key="y">68</data>
+          <data key="height">120</data>
+          <data key="width">103</data>
+          <data key="color">177 83 112</data>
           <data key="borderColor">177 83 112</data>
           <data key="text">DetectLocalExtrema1D</data>
           <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -181,10 +181,10 @@
               </property>
             </properties>
           </data>
-          <data key="collapsed">false</data>
+          <data key="collapsed">true</data>
           <graph id="n0:n3:" edgedefault="undirected">
             <node id="n0:n3:n0">
-              <data key="x">20</data>
+              <data key="x">23</data>
               <data key="y">20</data>
               <data key="height">20</data>
               <data key="width">60</data>
@@ -207,8 +207,8 @@
               <data key="shape">Ellipse</data>
             </node>
             <node id="n0:n3:n1">
-              <data key="x">-625</data>
-              <data key="y">-430</data>
+              <data key="x">-62</data>
+              <data key="y">-1064</data>
               <data key="height">20</data>
               <data key="width">60</data>
               <data key="color">28 230 28</data>
@@ -230,8 +230,8 @@
               <data key="shape">Ellipse</data>
             </node>
             <node id="n0:n3:n2">
-              <data key="x">119</data>
-              <data key="y">73</data>
+              <data key="x">20</data>
+              <data key="y">60</data>
               <data key="height">20</data>
               <data key="width">60</data>
               <data key="color">50 112 50</data>
@@ -253,8 +253,8 @@
               <data key="shape">Ellipse</data>
             </node>
             <node id="n0:n3:n3">
-              <data key="x">96</data>
-              <data key="y">21</data>
+              <data key="x">272</data>
+              <data key="y">-298</data>
               <data key="height">30</data>
               <data key="width">90</data>
               <data key="color">200 200 200</data>
@@ -279,11 +279,11 @@
         </node>
         <data key="margin">20</data>
         <node id="n0:n4">
-          <data key="x">560</data>
-          <data key="y">92</data>
-          <data key="height">134</data>
-          <data key="width">225</data>
-          <data key="color">14 112 130</data>
+          <data key="x">268</data>
+          <data key="y">66</data>
+          <data key="height">125</data>
+          <data key="width">103</data>
+          <data key="color">177 83 112</data>
           <data key="borderColor">177 83 112</data>
           <data key="text">DetectLocalExtrema1D</data>
           <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -320,11 +320,11 @@
               </property>
             </properties>
           </data>
-          <data key="collapsed">false</data>
+          <data key="collapsed">true</data>
           <graph id="n0:n4:" edgedefault="undirected">
             <node id="n0:n4:n0">
-              <data key="x">20</data>
-              <data key="y">31</data>
+              <data key="x">23</data>
+              <data key="y">20</data>
               <data key="height">20</data>
               <data key="width">60</data>
               <data key="color">28 230 28</data>
@@ -346,8 +346,8 @@
               <data key="shape">Ellipse</data>
             </node>
             <node id="n0:n4:n1">
-              <data key="x">-1162</data>
-              <data key="y">-436</data>
+              <data key="x">-679</data>
+              <data key="y">-1055</data>
               <data key="height">20</data>
               <data key="width">60</data>
               <data key="color">28 230 28</data>
@@ -369,8 +369,8 @@
               <data key="shape">Ellipse</data>
             </node>
             <node id="n0:n4:n2">
-              <data key="x">127</data>
-              <data key="y">74</data>
+              <data key="x">20</data>
+              <data key="y">65</data>
               <data key="height">20</data>
               <data key="width">60</data>
               <data key="color">50 112 50</data>
@@ -392,8 +392,8 @@
               <data key="shape">Ellipse</data>
             </node>
             <node id="n0:n4:n3">
-              <data key="x">115</data>
-              <data key="y">20</data>
+              <data key="x">130</data>
+              <data key="y">45</data>
               <data key="height">30</data>
               <data key="width">90</data>
               <data key="color">200 200 200</data>
@@ -418,11 +418,11 @@
         </node>
         <data key="margin">20</data>
         <node id="n0:n5">
-          <data key="x">396</data>
-          <data key="y">282</data>
-          <data key="height">141</data>
-          <data key="width">236</data>
-          <data key="color">14 112 130</data>
+          <data key="x">218</data>
+          <data key="y">234</data>
+          <data key="height">120</data>
+          <data key="width">192</data>
+          <data key="color">177 83 112</data>
           <data key="borderColor">177 83 112</data>
           <data key="text">RefineLocalExtrema1D</data>
           <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -463,10 +463,10 @@
               </property>
             </properties>
           </data>
-          <data key="collapsed">false</data>
+          <data key="collapsed">true</data>
           <graph id="n0:n5:" edgedefault="undirected">
             <node id="n0:n5:n0">
-              <data key="x">100</data>
+              <data key="x">20</data>
               <data key="y">20</data>
               <data key="height">20</data>
               <data key="width">60</data>
@@ -489,10 +489,10 @@
               <data key="shape">Ellipse</data>
             </node>
             <node id="n0:n5:n1">
-              <data key="x">20</data>
-              <data key="y">20</data>
+              <data key="x">96</data>
+              <data key="y">21</data>
               <data key="height">20</data>
-              <data key="width">60</data>
+              <data key="width">76</data>
               <data key="color">28 230 28</data>
               <data key="borderColor">14 112 130</data>
               <data key="text">extremaSmoothedData</data>
@@ -512,8 +512,8 @@
               <data key="shape">Ellipse</data>
             </node>
             <node id="n0:n5:n2">
-              <data key="x">-670</data>
-              <data key="y">-680</data>
+              <data key="x">-43</data>
+              <data key="y">-1315</data>
               <data key="height">20</data>
               <data key="width">60</data>
               <data key="color">28 230 28</data>
@@ -535,10 +535,10 @@
               <data key="shape">Ellipse</data>
             </node>
             <node id="n0:n5:n3">
-              <data key="x">22</data>
-              <data key="y">81</data>
+              <data key="x">20</data>
+              <data key="y">60</data>
               <data key="height">20</data>
-              <data key="width">60</data>
+              <data key="width">80</data>
               <data key="color">50 112 50</data>
               <data key="borderColor">14 112 130</data>
               <data key="text">refinedExtrema</data>
@@ -558,8 +558,8 @@
               <data key="shape">Ellipse</data>
             </node>
             <node id="n0:n5:n4">
-              <data key="x">126</data>
-              <data key="y">64</data>
+              <data key="x">220</data>
+              <data key="y">40</data>
               <data key="height">30</data>
               <data key="width">90</data>
               <data key="color">200 200 200</data>
@@ -584,10 +584,10 @@
         </node>
         <data key="margin">20</data>
         <node id="n0:n6">
-          <data key="x">20</data>
-          <data key="y">120</data>
-          <data key="height">80</data>
-          <data key="width">200</data>
+          <data key="x">35</data>
+          <data key="y">69</data>
+          <data key="height">118</data>
+          <data key="width">105</data>
           <data key="color">177 83 112</data>
           <data key="borderColor">177 83 112</data>
           <data key="text">DetectBaseline1D</data>
@@ -624,8 +624,8 @@
           <data key="collapsed">true</data>
           <graph id="n0:n6:" edgedefault="undirected">
             <node id="n0:n6:n0">
-              <data key="x">20</data>
-              <data key="y">0</data>
+              <data key="x">25</data>
+              <data key="y">20</data>
               <data key="height">20</data>
               <data key="width">60</data>
               <data key="color">28 230 28</data>
@@ -648,7 +648,7 @@
             </node>
             <node id="n0:n6:n1">
               <data key="x">20</data>
-              <data key="y">40</data>
+              <data key="y">58</data>
               <data key="height">20</data>
               <data key="width">60</data>
               <data key="color">50 112 50</data>
@@ -670,8 +670,8 @@
               <data key="shape">Ellipse</data>
             </node>
             <node id="n0:n6:n2">
-              <data key="x">330</data>
-              <data key="y">100</data>
+              <data key="x">933</data>
+              <data key="y">-518</data>
               <data key="height">160</data>
               <data key="width">200</data>
               <data key="color">14 112 130</data>
@@ -737,7 +737,7 @@
                   <data key="shape">Ellipse</data>
                 </node>
                 <node id="n0:n6:n2:n1">
-                  <data key="x">-420</data>
+                  <data key="x">-415</data>
                   <data key="y">-550</data>
                   <data key="height">20</data>
                   <data key="width">60</data>
@@ -809,8 +809,8 @@
             </node>
             <data key="margin">20</data>
             <node id="n0:n6:n3">
-              <data key="x">125</data>
-              <data key="y">20</data>
+              <data key="x">728</data>
+              <data key="y">-598</data>
               <data key="height">30</data>
               <data key="width">90</data>
               <data key="color">200 200 200</data>
@@ -831,8 +831,8 @@
               <data key="shape">Triangle</data>
             </node>
             <node id="n0:n6:n4">
-              <data key="x">-90</data>
-              <data key="y">-450</data>
+              <data key="x">518</data>
+              <data key="y">-1068</data>
               <data key="height">30</data>
               <data key="width">90</data>
               <data key="color">200 200 200</data>
@@ -857,11 +857,11 @@
         </node>
         <data key="margin">20</data>
         <node id="n0:n7">
-          <data key="x">25</data>
-          <data key="y">287</data>
-          <data key="height">138</data>
-          <data key="width">267</data>
-          <data key="color">14 112 130</data>
+          <data key="x">26</data>
+          <data key="y">234</data>
+          <data key="height">120</data>
+          <data key="width">181</data>
+          <data key="color">177 83 112</data>
           <data key="borderColor">177 83 112</data>
           <data key="text">CorrectForBaseline1D</data>
           <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -898,10 +898,10 @@
               </property>
             </properties>
           </data>
-          <data key="collapsed">false</data>
+          <data key="collapsed">true</data>
           <graph id="n0:n7:" edgedefault="undirected">
             <node id="n0:n7:n0">
-              <data key="x">43</data>
+              <data key="x">20</data>
               <data key="y">20</data>
               <data key="height">20</data>
               <data key="width">60</data>
@@ -924,8 +924,8 @@
               <data key="shape">Ellipse</data>
             </node>
             <node id="n0:n7:n1">
-              <data key="x">143</data>
-              <data key="y">24</data>
+              <data key="x">101</data>
+              <data key="y">21</data>
               <data key="height">20</data>
               <data key="width">60</data>
               <data key="color">28 230 28</data>
@@ -948,9 +948,9 @@
             </node>
             <node id="n0:n7:n2">
               <data key="x">20</data>
-              <data key="y">78</data>
+              <data key="y">60</data>
               <data key="height">20</data>
-              <data key="width">92</data>
+              <data key="width">110</data>
               <data key="color">50 112 50</data>
               <data key="borderColor">14 112 130</data>
               <data key="text">correctedExtrema</data>
@@ -970,8 +970,8 @@
               <data key="shape">Ellipse</data>
             </node>
             <node id="n0:n7:n3">
-              <data key="x">157</data>
-              <data key="y">55</data>
+              <data key="x">325</data>
+              <data key="y">40</data>
               <data key="height">30</data>
               <data key="width">90</data>
               <data key="color">200 200 200</data>
@@ -996,8 +996,8 @@
         </node>
         <data key="margin">20</data>
         <node id="n0:n8">
-          <data key="x">-70</data>
-          <data key="y">-330</data>
+          <data key="x">559</data>
+          <data key="y">-965</data>
           <data key="height">30</data>
           <data key="width">90</data>
           <data key="color">200 200 200</data>
@@ -1018,8 +1018,8 @@
           <data key="shape">Triangle</data>
         </node>
         <node id="n0:n9">
-          <data key="x">-70</data>
-          <data key="y">-330</data>
+          <data key="x">559</data>
+          <data key="y">-965</data>
           <data key="height">30</data>
           <data key="width">90</data>
           <data key="color">200 200 200</data>
@@ -1045,8 +1045,8 @@
     <data key="margin">20</data>
     <data key="aldResultObject">n0:n2</data>
     <node id="n1">
-      <data key="x">153</data>
-      <data key="y">48</data>
+      <data key="x">20</data>
+      <data key="y">270</data>
       <data key="height">30</data>
       <data key="width">90</data>
       <data key="color">220 100 0</data>
@@ -1072,8 +1072,8 @@
       <data key="shape">Triangle</data>
     </node>
     <node id="n2">
-      <data key="x">164</data>
-      <data key="y">109</data>
+      <data key="x">120</data>
+      <data key="y">270</data>
       <data key="height">30</data>
       <data key="width">90</data>
       <data key="color">220 100 0</data>
@@ -1099,8 +1099,8 @@
       <data key="shape">Triangle</data>
     </node>
     <node id="n3">
-      <data key="x">26</data>
-      <data key="y">184</data>
+      <data key="x">44</data>
+      <data key="y">98</data>
       <data key="height">80</data>
       <data key="width">200</data>
       <data key="color">177 83 112</data>
@@ -1170,8 +1170,8 @@
           <data key="shape">Ellipse</data>
         </node>
         <node id="n3:n1">
-          <data key="x">-20</data>
-          <data key="y">-100</data>
+          <data key="x">-113</data>
+          <data key="y">177</data>
           <data key="height">20</data>
           <data key="width">60</data>
           <data key="color">28 230 28</data>
@@ -1193,8 +1193,8 @@
           <data key="shape">Ellipse</data>
         </node>
         <node id="n3:n2">
-          <data key="x">-20</data>
-          <data key="y">-100</data>
+          <data key="x">-113</data>
+          <data key="y">177</data>
           <data key="height">20</data>
           <data key="width">60</data>
           <data key="color">28 230 28</data>
@@ -1239,8 +1239,8 @@
           <data key="shape">Ellipse</data>
         </node>
         <node id="n3:n4">
-          <data key="x">-20</data>
-          <data key="y">-100</data>
+          <data key="x">-113</data>
+          <data key="y">177</data>
           <data key="height">30</data>
           <data key="width">90</data>
           <data key="color">200 200 200</data>
@@ -1265,8 +1265,8 @@
     </node>
     <data key="margin">20</data>
     <node id="n4">
-      <data key="x">31</data>
-      <data key="y">95</data>
+      <data key="x">60</data>
+      <data key="y">20</data>
       <data key="height">30</data>
       <data key="width">90</data>
       <data key="color">220 100 0</data>
@@ -1335,7 +1335,7 @@
       </data>
       <data key="shape">Triangle</data>
     </node>
-    <edge id="e0" source="n0:n0" target="n0:n6:n0">
+    <edge id="e0" source="n0:n4:n3" target="n0:n4:n2">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1344,7 +1344,16 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e1" source="n3:n3" target="n2">
+    <edge id="e1" source="n0:n3:n3" target="n0:n3:n2">
+      <data key="color">0 0 0</data>
+      <data key="text"/>
+      <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
+      <data key="textColor">0 0 0</data>
+      <data key="style">Solid</data>
+      <data key="arrow">Target</data>
+      <data key="width">1</data>
+    </edge>
+    <edge id="e2" source="n3:n3" target="n2">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1354,7 +1363,7 @@
       <data key="width">1</data>
       <data key="aldEdgeType">connectHistories</data>
     </edge>
-    <edge id="e2" source="n0:n0" target="n0:n3:n0">
+    <edge id="e3" source="n6" target="n3:n2">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1363,7 +1372,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e3" source="n0:n7:n3" target="n0:n7:n2">
+    <edge id="e4" source="n0:n8" target="n0:n4:n1">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1372,7 +1381,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e4" source="n0:n6:n0" target="n0:n6:n2:n0">
+    <edge id="e5" source="n2" target="n0:n1">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1381,7 +1390,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e5" source="n0:n1" target="n0:n4:n0">
+    <edge id="e6" source="n5" target="n3:n1">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1390,7 +1399,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e6" source="n0:n3:n3" target="n0:n3:n2">
+    <edge id="e7" source="n0:n9" target="n0:n5:n2">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1399,7 +1408,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e7" source="n6" target="n3:n2">
+    <edge id="e8" source="n0:n6:n3" target="n0:n6:n1">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1408,7 +1417,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e8" source="n0:n6:n1" target="n0:n7:n0">
+    <edge id="e9" source="n4" target="n3:n0">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1417,7 +1426,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e9" source="n0:n6:n3" target="n0:n6:n1">
+    <edge id="e10" source="n0:n8" target="n0:n3:n1">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1426,7 +1435,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e10" source="n0:n8" target="n0:n4:n1">
+    <edge id="e11" source="n0:n1" target="n0:n4:n0">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1435,7 +1444,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e11" source="n3:n4" target="n3:n3">
+    <edge id="e12" source="n0:n6:n2:n3" target="n0:n6:n2:n2">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1444,7 +1453,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e12" source="n0:n4:n2" target="n0:n5:n1">
+    <edge id="e13" source="n0:n7:n3" target="n0:n7:n2">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1453,7 +1462,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e13" source="n0:n9" target="n0:n5:n2">
+    <edge id="e14" source="n0:n0" target="n0:n6:n0">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1462,7 +1471,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e14" source="n0:n7:n2" target="n0:n2">
+    <edge id="e15" source="n0:n6:n0" target="n0:n6:n2:n0">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1471,7 +1480,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e15" source="n4" target="n3:n0">
+    <edge id="e16" source="n1" target="n0:n0">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1480,7 +1489,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e16" source="n0:n6:n4" target="n0:n6:n2:n1">
+    <edge id="e17" source="n0:n6:n1" target="n0:n7:n0">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1489,7 +1498,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e17" source="n0:n6:n2:n3" target="n0:n6:n2:n2">
+    <edge id="e18" source="n0:n3:n2" target="n0:n5:n0">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1498,16 +1507,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e18" source="n1" target="n0:n0">
-      <data key="color">0 0 0</data>
-      <data key="text"/>
-      <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
-      <data key="textColor">0 0 0</data>
-      <data key="style">Solid</data>
-      <data key="arrow">Target</data>
-      <data key="width">1</data>
-    </edge>
-    <edge id="e19" source="n2" target="n0:n1">
+    <edge id="e19" source="n0:n7:n2" target="n0:n2">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1534,7 +1534,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e22" source="n5" target="n3:n1">
+    <edge id="e22" source="n0:n4:n2" target="n0:n5:n1">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1543,7 +1543,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e23" source="n0:n4:n3" target="n0:n4:n2">
+    <edge id="e23" source="n0:n0" target="n0:n3:n0">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1552,7 +1552,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e24" source="n0:n8" target="n0:n3:n1">
+    <edge id="e24" source="n0:n6:n4" target="n0:n6:n2:n1">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
@@ -1561,7 +1561,7 @@
       <data key="arrow">Target</data>
       <data key="width">1</data>
     </edge>
-    <edge id="e25" source="n0:n3:n2" target="n0:n5:n0">
+    <edge id="e25" source="n3:n4" target="n3:n3">
       <data key="color">0 0 0</data>
       <data key="text"/>
       <data key="textFont">1|Arial|8.0|0|GTK|1|</data>
