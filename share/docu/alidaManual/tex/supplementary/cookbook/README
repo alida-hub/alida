@@ -1,0 +1,4 @@
+compile the .tex file to a .wiki file using Tex2Wiki in alida internal
+(i.e. not shipped with alida)
+
+java -Xmx2g -cp $CP de/unihalle/informatik/Alida/admin/texToWiki/Tex2Wiki defs AliadaFiveMinutes
