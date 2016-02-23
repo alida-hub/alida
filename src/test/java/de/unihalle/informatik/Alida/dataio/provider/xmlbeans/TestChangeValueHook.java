@@ -98,7 +98,8 @@ public class TestChangeValueHook {
 					" read = " + extremaBack.getLength());
 		}
 		
-		assertTrue("Got different int[] back", isEqual( extrema, extremaBack));
+		assertTrue( "Got different lengths" , extrema.getLength() == extremaBack.getLength() );
+		assertTrue("Got different extrema back", isEqual( extrema, extremaBack));
 	}
 	
 	
