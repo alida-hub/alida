@@ -16,7 +16,7 @@ as the abstract method \icode{operate()} is declared \icode{protected}.
 
 An example of how to use an operator is given in Fig.~\ref{exa:useop}.
 First, a new instance of the operator is created (line 1), and subsequently
-input parameters are set (lines 2 and 3).
+further input parameters are set (lines 2 and 3).
 If all required input parameters have been assigned for the operator object,
 it can be invoked calling its \icode{runOp()} method (line 4). 
 Upon invocation of \icode{runOp()}  the validity of input parameters is checked. 
@@ -39,7 +39,7 @@ data processing itself fails.\\
 
 \begin{figure}[hb]
 \lstinputlisting[xrightmargin=.\textwidth,
-xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/NormalizeExperimentalDataOp-use.snippet}
+xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/fixed-snippets/NormalizeExperimentalDataOp-use.snippet}
 \caption{\label{exa:useop}An example of how to use an operator, in this case
 	\icode{NormalizeExperimentalDataOp}.}
 \end{figure}
@@ -50,7 +50,7 @@ the method \icode{runOp(hidingMode)} is available where the value of
 \icode{'hidingMode'} influences the visibility of the operator invocation in the
 history.
 If \icode{'hidingMode'} is \icode{VISIBLE} then the invocation of the operator
-is visible.
+is visible in the history.
 If the value is \icode{HIDDEN} the invocation of the operator and all is children is hidden.
 Finally, if \icode{hidingMode} is set to \icode{HIDE\_CHILDREN} the operator itself is visible,
 but all its children are hidden from the history
@@ -98,8 +98,8 @@ provides two different view modes for either only operators annotated as
 \icode{'APPLICATION'}, or all operators registered according to the
 \texttt{@ALDAOperator} annotation.
 
-Finally, the annotation also allows to release an operator for batch
-processing. If the parameter \icode{'allowBatchMode'} is set to \icode{'true'},
+Finally, the annotation also allows to enable batch
+processing for an operator. If the parameter \icode{'allowBatchMode'} is set to \icode{'true'},
 which is the default, the operator control frame triggered by the GUI operator
 runner will show the batch mode tab, and it is expected that the operator
 behaves reasonable in that mode. If the parameter is set to
@@ -191,27 +191,59 @@ displaying all.
 The annotation parameter \icode{'callback'} allows to specifiy the name of a method of this operator
 which is to be automatically invoked by \alida if the annotated parameter's value is changed.
 Note the callback method is invoked automatically only when changing the
-parameter value using the \icode{setParameter()} method. Callback functions offer the possibility to
+parameter value using the \icode{setParameter()} method. Callback functions offer amongst others the possibility to
 dynamically reconfigure operators depending on the current context. In particular it is possible to
 add and remove parameters dynamically. Consider for example an operator allowing for different types
-of inputs, i.e.~arrays and lists. Each of these types requires specific treatment in data
+of inputs, e.g.~an \icode{int} or a \icode{float} value. Each of these types requires specific treatment in data
 I/O, i.e.~the graphical user interface needs to provide two different graphical elements. Thus,
 to handle the different parameters one option would be to add two parameters of the two different
 types to the operator and always display both (although only one is needed at a time). Using
 callbacks a more elegant way to solve the problem is available. We can add another parameter
-\icode{'input mode'} to the operator which allows to select the type of input. If we furthermore
+\icode{'useRealData'} to the operator which allows to select the type of input
+(see Fig.~\ref{exa:callback-define}). If we furthermore
 define a callback function for that parameter the user interface of the operator can dynamically be
 reconfigured. Depending on the chosen input mode the corresponding input parameter can be added
 and the second one be removed dynamically. Adding and removing parameters can be accomplished with
 the methods \icode{'addParameter()'} and \icode{'removeParameter()'} of \icode{ALDOperator}.
 
+\begin{figure}[h]
+\lstinputlisting[xrightmargin=.0\textwidth,
+xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/ALDDynamicOp-parameters.snippet}
+\caption{\label{exa:callback-define}Example declaring a parameter which dynamically reconfigures the operator \icode{ALDDynamicOp} in the demo package.}
+\end{figure}
+
+
 Note that changing the set of parameters of an operator
 dynamically requires \alida to update its internal representation and also graphical user interfaces
 attached to the operator. To this end the programmer is requested to let \alida know that a callback
-function changes the parameter set of an operator. This is to be accomplished using the
-annotation parameter \icode{modifiesParameterDefinitions} which is to be set to \icode{'true'} or
-\icode{'false'}. Note that if the parameter is set to false and a callback function nonetheless 
-modifies the parameters of an operator, undefined behaviour of the operator may result.
+function changes the parameter set of an operator. This is accomplished using the
+annotation parameter \icode{modifiesParameterDefinitions} which is to be set to \icode{MODIFIES\_INTERFACE}.
+If changing the parameter value does only modify the values of other parameters,
+but not the set of configured parameters,
+\icode{modifiesParameterDefinitions}  is to be set to \icode{MODIFIES\_VALUES\_ONLY}.
+Note if \icode{modifiesParameterDefinitions} is set incorrectly,
+undefined behaviour of the operator may result.
+The callback method handling the modification of current parameters known by the operator
+should for safety not assume a consistent configuration of the parameters.
+For example upon instantiation an inconstitent state my exist temporarily.
+Care has been taken to consistently configure the operator in any of the constructors of the operator.
+
+\begin{figure}[h]
+\lstinputlisting[xrightmargin=.0\textwidth,
+xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/ALDDynamicOp.snippet}
+\caption{\label{exa:callback-method}Example of a callback method modifying known parameters of the operator  \icode{ALDDynamicOp} in the demo package.}
+\end{figure}
+
+Finally it should be noted that in general care has to be taken when using and implementing callback functions
+and reconfiguring the parameter.
+For example, mutual calls of different callback functions need to avoid infinite calls.
+Consider two parameters \icode{width} and \icode{height} which should adhere to a given aspect ratio.
+Thus each of the two parameters is supplied with a callback function which sets the 
+other parameter according to the new value and the aspect ratio.
+If this is however done via the \icode{setParamteter()} method this will provoke infinite recursion.
+To avoid this either the parameter can be changed using directly assigning a value,
+or -- probably the better choice -- using \icode{setParamteter()}  only in case that the value indeed needs to be set to a new value.
+Otherwise, if old and new values are identical, nothing is to be done.
 
 \paragraph{Operator functionality.}
 The method \icode{operate()} implements the functionality of the operator. All data
@@ -247,8 +279,8 @@ As decribed in Sec~\ref{subsec:using} the visibility of an operator invocation i
 processing history may be
 influcenced by the parameters of the  \icode{runOp()} method.
 By this means the visibility of each operator invocation may be set to
-icode{VISIBLE}, \icode{hidingMode}, or \icode{HIDE\_CHILDREN}.
-This only allows to determine the visibility of further operators directly
+\icode{VISIBLE}, \icode{HIDDEN}, or \icode{HIDE\_CHILDREN}.
+This also allows to determine the visibility of further operators directly
 invoked by their \icode{runOp()} method but not of operators indirectly invoked.
 Thus, the implementor of an operator may influence the visibility
 of its own invocation using the method \icode{setHidingMode(hidingMode)}.
@@ -259,7 +291,8 @@ the \icode{operate()} method.
 
 \textbf{Important note:} It is strongly recommended that an operator
 does not rely on specific initializations, e.g., of private fields, that are
-performed in a constructor and depend on the values of input parameters. Rather,
+performed in a constructor (besides the default constructor)
+and depend on the values of input parameters. Rather,
 it is advised that upon invocation of the \texttt{operate()} method an operator performs all necessary initializations according to the parameter settings.
 This allows to take into account changes of parameter values subsequent to
 construction of the operator object by using the \texttt{setParameter(\ldots)}
@@ -370,7 +403,7 @@ and operators.
 In addition, so called \textit{parameterized classes} are supported.
 Any Java class may be declared to be a parameterized class in \alida
 by annotating the class with \icode{@ALDParametrizedClass} as shown for the
-class \icode{ExperimentalData} in Fig.\ref{exa:parametrizedClass}.
+class \icode{ExperimentalData1D} in Fig.\ref{exa:parametrizedClass}.
 The class is annotated by \icode{@ALDParametrizedClass},
 and all members to be configured via \alida's user interfaces are
 to be annotated with \icode{@ALDClassParameter}. This annotation offers the
@@ -395,7 +428,7 @@ are also converted to XML format. However, in doing so only {\em annotated}
 member variables of the parametrized class are taken into account. Consequently,
 also only these member variables of the object will get proper values after
 reload.
-In some cases, however, this might yield to inconsistencies in an object's state
+In some cases, however, this might lead to inconsistencies in an object's state
 after reload. Consider for example a parameterized class representing a set of
 points. Most likely this class will define a member variable of a list type
 which holds the points, and as this member holds the core data of the data
@@ -408,7 +441,7 @@ string defining a method of the class at hand which is to be called after all
 annotated member variables have been properly set during reload. The method may
 then perform some kind of post-processing of the object's configuration, i.e.,
 set the point counter variable to the number of points found in the given list.
-Note that the hook method should not expect any arguments.
+Note that the hook method may not expect any arguments.
 
 The above annotations are
 the only implementational overhead to allow \alida to automatically generate user interfaces where the parameterized class acts as a parameter.
@@ -418,8 +451,8 @@ special cases of parameterized classes.
 
 \begin{figure}
 \lstinputlisting[xrightmargin=.\textwidth,
-xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/ExperimentalData.snippet}
-\caption{\label{exa:parametrizedClass}The class \icode{ExperimentalData} as an example of a parameterized class.}
+xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/ExperimentalData1D.snippet}
+\caption{\label{exa:parametrizedClass}The class \icode{ExperimentalData1D} as an example of a parameterized class.}
 \end{figure}
 
 \paragraph{Automatic documentation}

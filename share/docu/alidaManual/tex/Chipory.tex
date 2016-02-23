@@ -30,7 +30,8 @@ The optional directory supplied as an argument denotes the path where
 If omitted, the current working directory is used.
 
 \begin{figure}[ht]
-{\centerline{{\includegraphics[clip, trim= 0 0 0 0, width=0.85\textwidth]{analyzeData-collapsed-edited}}}}
+\centerline{{\includegraphics[clip, trim= 10 40 30 90, width=\textwidth]{Exp1-correctedMaxima-txt-rearranged.png}}}
+%%{\centerline{{\includegraphics[clip, trim= 0 0 0 0, width=0.85\textwidth]{analyzeData-collapsed-edited}}}}
 \caption[Example of a processing graph.]{\label{fig:DAG-repeat}
 Example processing graph.
 }
@@ -38,10 +39,10 @@ Example processing graph.
 
 \begin{figure}
 \begin{center}
-{\framebox{\includegraphics[clip, trim= 520 90 50 70, width=0.4\textwidth]{analyzeData-edited}}}
+{\includegraphics[clip, trim= 180 20 160 140, width=0.4\textwidth]{Exp1-correctedMaxima-txt-uncollapsed.png}}
 \caption{\label{fig:exa}Screenshot of \mtbc for a part of the same processing graph as shown in
 Fig.~\ref{fig:DAG-repeat}, however, the collapsed instance of the
-\icode{ALDClusterExpeiment} has been uncollapsed.}
+\icode{DetectBaseline1D} has been uncollapsed.}
 \end{center}
 \end{figure}
 
@@ -74,8 +75,8 @@ The name of an operator is displayed in a colored area at the bottom of its rect
 If an operator node is uncollapsed it is shown in blue, if it is collapsed it is
 of dark red.
 This is shown in Fig.~\ref{fig:DAG-repeat} 
-where the operators \icode{ALDClusterExperiment}  and \icode{NormalizeExperiment}
-have been collapsed.
+where the operator \icode{DetectBaseline1D}  
+has been collapsed.
 A selected operator node may be collapsed or uncollapsed 
 via its context menu or by a left double mouse click while pressing down the shift key.
 Collapsing makes all enclosed operator and data nodes invisible, thus, only
@@ -84,7 +85,7 @@ If the node is uncollapsed lateron, enclosed nodes are made recursively visible
 again, until a collapsed node is encountered.
 Uncollapsing additionally invokes the automatic layout algorithm, hence, any manual
 layout adjustments applied before are lost.
-If we uncollapse the operator \icode{ALDClusterExperiment}
+If we uncollapse the operator \icode{DetectBaseline1D}
 as shown in Fig.~\ref{fig:exa}, we can inspect the data processing 
 accomplished within this operator.
 
@@ -93,11 +94,11 @@ the triangle is tagged by a string and colored orange.
 %%If the
 %%data object extends the class \icode{ALDData} this string gives the filename
 %%the data was read from.
-As the data read from file \icode{'normExp.data'}
+As the data read from file \icode{'Exp1-smooth.txt'}
 has a processing graph associated,
 this history is also included into the processing graph and 
 connected by a dashed edge.
-This history was written to the file \icode{'normExp.ald'} by previous
+This history was written to the file \icode{'Exp1-smooth.txt.ald'} by previous
 processing using \alida.
 
 %%From this processing history we find
@@ -106,9 +107,9 @@ processing using \alida.
 
 \begin{figure}
 \begin{center}
-{\includegraphics[width=\textwidth]{analyzeData-collapsed-edited-withProperties}}
+{\includegraphics[clip,trim=10 380 190 130,width=\textwidth]{Exp1-correctedMaxima-txt-withPorperties.png}}
 \caption{\label{fig:exa1}Screenshot of \mtbc with details for the operators
-\icode{ALDClusterExperiment} and \icode{SummarizeClusters}.
+\icode{SmoothData1D} and \icode{RefineLocalExtrema1D}.
 }
 \end{center}
 \end{figure}
@@ -119,8 +120,8 @@ dark green ellipses, respectively.
 The single exception
 is the port for which the processing graph was constructed, which is depicted in
 yellow.
-In our example this is the output port \icode{'summaryOfExperiments'} of the
-operator \icode{AnalyzeExperiment}.
+In our example this is the output port \icode{'correctedExtrema'} of the
+operator \icode{CorrectForBaseline1D}.
 
 More details for operators and ports may be inspected using the \textit{Object properties}
 of {\em Chisio's} nodes.
@@ -140,7 +141,7 @@ into the operator along with the explanatory text of this port
 	given when passed out of the operator, if it is of type \icode{ALDData}.
 \end{itemize}
 In Fig.~\ref{fig:exa1} this is shown for the operators
-\icode{ALDClusterExperiment} and \icode{SummarizeClusters}.
+\icode{SmoothData1D} and \icode{RefineLocalExtrema1D}.
 
 
 

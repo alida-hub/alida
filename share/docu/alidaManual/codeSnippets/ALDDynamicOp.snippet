@@ -1,0 +1,22 @@
+	public void initDataType() throws ALDOperatorException {
+		if ( verbose ) System.out.println( "ALDDynamicOp::initDataType");
+		if ( useRealData) {
+			if ( hasParameter(intParameterName)) {
+				this.removeParameter(intParameterName);
+			}
+
+			if ( ! hasParameter(floatParameterName)) {
+				this.addParameter( floatParameterName);
+			}
+		} else {
+			if ( hasParameter(floatParameterName)) {
+				this.removeParameter(floatParameterName);
+			}
+
+			if ( ! hasParameter(intParameterName)) {
+				this.addParameter( intParameterName);
+ 			}
+		}
+
+		if ( verbose ) this.printInterface();
+	}

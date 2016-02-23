@@ -42,12 +42,7 @@ import de.unihalle.informatik.Alida.annotations.ALDAOperator;
 import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
 
 /**
- * Operator to detect a baseline in the data of an ExperimentalData1D.
- * <p>
- * This is accomplished first detecting local minima in the data
- * and then fitting a line through these minima.
- * If less then two minima are detected a line is fit through the first
- * and last data point of the data.
+ * Operator implementing a workflow using {@link ExperimentalData1D}.
  * 
  * @author posch
  */
@@ -55,7 +50,7 @@ import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
 @ALDDerivedClass
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
               level=ALDAOperator.Level.APPLICATION)
-public class DetectBaseline1D extends ALDOperator {
+public class DemoWorkflow1D extends ALDOperator {
 
 	/** 1D Experiment
 	 */
@@ -64,79 +59,63 @@ public class DetectBaseline1D extends ALDOperator {
 			description = "1D Experiment",
 			dataIOOrder = 1)
 	protected ExperimentalData1D experiment;
-	
-	/**
-	 * The baseline detected
+
+	/** Smoothed 1D Experiment
 	 */
-	@Parameter( label= "Baseline",  
-			direction = Parameter.Direction.OUT, 
-			description = "Baseline",
+	@Parameter( label= "Smoothed 1D Experiment", required = true, 
+			direction = Parameter.Direction.IN, 
+			description = "Smoothed 1D Experiment",
 			dataIOOrder = 1)
-	protected Baseline1D baseline;
+	protected ExperimentalData1D smoothedExperiment;
+
+	/** Corrected extrema 
+	 */
+	@Parameter( label= "Corrected extrema",  
+			direction = Parameter.Direction.OUT,
+			description = "Corrected extrema",
+			dataIOOrder = 1)
+	protected Extrema1D correctedExtrema;
+
 
 	/**
 	 * Default constructor.
 	 * @throws ALDOperatorException
 	 */
-	public DetectBaseline1D() throws ALDOperatorException {
+	public DemoWorkflow1D() throws ALDOperatorException {
 	}
 
 	@Override
 	protected void operate() throws ALDOperatorException, ALDProcessingDAGException {
-		// detect minima
-		DetectLocalExtrema1D detectExtremaOp = new DetectLocalExtrema1D();
-		detectExtremaOp.setExperiment( experiment);
-		detectExtremaOp.setExtremaType(ExtremaType.MINIMUM);
-		detectExtremaOp.runOp();
-		Extrema1D minima = detectExtremaOp.getExtrema();
+		// detect maxima in data
+		DetectLocalExtrema1D detectLE = new DetectLocalExtrema1D();
+		detectLE.setExperiment( this.experiment);
+		detectLE.setExtremaType( ExtremaType.MAXIMUM);
+		detectLE.runOp();
 		
-		if ( minima.size() >= 2) {
-			double[] x = new double[minima.size()];
-			double[] y = new double[minima.size()];
-			
-			for ( int i=0 ; i < minima.size() ; i++) {
-				x[i] = minima.getX(i);
-				y[i] = minima.getY(i);
-			}
-
-			baseline = fit( x, y);
-		} else {
-			Double[] data = experiment.getData();
-			Double slope = (data[data.length-1] - data[0]);
-			slope /= data.length-1;
-			
-			baseline = new Baseline1D( slope, data[0]);
-		}
-	}
-	
-	/** least squares fit through points given with their
-	 *  {@code x} and {@code y} coordinates.
-	 *  The arrays {@code x} and {@code y} are assumed to be of the same length.
-	 * 
-	 * @param x
-	 * @param y
-	 * @return
-	 */
-	private Baseline1D fit( double[] x, double y[]) {
-		double sumx = 0.0;
-		double sumy = 0.0;
-
-		for ( int i = 0 ; i < x.length ; i++) {
-			sumx += x[i];
-			sumy += y[i];
-		}
-		double xbar = sumx / x.length;
-		double ybar = sumy / x.length;
-
-		// second pass: compute summary statistics
-		double xxbar = 0.0, xybar = 0.0;
-		for (int i = 0; i < x.length; i++) {
-			xxbar += (x[i] - xbar) * (x[i] - xbar);
-			xybar += (x[i] - xbar) * (y[i] - ybar);
-		}
+		DetectLocalExtrema1D detectLES = new DetectLocalExtrema1D();
+		detectLES.setExperiment( this.smoothedExperiment);
+		detectLES.setExtremaType( ExtremaType.MAXIMUM);
+		detectLES.runOp();
 		
-		double slope = xybar / xxbar;
-		return new Baseline1D( slope, ybar - slope * xbar); 
+		// refine maxima
+		RefineLocalExtrema1D refineOp = new RefineLocalExtrema1D();
+		refineOp.setExtrema( detectLE.getExtrema());
+		refineOp.setExtremaSmoothedData( detectLES.getExtrema());
+		refineOp.setEpsilon( 3);
+		refineOp.runOp();
+		
+		// detect baseline
+		DetectBaseline1D baselineOp = new DetectBaseline1D();
+		baselineOp.setExperiment( this.experiment);
+		baselineOp.runOp();
+		
+		// correct maxima
+		CorrectForBaseline1D correctOp = new CorrectForBaseline1D();
+		correctOp.setExtrema( refineOp.getRefinedExtrema());
+		correctOp.setBaseline( baselineOp.getBaseline());
+		correctOp.runOp();
+		
+		this.correctedExtrema = correctOp.getCorrectedExtrema();
 	}
 
 	/**
@@ -154,9 +133,24 @@ public class DetectBaseline1D extends ALDOperator {
 	}
 
 	/**
-	 * @return the baseline
+	 * @return the smoothedExperiment
 	 */
-	public Baseline1D getBaseline() {
-		return baseline;
+	public ExperimentalData1D getSmoothedExperiment() {
+		return smoothedExperiment;
 	}
+
+	/**
+	 * @param smoothedExperiment the smoothedExperiment to set
+	 */
+	public void setSmoothedExperiment(ExperimentalData1D smoothedExperiment) {
+		this.smoothedExperiment = smoothedExperiment;
+	}
+
+	/**
+	 * @return the correctedExtrema
+	 */
+	public Extrema1D getCorrectedExtrema() {
+		return correctedExtrema;
+	}
+
 }

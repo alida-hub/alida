@@ -1,0 +1,35 @@
+@ALDParametrizedClass
+public class ExperimentalData1D extends ALDData {
+	
+	/** Description */
+    @ALDClassParameter(label="description", dataIOOrder = 1)
+    private String description = null;
+
+    /** The data  */
+    @ALDClassParameter(label="data", dataIOOrder = 2)
+    private Double[] data = null;
+
+    /** Are the data baseline corrected? */
+    @ALDClassParameter(label="Baseline corrected",
+    			dataIOOrder = 3)
+    private boolean baselineCorrected = false;
+    
+    @ALDClassParameter(label="Time resolution in milliseconds", dataIOOrder = 4)
+    private Float timeResolution = Float.NaN;
+
+    /** 
+     * Standard constructor is required
+      */
+    public ExperimentalData1D() {
+    }
+    
+    /** Constructor for an experiment.
+      * Baseline correction is assumed to be false and nothung known about
+      * the time resolution.
+      *
+      * @param  description   a textual description of the experiment
+      * @param  data   measurements
+      */
+    public ExperimentalData1D( String description, Double[] data) {    
+        this( description, data, false, Float.NaN);
+    }

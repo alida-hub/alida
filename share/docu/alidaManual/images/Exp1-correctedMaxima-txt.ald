@@ -1,0 +1,614 @@
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+  <desc>Alida Processing History</desc>
+  <key id="aldName" for="node" attr.name="aldName" attr.type="string"/>
+  <key id="aldNodeType" for="node" attr.name="aldNodeType" attr.type="string"/>
+  <key id="aldExplanation" for="node" attr.name="aldExplanation" attr.type="string"/>
+  <key id="aldClassname" for="node" attr.name="aldClassname" attr.type="string"/>
+  <key id="aldProps" for="node" attr.name="aldProperties" attr.type="string"/>
+  <key id="aldParas" for="node" attr.name="aldParameteres" attr.type="string"/>
+  <key id="aldParasXML" for="node" attr.name="aldParameteresAsXml" attr.type="string"/>
+  <key id="aldOutput" for="graph" attr.name="aldOutput" attr.type="string"/>
+  <key id="aldXml" for="graph" attr.name="aldXmlHistory" attr.type=""/>
+  <key id="aldEdgeType" for="edge" attr.name="aldEdgeType" attr.type="string"/>
+  <graph edgedefault="directed">
+    <data key="aldResultObject">ALDDAG0:OutputPort0-of-OpNode0</data>
+    <node id="ALDDAG0:OpNode0">
+      <data key="aldName">Workflow1D</data>
+      <data key="aldNodeType">OpNode</data>
+      <data key="aldParas">
+        <properties>
+          <property>
+            <key>experiment</key>
+            <value>de.unihalle.informatik.Alida.demo.ExperimentalData1D@2957fcb0</value>
+          </property>
+          <property>
+            <key>smoothedExperiment</key>
+            <value>de.unihalle.informatik.Alida.demo.ExperimentalData1D@4c203ea1</value>
+          </property>
+        </properties>
+      </data>
+      <data key="aldProps">
+        <properties>
+          <property>
+            <key>classname</key>
+            <value>Workflow1D</value>
+          </property>
+          <property>
+            <key>package</key>
+            <value>de.unihalle.informatik.Alida.demo</value>
+          </property>
+          <property>
+            <key>version</key>
+            <value>2.6.2-SNAPSHOT</value>
+          </property>
+        </properties>
+      </data>
+      <graph edgedefault="directed">
+        <node id="ALDDAG0:InputPort0-of-OpNode0">
+          <data key="aldName">experiment</data>
+          <data key="aldNodeType">InputPort</data>
+          <data key="aldExplanation">1D Experiment</data>
+          <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.ExperimentalData1D</data>
+        </node>
+        <node id="ALDDAG0:InputPort1-of-OpNode0">
+          <data key="aldName">smoothedExperiment</data>
+          <data key="aldNodeType">InputPort</data>
+          <data key="aldExplanation">Smoothed 1D Experiment</data>
+          <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.ExperimentalData1D</data>
+        </node>
+        <node id="ALDDAG0:OutputPort0-of-OpNode0">
+          <data key="aldName">correctedExtrema</data>
+          <data key="aldNodeType">OutputPort</data>
+          <data key="aldExplanation">Corrected extrema</data>
+          <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.Extrema1D</data>
+          <data key="aldProps">
+            <properties/>
+          </data>
+        </node>
+        <node id="ALDDAG0:OpNode1">
+          <data key="aldName">DetectLocalExtrema1D</data>
+          <data key="aldNodeType">OpNode</data>
+          <data key="aldParas">
+            <properties>
+              <property>
+                <key>experiment</key>
+                <value>de.unihalle.informatik.Alida.demo.ExperimentalData1D@2957fcb0</value>
+              </property>
+              <property>
+                <key>extremaType</key>
+                <value>MAXIMUM</value>
+              </property>
+            </properties>
+          </data>
+          <data key="aldProps">
+            <properties>
+              <property>
+                <key>classname</key>
+                <value>DetectLocalExtrema1D</value>
+              </property>
+              <property>
+                <key>package</key>
+                <value>de.unihalle.informatik.Alida.demo</value>
+              </property>
+              <property>
+                <key>version</key>
+                <value>2.6.2-SNAPSHOT</value>
+              </property>
+            </properties>
+          </data>
+          <graph edgedefault="directed">
+            <node id="ALDDAG0:InputPort0-of-OpNode1">
+              <data key="aldName">experiment</data>
+              <data key="aldNodeType">InputPort</data>
+              <data key="aldExplanation">1D Experiment</data>
+              <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.ExperimentalData1D</data>
+            </node>
+            <node id="ALDDAG0:InputPort1-of-OpNode1">
+              <data key="aldName">extremaType</data>
+              <data key="aldNodeType">InputPort</data>
+              <data key="aldExplanation">Type of extrema (min,max)</data>
+              <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.DetectLocalExtrema1D$ExtremaType</data>
+            </node>
+            <node id="ALDDAG0:OutputPort0-of-OpNode1">
+              <data key="aldName">extrema</data>
+              <data key="aldNodeType">OutputPort</data>
+              <data key="aldExplanation">Local Extrema</data>
+              <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.Extrema1D</data>
+              <data key="aldProps">
+                <properties/>
+              </data>
+            </node>
+            <node id="ALDDAG0:DataPort0">
+              <data key="aldName"/>
+              <data key="aldNodeType">DataPort</data>
+              <data key="aldProps">
+                <properties/>
+              </data>
+            </node>
+          </graph>
+        </node>
+        <node id="ALDDAG0:OpNode2">
+          <data key="aldName">DetectLocalExtrema1D</data>
+          <data key="aldNodeType">OpNode</data>
+          <data key="aldParas">
+            <properties>
+              <property>
+                <key>experiment</key>
+                <value>de.unihalle.informatik.Alida.demo.ExperimentalData1D@4c203ea1</value>
+              </property>
+              <property>
+                <key>extremaType</key>
+                <value>MAXIMUM</value>
+              </property>
+            </properties>
+          </data>
+          <data key="aldProps">
+            <properties>
+              <property>
+                <key>classname</key>
+                <value>DetectLocalExtrema1D</value>
+              </property>
+              <property>
+                <key>package</key>
+                <value>de.unihalle.informatik.Alida.demo</value>
+              </property>
+              <property>
+                <key>version</key>
+                <value>2.6.2-SNAPSHOT</value>
+              </property>
+            </properties>
+          </data>
+          <graph edgedefault="directed">
+            <node id="ALDDAG0:InputPort0-of-OpNode2">
+              <data key="aldName">experiment</data>
+              <data key="aldNodeType">InputPort</data>
+              <data key="aldExplanation">1D Experiment</data>
+              <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.ExperimentalData1D</data>
+            </node>
+            <node id="ALDDAG0:InputPort1-of-OpNode2">
+              <data key="aldName">extremaType</data>
+              <data key="aldNodeType">InputPort</data>
+              <data key="aldExplanation">Type of extrema (min,max)</data>
+              <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.DetectLocalExtrema1D$ExtremaType</data>
+            </node>
+            <node id="ALDDAG0:OutputPort0-of-OpNode2">
+              <data key="aldName">extrema</data>
+              <data key="aldNodeType">OutputPort</data>
+              <data key="aldExplanation">Local Extrema</data>
+              <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.Extrema1D</data>
+              <data key="aldProps">
+                <properties/>
+              </data>
+            </node>
+            <node id="ALDDAG0:DataPort2">
+              <data key="aldName"/>
+              <data key="aldNodeType">DataPort</data>
+              <data key="aldProps">
+                <properties/>
+              </data>
+            </node>
+          </graph>
+        </node>
+        <node id="ALDDAG0:OpNode3">
+          <data key="aldName">RefineLocalExtrema1D</data>
+          <data key="aldNodeType">OpNode</data>
+          <data key="aldParas">
+            <properties>
+              <property>
+                <key>extrema</key>
+                <value>de.unihalle.informatik.Alida.demo.Extrema1D@573f2bb1</value>
+              </property>
+              <property>
+                <key>extremaSmoothedData</key>
+                <value>de.unihalle.informatik.Alida.demo.Extrema1D@5ae9a829</value>
+              </property>
+              <property>
+                <key>epsilon</key>
+                <value>3</value>
+              </property>
+            </properties>
+          </data>
+          <data key="aldProps">
+            <properties>
+              <property>
+                <key>classname</key>
+                <value>RefineLocalExtrema1D</value>
+              </property>
+              <property>
+                <key>package</key>
+                <value>de.unihalle.informatik.Alida.demo</value>
+              </property>
+              <property>
+                <key>version</key>
+                <value>2.6.2-SNAPSHOT</value>
+              </property>
+            </properties>
+          </data>
+          <graph edgedefault="directed">
+            <node id="ALDDAG0:InputPort0-of-OpNode3">
+              <data key="aldName">extrema</data>
+              <data key="aldNodeType">InputPort</data>
+              <data key="aldExplanation">Extrema in un-smoothed data</data>
+              <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.Extrema1D</data>
+            </node>
+            <node id="ALDDAG0:InputPort1-of-OpNode3">
+              <data key="aldName">extremaSmoothedData</data>
+              <data key="aldNodeType">InputPort</data>
+              <data key="aldExplanation">Extrema in smoothed data</data>
+              <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.Extrema1D</data>
+            </node>
+            <node id="ALDDAG0:InputPort2-of-OpNode3">
+              <data key="aldName">epsilon</data>
+              <data key="aldNodeType">InputPort</data>
+              <data key="aldExplanation">Type of extrema (min,max)</data>
+              <data key="aldClassname">package java.lang, Java Platform API Specification, version 1.8.java.lang.Integer</data>
+            </node>
+            <node id="ALDDAG0:OutputPort0-of-OpNode3">
+              <data key="aldName">refinedExtrema</data>
+              <data key="aldNodeType">OutputPort</data>
+              <data key="aldExplanation">Refined positions of Extrema</data>
+              <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.Extrema1D</data>
+              <data key="aldProps">
+                <properties/>
+              </data>
+            </node>
+            <node id="ALDDAG0:DataPort3">
+              <data key="aldName"/>
+              <data key="aldNodeType">DataPort</data>
+              <data key="aldProps">
+                <properties/>
+              </data>
+            </node>
+          </graph>
+        </node>
+        <node id="ALDDAG0:OpNode4">
+          <data key="aldName">DetectBaseline1D</data>
+          <data key="aldNodeType">OpNode</data>
+          <data key="aldParas">
+            <properties>
+              <property>
+                <key>experiment</key>
+                <value>de.unihalle.informatik.Alida.demo.ExperimentalData1D@2957fcb0</value>
+              </property>
+            </properties>
+          </data>
+          <data key="aldProps">
+            <properties>
+              <property>
+                <key>classname</key>
+                <value>DetectBaseline1D</value>
+              </property>
+              <property>
+                <key>package</key>
+                <value>de.unihalle.informatik.Alida.demo</value>
+              </property>
+              <property>
+                <key>version</key>
+                <value>2.6.2-SNAPSHOT</value>
+              </property>
+            </properties>
+          </data>
+          <graph edgedefault="directed">
+            <node id="ALDDAG0:InputPort0-of-OpNode4">
+              <data key="aldName">experiment</data>
+              <data key="aldNodeType">InputPort</data>
+              <data key="aldExplanation">1D Experiment</data>
+              <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.ExperimentalData1D</data>
+            </node>
+            <node id="ALDDAG0:OutputPort0-of-OpNode4">
+              <data key="aldName">baseline</data>
+              <data key="aldNodeType">OutputPort</data>
+              <data key="aldExplanation">Baseline</data>
+              <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.Baseline1D</data>
+              <data key="aldProps">
+                <properties/>
+              </data>
+            </node>
+            <node id="ALDDAG0:OpNode5">
+              <data key="aldName">DetectLocalExtrema1D</data>
+              <data key="aldNodeType">OpNode</data>
+              <data key="aldParas">
+                <properties>
+                  <property>
+                    <key>experiment</key>
+                    <value>de.unihalle.informatik.Alida.demo.ExperimentalData1D@2957fcb0</value>
+                  </property>
+                  <property>
+                    <key>extremaType</key>
+                    <value>MINIMUM</value>
+                  </property>
+                </properties>
+              </data>
+              <data key="aldProps">
+                <properties>
+                  <property>
+                    <key>classname</key>
+                    <value>DetectLocalExtrema1D</value>
+                  </property>
+                  <property>
+                    <key>package</key>
+                    <value>de.unihalle.informatik.Alida.demo</value>
+                  </property>
+                  <property>
+                    <key>version</key>
+                    <value>2.6.2-SNAPSHOT</value>
+                  </property>
+                </properties>
+              </data>
+              <graph edgedefault="directed">
+                <node id="ALDDAG0:InputPort0-of-OpNode5">
+                  <data key="aldName">experiment</data>
+                  <data key="aldNodeType">InputPort</data>
+                  <data key="aldExplanation">1D Experiment</data>
+                  <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.ExperimentalData1D</data>
+                </node>
+                <node id="ALDDAG0:InputPort1-of-OpNode5">
+                  <data key="aldName">extremaType</data>
+                  <data key="aldNodeType">InputPort</data>
+                  <data key="aldExplanation">Type of extrema (min,max)</data>
+                  <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.DetectLocalExtrema1D$ExtremaType</data>
+                </node>
+                <node id="ALDDAG0:OutputPort0-of-OpNode5">
+                  <data key="aldName">extrema</data>
+                  <data key="aldNodeType">OutputPort</data>
+                  <data key="aldExplanation">Local Extrema</data>
+                  <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.Extrema1D</data>
+                  <data key="aldProps">
+                    <properties/>
+                  </data>
+                </node>
+                <node id="ALDDAG0:DataPort6">
+                  <data key="aldName"/>
+                  <data key="aldNodeType">DataPort</data>
+                  <data key="aldProps">
+                    <properties/>
+                  </data>
+                </node>
+              </graph>
+            </node>
+            <node id="ALDDAG0:DataPort5">
+              <data key="aldName"/>
+              <data key="aldNodeType">DataPort</data>
+              <data key="aldProps">
+                <properties/>
+              </data>
+            </node>
+            <node id="ALDDAG0:DataPort7">
+              <data key="aldName"/>
+              <data key="aldNodeType">DataPort</data>
+              <data key="aldProps">
+                <properties/>
+              </data>
+            </node>
+          </graph>
+        </node>
+        <node id="ALDDAG0:OpNode6">
+          <data key="aldName">CorrectForBaseline1D</data>
+          <data key="aldNodeType">OpNode</data>
+          <data key="aldParas">
+            <properties>
+              <property>
+                <key>baseline</key>
+                <value>de.unihalle.informatik.Alida.demo.Baseline1D@1810399e</value>
+              </property>
+              <property>
+                <key>extrema</key>
+                <value>de.unihalle.informatik.Alida.demo.Extrema1D@7ac7a4e4</value>
+              </property>
+            </properties>
+          </data>
+          <data key="aldProps">
+            <properties>
+              <property>
+                <key>classname</key>
+                <value>CorrectForBaseline1D</value>
+              </property>
+              <property>
+                <key>package</key>
+                <value>de.unihalle.informatik.Alida.demo</value>
+              </property>
+              <property>
+                <key>version</key>
+                <value>2.6.2-SNAPSHOT</value>
+              </property>
+            </properties>
+          </data>
+          <graph edgedefault="directed">
+            <node id="ALDDAG0:InputPort0-of-OpNode6">
+              <data key="aldName">baseline</data>
+              <data key="aldNodeType">InputPort</data>
+              <data key="aldExplanation">Baseline</data>
+              <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.Baseline1D</data>
+            </node>
+            <node id="ALDDAG0:InputPort1-of-OpNode6">
+              <data key="aldName">extrema</data>
+              <data key="aldNodeType">InputPort</data>
+              <data key="aldExplanation">Extrema</data>
+              <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.Extrema1D</data>
+            </node>
+            <node id="ALDDAG0:OutputPort0-of-OpNode6">
+              <data key="aldName">correctedExtrema</data>
+              <data key="aldNodeType">OutputPort</data>
+              <data key="aldExplanation">Corrected extrema</data>
+              <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.Extrema1D</data>
+              <data key="aldProps">
+                <properties/>
+              </data>
+            </node>
+            <node id="ALDDAG0:DataPort8">
+              <data key="aldName"/>
+              <data key="aldNodeType">DataPort</data>
+              <data key="aldProps">
+                <properties/>
+              </data>
+            </node>
+          </graph>
+        </node>
+        <node id="ALDDAG0:DataPort1">
+          <data key="aldName"/>
+          <data key="aldNodeType">DataPort</data>
+          <data key="aldProps">
+            <properties/>
+          </data>
+        </node>
+        <node id="ALDDAG0:DataPort4">
+          <data key="aldName"/>
+          <data key="aldNodeType">DataPort</data>
+          <data key="aldProps">
+            <properties/>
+          </data>
+        </node>
+      </graph>
+    </node>
+    <node id="ALDDAG0:DataPort9">
+      <data key="aldName">Exp1.txt</data>
+      <data key="aldNodeType">DataPortFromFile</data>
+      <data key="aldProps">
+        <properties>
+          <property>
+            <key>location</key>
+            <value>Exp1.txt</value>
+          </property>
+        </properties>
+      </data>
+    </node>
+    <node id="ALDDAG0:DataPort10">
+      <data key="aldName">Exp1-smooth.txt</data>
+      <data key="aldNodeType">DataPortFromFile</data>
+      <data key="aldProps">
+        <properties>
+          <property>
+            <key>location</key>
+            <value>Exp1-smooth.txt</value>
+          </property>
+        </properties>
+      </data>
+    </node>
+    <node id="ALDDAG2:OpNode0">
+      <data key="aldName">SmoothData1D</data>
+      <data key="aldNodeType">OpNode</data>
+      <data key="aldParas">
+        <properties>
+          <property>
+            <key>experiment</key>
+            <value>de.unihalle.informatik.Alida.demo.ExperimentalData1D@2957fcb0</value>
+          </property>
+          <property>
+            <key>width</key>
+            <value>3</value>
+          </property>
+          <property>
+            <key>smoothingMethod</key>
+            <value>MEDIAN</value>
+          </property>
+        </properties>
+      </data>
+      <data key="aldProps">
+        <properties>
+          <property>
+            <key>classname</key>
+            <value>SmoothData1D</value>
+          </property>
+          <property>
+            <key>package</key>
+            <value>de.unihalle.informatik.Alida.demo</value>
+          </property>
+          <property>
+            <key>version</key>
+            <value>2.6.2-SNAPSHOT</value>
+          </property>
+        </properties>
+      </data>
+      <graph edgedefault="directed">
+        <node id="ALDDAG2:InputPort0-of-OpNode0">
+          <data key="aldName">experiment</data>
+          <data key="aldNodeType">InputPort</data>
+          <data key="aldExplanation">1D Experiment</data>
+          <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.ExperimentalData1D</data>
+        </node>
+        <node id="ALDDAG2:InputPort1-of-OpNode0">
+          <data key="aldName">width</data>
+          <data key="aldNodeType">InputPort</data>
+          <data key="aldExplanation">Window width (should be uneven)</data>
+          <data key="aldClassname">package java.lang, Java Platform API Specification, version 1.8.java.lang.Integer</data>
+        </node>
+        <node id="ALDDAG2:InputPort2-of-OpNode0">
+          <data key="aldName">smoothingMethod</data>
+          <data key="aldNodeType">InputPort</data>
+          <data key="aldExplanation">Smoothing method</data>
+          <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.SmoothData1D$SmoothingMethod</data>
+        </node>
+        <node id="ALDDAG2:OutputPort0-of-OpNode0">
+          <data key="aldName">smoothedExperiment</data>
+          <data key="aldNodeType">OutputPort</data>
+          <data key="aldExplanation">Smothed1D Experiment</data>
+          <data key="aldClassname">package de.unihalle.informatik.Alida.demo.de.unihalle.informatik.Alida.demo.ExperimentalData1D</data>
+          <data key="aldProps">
+            <properties/>
+          </data>
+        </node>
+        <node id="ALDDAG2:DataPort0">
+          <data key="aldName"/>
+          <data key="aldNodeType">DataPort</data>
+          <data key="aldProps">
+            <properties/>
+          </data>
+        </node>
+      </graph>
+    </node>
+    <node id="ALDDAG2:DataPort1">
+      <data key="aldName">Exp1.txt</data>
+      <data key="aldNodeType">DataPortFromFile</data>
+      <data key="aldProps">
+        <properties>
+          <property>
+            <key>location</key>
+            <value>Exp1.txt</value>
+          </property>
+        </properties>
+      </data>
+    </node>
+    <node id="ALDDAG2:DataPort2">
+      <data key="aldName"/>
+      <data key="aldNodeType">DataPort</data>
+      <data key="aldProps">
+        <properties/>
+      </data>
+    </node>
+    <node id="ALDDAG2:DataPort3">
+      <data key="aldName"/>
+      <data key="aldNodeType">DataPort</data>
+      <data key="aldProps">
+        <properties/>
+      </data>
+    </node>
+    <edge id="ALDDAG2:Edge0" source="ALDDAG2:DataPort0" target="ALDDAG2:OutputPort0-of-OpNode0" directed="true"/>
+    <edge id="ALDDAG2:Edge1" source="ALDDAG2:DataPort1" target="ALDDAG2:InputPort0-of-OpNode0" directed="true"/>
+    <edge id="ALDDAG2:Edge2" source="ALDDAG2:DataPort2" target="ALDDAG2:InputPort1-of-OpNode0" directed="true"/>
+    <edge id="ALDDAG2:Edge3" source="ALDDAG2:DataPort3" target="ALDDAG2:InputPort2-of-OpNode0" directed="true"/>
+    <edge source="ALDDAG2:OutputPort0-of-OpNode0" target="ALDDAG0:DataPort10" directed="true">
+      <data key="aldEdgeType">connectHistories</data>
+    </edge>
+    <edge id="ALDDAG0:Edge0" source="ALDDAG0:OutputPort0-of-OpNode6" target="ALDDAG0:OutputPort0-of-OpNode0" directed="true"/>
+    <edge id="ALDDAG0:Edge1" source="ALDDAG0:DataPort0" target="ALDDAG0:OutputPort0-of-OpNode1" directed="true"/>
+    <edge id="ALDDAG0:Edge2" source="ALDDAG0:InputPort0-of-OpNode0" target="ALDDAG0:InputPort0-of-OpNode1" directed="true"/>
+    <edge id="ALDDAG0:Edge3" source="ALDDAG0:DataPort1" target="ALDDAG0:InputPort1-of-OpNode1" directed="true"/>
+    <edge id="ALDDAG0:Edge4" source="ALDDAG0:DataPort2" target="ALDDAG0:OutputPort0-of-OpNode2" directed="true"/>
+    <edge id="ALDDAG0:Edge5" source="ALDDAG0:InputPort1-of-OpNode0" target="ALDDAG0:InputPort0-of-OpNode2" directed="true"/>
+    <edge id="ALDDAG0:Edge6" source="ALDDAG0:DataPort1" target="ALDDAG0:InputPort1-of-OpNode2" directed="true"/>
+    <edge id="ALDDAG0:Edge7" source="ALDDAG0:DataPort3" target="ALDDAG0:OutputPort0-of-OpNode3" directed="true"/>
+    <edge id="ALDDAG0:Edge8" source="ALDDAG0:OutputPort0-of-OpNode1" target="ALDDAG0:InputPort0-of-OpNode3" directed="true"/>
+    <edge id="ALDDAG0:Edge9" source="ALDDAG0:OutputPort0-of-OpNode2" target="ALDDAG0:InputPort1-of-OpNode3" directed="true"/>
+    <edge id="ALDDAG0:Edge10" source="ALDDAG0:DataPort4" target="ALDDAG0:InputPort2-of-OpNode3" directed="true"/>
+    <edge id="ALDDAG0:Edge11" source="ALDDAG0:DataPort5" target="ALDDAG0:OutputPort0-of-OpNode4" directed="true"/>
+    <edge id="ALDDAG0:Edge12" source="ALDDAG0:DataPort6" target="ALDDAG0:OutputPort0-of-OpNode5" directed="true"/>
+    <edge id="ALDDAG0:Edge13" source="ALDDAG0:InputPort0-of-OpNode4" target="ALDDAG0:InputPort0-of-OpNode5" directed="true"/>
+    <edge id="ALDDAG0:Edge14" source="ALDDAG0:DataPort7" target="ALDDAG0:InputPort1-of-OpNode5" directed="true"/>
+    <edge id="ALDDAG0:Edge15" source="ALDDAG0:InputPort0-of-OpNode0" target="ALDDAG0:InputPort0-of-OpNode4" directed="true"/>
+    <edge id="ALDDAG0:Edge16" source="ALDDAG0:DataPort8" target="ALDDAG0:OutputPort0-of-OpNode6" directed="true"/>
+    <edge id="ALDDAG0:Edge17" source="ALDDAG0:OutputPort0-of-OpNode4" target="ALDDAG0:InputPort0-of-OpNode6" directed="true"/>
+    <edge id="ALDDAG0:Edge18" source="ALDDAG0:OutputPort0-of-OpNode3" target="ALDDAG0:InputPort1-of-OpNode6" directed="true"/>
+    <edge id="ALDDAG0:Edge19" source="ALDDAG0:DataPort9" target="ALDDAG0:InputPort0-of-OpNode0" directed="true"/>
+    <edge id="ALDDAG0:Edge20" source="ALDDAG0:DataPort10" target="ALDDAG0:InputPort1-of-OpNode0" directed="true"/>
+  </graph>
+</graphml>

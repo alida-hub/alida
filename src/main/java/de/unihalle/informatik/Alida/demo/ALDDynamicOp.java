@@ -34,8 +34,6 @@
 package de.unihalle.informatik.Alida.demo;
 
 import de.unihalle.informatik.Alida.exceptions.ALDOperatorException;
-import de.unihalle.informatik.Alida.exceptions.ALDWorkflowException;
-import de.unihalle.informatik.Alida.operator.ALDOpParameterDescriptor;
 import de.unihalle.informatik.Alida.operator.ALDOperator;
 import de.unihalle.informatik.Alida.annotations.Parameter;
 import de.unihalle.informatik.Alida.annotations.ALDAOperator;
@@ -55,64 +53,61 @@ public class ALDDynamicOp extends ALDOperator {
 	private final static String intParameterName = "intIn";
 	private final static String floatParameterName = "floatIn";
 	
-	@Parameter( label="infoText", info=true, required=true, direction=Direction.IN)
+	@Parameter( label="infoText", info=true, required=true, direction=Direction.IN, dataIOOrder=0)
 	private String infoText= "<html>This might be an explanation,<br> I think!</html>";
 	
-	@Parameter( label="Info:", info=true, required=true, direction=Direction.IN)
+	@Parameter( label="Info:", info=true, required=true, direction=Direction.IN, dataIOOrder=1)
 	private String info= "This might be an explanation,\n I think!";
-
+	
+	//SNIPPETCODE:parametersBegin
 	@Parameter( label= "useRealData", required = true, dataIOOrder = 2,
 			paramModificationMode = ParameterModificationMode.MODIFIES_INTERFACE,
-			callback = "initDataType",
-			direction = Parameter.Direction.IN,	description = "Should we use real or integral data?.")
-	private boolean useRealData;
-
-	@Parameter( label="Result:", info=true, required=true, direction=Direction.OUT)
-	private String result = "The operator was run successfully!";
-
-	@SuppressWarnings("unused")
-	private Integer intIn;
+			callback = "initDataType", direction = Parameter.Direction.IN,	
+			description = "Should we use real or integral data?.")
+	private boolean useRealData = false;
+	//SNIPPETCODE:parametersEnd
 	
-//  just for testing, will result in an exception
-//	@Parameter( label= "float In", required = true, dataIOOrder = 2,
-//			direction = Parameter.Direction.IN,	description = "float in")
-//	private Float floatIn;
+	@Parameter( label= "intiIn", required = true, dataIOOrder = 3,
+	direction = Parameter.Direction.IN,	description = "int in")
+	private int intIn = 0;
+	
+	@Parameter( label= "float in", required = true, dataIOOrder = 3,
+			direction = Parameter.Direction.IN,	description = "float in")
+	private float floatIn;
+
+	@Parameter( label="Result:", direction=Direction.OUT)
+	private String result;
+
 	
 	/**
 	 * Default constructor.
 	 * @throws ALDOperatorException
 	 */
 	public ALDDynamicOp() throws ALDOperatorException {
-		setParameter( "useRealData", false);
-		setParameter(intParameterName, 0);
+		initDataType();
 	}
 
 	@Override
     protected void operate() throws ALDOperatorException {
-		System.out.println( "ALDDynamicOp::operate useRealData = " + useRealData);
-
 		if ( useRealData ) {
+			result = "float value = " + this.getParameter( floatParameterName);
 			System.out.println( "   float value = " + this.getParameter( floatParameterName));
 		} else {
+			result = "int value = " + this.getParameter( intParameterName);
 			System.out.println( "   int value = " + this.getParameter( intParameterName));
 		}
 	}
-
+	
+	//SNIPPETCODE:Begin
 	public void initDataType() throws ALDOperatorException {
-		System.out.println( "ALDDynamicOp::initDataType");
+		if ( verbose ) System.out.println( "ALDDynamicOp::initDataType");
 		if ( useRealData) {
 			if ( hasParameter(intParameterName)) {
 				this.removeParameter(intParameterName);
 			}
 
 			if ( ! hasParameter(floatParameterName)) {
-				ALDOpParameterDescriptor descr;
-				descr = new ALDOpParameterDescriptor(floatParameterName,
-						Direction.IN, false, Float.class, "float input", floatParameterName, 
-						false, null, 3, 
-						Parameter.ExpertMode.STANDARD, false, "", 
-						Parameter.ParameterModificationMode.MODIFIES_NOTHING, false);
-				this.addParameter(descr);
+				this.addParameter( floatParameterName);
 			}
 		} else {
 			if ( hasParameter(floatParameterName)) {
@@ -120,26 +115,14 @@ public class ALDDynamicOp extends ALDOperator {
 			}
 
 			if ( ! hasParameter(intParameterName)) {
-				ALDOpParameterDescriptor descr = null;
-				try {
-					descr = new ALDOpParameterDescriptor(intParameterName,
-							Direction.IN, false, Integer.class, "int input", intParameterName, 
-							true, this.getClass().getDeclaredField(intParameterName), 3, 
-							Parameter.ExpertMode.STANDARD, false, "", 
-							Parameter.ParameterModificationMode.MODIFIES_NOTHING, false);
-				} catch (SecurityException e) {
-					// TODO Auto-generated catch block
-					// e.printStackTrace();
-				} catch (NoSuchFieldException e) {
-					// TODO Auto-generated catch block
-					//e.printStackTrace();
-				}
-				this.addParameter(descr);
+				this.addParameter( intParameterName);
  			}
 		}
 
-		this.printInterface();
+		if ( verbose ) this.printInterface();
 	}
+	//SNIPPETCODE:End
+
 }
 /*BEGIN_MITOBO_ONLIINE_HELP
 

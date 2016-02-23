@@ -122,40 +122,7 @@ public class SmoothData1D extends ALDOperator {
 		if ( smoothingMethod == SmoothingMethod.MEDIAN) {
 			smoothedData = median( experiment.getData(), this.width);
 		} else {
-			Double[]  kernel;
-
-			if ( smoothingMethod == SmoothingMethod.MEAN ) {				
-				kernel = new Double[width];
-				for ( int i = 0 ; i < width ; i++)
-					kernel[i] = 1.0/width;
-			} else { // GAUSSIAN
-				Float floatWidth = 5.0F*sigma;
-				int width =  floatWidth.intValue();
-				if ( width % 2 != 1)
-					width++;
-				int halfWidth = (int)(Math.floor(width/2.0));
-
-				kernel = new Double[ width];
-				kernel[halfWidth] = 1.0;
-				Double sum = 1.0;
-				for ( int i = 1 ; i <= halfWidth ; i++ ) {
-					Double val =  Math.exp( -(i*i)/(sigma*sigma));
-					kernel[halfWidth+i] = val;
-					kernel[halfWidth-i] = val;
-					sum += (val+val);
-				}
-
-				for ( int i = 0 ; i < width ; i++)
-					kernel[i] /= sum;
-			}
-
-			if ( verbose ) {
-				System.out.println("Kernel");
-				for ( int i = 0 ; i < kernel.length ; i++)
-					System.out.println( kernel[i]);
-			}
-
-			smoothedData = convolve( experiment.getData(), kernel);
+			smoothedData = smoothByConvolution();
 		}
 
 		smoothedExperiment = new ExperimentalData1D( experiment.getDescription() + " (smoothed)", 
@@ -217,6 +184,46 @@ public class SmoothData1D extends ALDOperator {
 		}
 
 		return smoothedData;
+	}
+
+	/** Smooth the data by convolution, either with a gaussian or a mean filter
+	 * @return
+	 */
+	private  Double[] smoothByConvolution() {
+		Double[]  kernel;
+
+		if ( smoothingMethod == SmoothingMethod.MEAN ) {				
+			kernel = new Double[width];
+			for ( int i = 0 ; i < width ; i++)
+				kernel[i] = 1.0/width;
+		} else { // GAUSSIAN
+			Float floatWidth = 5.0F*sigma;
+			int width =  floatWidth.intValue();
+			if ( width % 2 != 1)
+				width++;
+			int halfWidth = (int)(Math.floor(width/2.0));
+
+			kernel = new Double[ width];
+			kernel[halfWidth] = 1.0;
+			Double sum = 1.0;
+			for ( int i = 1 ; i <= halfWidth ; i++ ) {
+				Double val =  Math.exp( -(i*i)/(sigma*sigma));
+				kernel[halfWidth+i] = val;
+				kernel[halfWidth-i] = val;
+				sum += (val+val);
+			}
+
+			for ( int i = 0 ; i < width ; i++)
+				kernel[i] /= sum;
+		}
+		
+		if ( verbose ) {
+			System.out.println("Kernel");
+			for ( int i = 0 ; i < kernel.length ; i++)
+				System.out.println( kernel[i]);
+		}
+
+		return convolve( experiment.getData(), kernel);
 	}
 
 	/** Convolve {@code data} with the {@code kernel}. Values outside the range

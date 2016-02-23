@@ -1,4 +1,4 @@
-        ApplyToMatrix normalizeOp = new ApplyToMatrix( this.experiment.getData());
+        ApplyToMatrix normalizeOp = new ApplyToMatrix( data);
         normalizeOp.setSummarizeMode( ApplyToMatrix.SummarizeMode.ROW);
         normalizeOp.setSummarizeOp( new ALDArrayMean());
         normalizeOp.runOp();
