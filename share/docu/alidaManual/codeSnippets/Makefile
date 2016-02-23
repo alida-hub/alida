@@ -1,6 +1,6 @@
 DEMODIR =  ../../../../src/main/java/de/unihalle/informatik/Alida/demo
 
-DERIVED = NormalizeExperimentalDataOp-use.snippet \
+DERIVED = \
 		MatrixSum-declare.snippet \
 		MatrixSum-parameters.snippet \
 		MatrixSum-constructor.snippet \

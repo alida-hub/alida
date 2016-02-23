@@ -25,12 +25,6 @@ implementing the functionality of the operator.
 
 
 <pre>
-@ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
-				level=ALDAOperator.Level.APPLICATION)
-public class MatrixSum extends ALDOperator {
-
-  /** Choose row or colum wise sum
-    */
   public static enum SummarizeMode {
 	/** row wise */
 	ROW,
@@ -39,6 +33,7 @@ public class MatrixSum extends ALDOperator {
 	COLUMN
   }
 
+  //SNIPPETCODE:parametersBegin
   /**
    * Input matrix
    */
@@ -58,8 +53,10 @@ public class MatrixSum extends ALDOperator {
    */
   @Parameter( label= "sums",  
   		direction = Parameter.Direction.OUT, description = "Row or column wise sums.")
-  private Double[] sums = null;
+  private transient Double[] sums = null;
+  //SNIPPETCODE:parametersEnd
 
+	//SNIPPETCODE:constructorBegin
 	/**
 	 * Default constructor.
 	 * @throws ALDOperatorException
@@ -70,32 +67,35 @@ public class MatrixSum extends ALDOperator {
 	/**
 	 * Constructor.
 	 * 
-	 * @param matrix	Input matrix.
+	 * @param _matrix	Input matrix.
 	 * @throws ALDOperatorException
 	 */
-	public MatrixSum(Double[] [] matrix) throws ALDOperatorException {
-		this.matrix = matrix;
+	public MatrixSum(Double[] [] _matrix) throws ALDOperatorException {
+		this.matrix = _matrix;
 	}
+	//SNIPPETCODE:constructorEnd
 
 	@Override
-	protected void operate() {
-		if ( matrix == null ) 
-			sums = null;
+	protected void operate() throws ALDOperatorException {
+		if ( this.matrix == null ) {
+    	throw new ALDOperatorException(OperatorExceptionType.OPERATE_FAILED, 
+    			"[MatrixSum::operate()] data matrix is null!");
+		}
 
 		// calculate sums
-		if ( summarizeMode == SummarizeMode.ROW ) {
-			sums = new Double[matrix.length];
-			for ( int row = 0 ; row < matrix.length ; row++ ) {
-				sums[row] = 0.0;
-				for ( int col = 0 ; col < matrix[0].length ; col++ )
-					sums[row] += matrix[row][col];
+		if ( this.summarizeMode == SummarizeMode.ROW ) {
+			this.sums = new Double[this.matrix.length];
+			for ( int row = 0 ; row < this.matrix.length ; row++ ) {
+				this.sums[row] = new Double(0.0);
+				for ( int col = 0 ; col < this.matrix[0].length ; col++ )
+					this.sums[row] += this.matrix[row][col];
 			}
 		} else {
-			sums = new Double[matrix[0].length];
-			for ( int col = 0 ; col < matrix[0].length ; col++ ) {
-				sums[col] = 0.0;
-				for ( int row = 0 ; row < matrix.length ; row++ )
-					sums[col] += matrix[row][col];
+			this.sums = new Double[this.matrix[0].length];
+			for ( int col = 0 ; col < this.matrix[0].length ; col++ ) {
+				this.sums[col] = new Double(0.0);
+				for ( int row = 0 ; row < this.matrix.length ; row++ )
+					this.sums[col] += this.matrix[row][col];
 			}
 		}
 	}
@@ -198,16 +198,8 @@ method, however some getter and setter methods are provided.
 
 
 <pre>
-  @Parameter( label= "Input 1D array", required = true, 
-  		direction = Parameter.Direction.IN, description = "Input array (1D).")
-  protected Double[] data;
-
-  /**
-   * Summarizing scalar
-   */
-  @Parameter( label= "Summarizing scalar",  
-  		direction = Parameter.Direction.OUT, description = "Summarizing scalar of the 1D arra")
-  protected Double summary = null;
+  		description = "Summarizing scalar of the 1D arra")
+  protected transient Double summary = null;
 
 	/**
 	 * Default constructor.
@@ -226,12 +218,20 @@ method, however some getter and setter methods are provided.
 
 	/**
 	 * Sets the 1D array
-	 * @param data
+	 * @param _data
 	 */
-	public void setData( Double[] data) {
-		this.data = data;
+	public void setData( Double[] _data) {
+		this.data = _data;
 	}
 
+	/**
+	 * Returns the Summarizing scalar
+	 * @return row or column wise sums
+	 */
+	public Double getSummary() {
+		return this.summary;
+	}
+}
 </pre>
 
 
@@ -254,13 +254,18 @@ Alida requires the annotation <code>@ALDDerivedClass</code>.
 
 
 <pre>
-@ALDDerivedClass
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
         level=ALDAOperator.Level.STANDARD)
+@ALDDerivedClass
 public class ALDArraySum extends ALDSummarizeArrayOp {
+//SNIPPETCODE:constructorEnd
 
     @Override
     protected void operate() {
+		this.fireOperatorExecutionProgressEvent(
+				new ALDOperatorExecutionProgressEvent(this, 
+					"Starting summation a matrix..."));
+
         summary = 0.0;
         for ( int i = 0 ; i < data.length ; i++ )
             summary += data[i];
@@ -268,11 +273,6 @@ public class ALDArraySum extends ALDSummarizeArrayOp {
 
     /**
      * Default constructor.
-     * @throws ALDOperatorException
-     */
-    public ALDArraySum() throws ALDOperatorException {
-    }
-
 </pre>
 
 
@@ -304,14 +304,6 @@ all manipulative actions on the data and corresponding parameter settings.
 
 
 <pre>
-@ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
-            level=ALDAOperator.Level.APPLICATION)
-public class ApplyToMatrix extends ALDOperator {
-
-    /** Choose row or colum wise sum
-      */
-    public static enum SummarizeMode {
-      /** row wise */
       ROW,
       /** column wise */
       COLUMN
@@ -331,19 +323,22 @@ public class ApplyToMatrix extends ALDOperator {
           direction = Parameter.Direction.IN, description = "Sum over columns or rows.")
     private SummarizeMode summarizeMode = SummarizeMode.ROW;
 
+    //SNIPPETCODE:parametersBegin
     /**
      * Summarizing opererator
      */
     @Parameter( label= "Summarizing operator", required = true, 
-          direction = Parameter.Direction.IN, description = "Specifies the summarizing operation to apply")
+          direction = Parameter.Direction.IN, 
+          description = "Specifies the summarizing operation to apply")
     private ALDSummarizeArrayOp summarizeOp;
+    //SNIPPETCODE:parametersEnd
 
     /**
      * 1D Array of summaries.
      */
     @Parameter( label= "summaries",  
           direction = Parameter.Direction.OUT, description = "Row or column wise summaries")
-    private Double[] summaries = null;
+    private transient Double[] summaries = null;
 
     /**
      * Supplemental to request elapsed time to be returned
@@ -371,44 +366,50 @@ public class ApplyToMatrix extends ALDOperator {
     /**
      * Constructor.
      * 
-     * @param matrix    Input matrix.
+     * @param _matrix    Input matrix.
      * @throws ALDOperatorException
      */
-    public ApplyToMatrix(Double[] [] matrix) throws ALDOperatorException {
-        this.matrix = matrix;
+    public ApplyToMatrix(Double[] [] _matrix) throws ALDOperatorException {
+        this.matrix = _matrix;
     }
 
     @Override
     protected void operate() throws ALDOperatorException,ALDProcessingDAGException {
-        if ( returnElapsedTime ) 
-            elapsedTime = System.currentTimeMillis();
+		this.fireOperatorExecutionProgressEvent(
+				new ALDOperatorExecutionProgressEvent(this, 
+					"Starting to apply an operator to a matrix..."));
 
-        if ( matrix == null ) 
-            summaries = null;
+        if ( this.returnElapsedTime ) 
+            this.elapsedTime = System.currentTimeMillis();
+
+        if ( this.matrix == null ) {
+        	throw new ALDOperatorException(OperatorExceptionType.OPERATE_FAILED, 
+        			"[ApplyToMatrix::operate()] data matrix is null!");
+        }
 
         // calculate summaries
-        if ( summarizeMode == SummarizeMode.ROW ) {
-            summaries = new Double[matrix.length];
-            for ( int row = 0 ; row < matrix.length ; row++ ) {
-                summarizeOp.setData(matrix[row]);
-                summarizeOp.runOp();
-                summaries[row] = summarizeOp.getSummary();
+        if ( this.summarizeMode == SummarizeMode.ROW ) {
+            this.summaries = new Double[this.matrix.length];
+            for ( int row = 0 ; row < this.matrix.length ; row++ ) {
+                this.summarizeOp.setData(this.matrix[row]);
+                this.summarizeOp.runOp(HidingMode.HIDDEN);
+                this.summaries[row] = this.summarizeOp.getSummary();
             }
         } else {
-            summaries = new Double[matrix[0].length];
-            Double[] tmp = new Double[matrix.length];
-            for ( int col = 0 ; col < matrix[0].length ; col++ ) {
-                for ( int row = 0 ; row < matrix.length ; row++ )
-                    tmp[row] = matrix[row][col];
+            this.summaries = new Double[this.matrix[0].length];
+            Double[] tmp = new Double[this.matrix.length];
+            for ( int col = 0 ; col < this.matrix[0].length ; col++ ) {
+                for ( int row = 0 ; row < this.matrix.length ; row++ )
+                    tmp[row] = this.matrix[row][col];
 
-                summarizeOp.setData(tmp);
-                summarizeOp.runOp();
-                summaries[col] = summarizeOp.getSummary();
+                this.summarizeOp.setData(tmp);
+                this.summarizeOp.runOp(HidingMode.HIDDEN);
+                this.summaries[col] = this.summarizeOp.getSummary();
             }
         }
 
-        if ( returnElapsedTime ) 
-            elapsedTime = System.currentTimeMillis() - elapsedTime;
+        if ( this.returnElapsedTime ) 
+            this.elapsedTime = System.currentTimeMillis() - this.elapsedTime;
     }
     
     // ==============================================================
@@ -418,7 +419,7 @@ public class ApplyToMatrix extends ALDOperator {
       * @return value of returnElapsedTime
       */
     public boolean getReturnElapsedTime(){
-        return returnElapsedTime;
+        return this.returnElapsedTime;
     }
 
     /** Set value of returnElapsedTime.
@@ -427,7 +428,6 @@ public class ApplyToMatrix extends ALDOperator {
       */
     public void setReturnElapsedTime( boolean value){
         this.returnElapsedTime = value;
-    }
 </pre>
 
 
@@ -527,19 +527,15 @@ and operators.
 In addition so called parameterized classes are supported.
 Any Java class may be declared to be a parameterized class in Alida
 by annotating the class <code>@ALDParametrizedClass</code> as shown in the
-class <code>ExperimentalData</code>.
+class <code>ExperimentalData1D</code>.
 All member variables to be known to and handled by Alida's user interface
 simply need to be annotated with <code>@ALDClassParameter</code>.
 
-Here we implement a toy version of experimental data <code>ExperimentalData</code>.
-A complete experiment consists of a number of independent repetitions of
-sub experiments. 
-In each of these the same features (measurements) are recorded.
-The measurements a represented in 
-a 2D array of Doubles, where each column represents
-one sub experiment and the rows the distinct features.
-The measurements may be normalized which is indicated by the
-normalized member variable.
+Here we implement a toy version of experimental data <code>ExperimentalData1D</code>.
+A complete experiment contains
+data of a time series of measurements of variable length.
+Additional information is a descriptive string, the time resolution in milliseconds,
+and whether baseline correction has been applied.
 
 The class is annotated by <code>@ALDParametrizedClass</code>, and
 and all members to be handle in Alida'a user interfaces are
@@ -547,113 +543,133 @@ to be annotated with <code>@ALDParametrizedClass</code>.
 The label field has the same semantics as for parameters of operators.
 These annotations are the only implementational overhead
 to allow Alida to automatically generate user interfaces
-where the parameterized class acts a a parameter.
+where the parameterized class acts as a parameter.
 
 
 
 <pre>
 @ALDParametrizedClass
-@ALDMetaInfo(export=ALDMetaInfo.ExportPolicy.MANDATORY)
-public class ExperimentalData {
-    @ALDClassParameter(label="description")
+public class ExperimentalData1D extends ALDData {
+	
+    /** Description */
+    @ALDClassParameter(label="description", dataIOOrder = 1)
     private String description = null;
 
-    @ALDClassParameter(label="data")
-    private Double[][] data = null;
+    /** The data  */
+    @ALDClassParameter(label="data", dataIOOrder = 2)
+    private Double[] data = null;
 
-    /** are the data normalized
-      */
-    @ALDClassParameter(label="Is normalized")
-    private boolean normalized = false;
+    /** Are the data baseline corrected? */
+    @ALDClassParameter(label="Baseline corrected",
+    			dataIOOrder = 3)
+    private boolean baselineCorrected = false;
+    
+    @ALDClassParameter(label="Time resolution in milliseconds", dataIOOrder = 4)
+    private Float timeResolution = Float.NaN;
 
-    /** Standard constructor is needed
+    /** 
+     * Standard constructor is required
       */
-    public ExperimentalData() {
+    public ExperimentalData1D() {
     }
-
+    
     /** Constructor for an experiment.
-      * Normalized is assumed to be false.
+      * Baseline correction is assumed to be false and nothung known about
+      * the time resolution.
       *
-      * @param  description   a textual desciption of the experiment
+      * @param  description   a textual description of the experiment
       * @param  data   measurements
       */
-    public ExperimentalData( String description, Double[][] data) {    
-        this( description, data, false);
-    }
-
-    /** Constructor for an experiment.
-      *
-      * @param  description   a textual desciption of the experiment
-      * @param  data   measurements
-      * @param  normalized   are the data normalized
-      */
-    public ExperimentalData( String description, Double[][] data, boolean normalized) {    
-        this.normalized = normalized;
-        this.description = description;
-        this.setData( data, normalized);
+    public ExperimentalData1D( String description, Double[] data) {    
+        this( description, data, false, Float.NaN);
     }
 </pre>
 
 
-This is shown below for a simple normalizing operator <code>NormalizeExperimentalDataOp</code>
+This is shown below for a simple normalizing operator <code>SmoothData1D</code>
 which takes experimental data as input an returns a new instance
-of <code>ExperimentalData</code> which contains normalized data.
+of <code>ExperimentalData</code> which contains smoothed data.
 
 
 
 <pre>
+@ALDDerivedClass
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
-                level=ALDAOperator.Level.APPLICATION)
-public class NormalizeExperimentalDataOp extends ALDOperator {
+              level=ALDAOperator.Level.APPLICATION)
+public class SmoothData1D extends ALDOperator {
 
-    /**
-     * Input data
-     */
-    @Parameter( label= "Experimental data", required = true, 
-          direction = Parameter.Direction.IN, description = "Experimental data to be normalized")
-    private ExperimentalData experiment = null;
+	public enum SmoothingMethod {
+		MEDIAN, MEAN, GAUSSIAN
+	}
 
-    /**
-     * Normalized experiment to be returned
-     */
-    @Parameter( label= "Normalized experiment",  
-          direction = Parameter.Direction.OUT, description = "Normalized experiment")
-    private ExperimentalData result = null;
+	/** 1D Experiment
+	 */
+	@Parameter( label= "1D Experiment", required = true, 
+			direction = Parameter.Direction.IN, 
+			description = "1D Experiment",
+			dataIOOrder = 1)
+	protected ExperimentalData1D experiment;
 
-    /**
-     * Default constructor.
-     * @throws ALDOperatorException
-     */
-    public NormalizeExperimentalDataOp() throws ALDOperatorException {
-    }
+	/** Smoothing method
+	 */
+	@Parameter( label = "Smoothing method", required = true,
+			direction = Parameter.Direction.IN,
+			callback = "smoothingMethodChanged",
+			description = "Smoothing method",
+			paramModificationMode = ParameterModificationMode.MODIFIES_INTERFACE,
+			dataIOOrder = 2)
+	SmoothingMethod smoothingMethod = SmoothingMethod.MEDIAN;
 
-    /**
-     * Constructor.
-     * 
-     * @param experiment    Experimental data
-     * @throws ALDOperatorException
-     */
-    public NormalizeExperimentalDataOp(ExperimentalData experiment) throws ALDOperatorException {
-        this.experiment = experiment;
-    }
+	/** Window width
+	 */
+	@Parameter( label = "Window width", required = true,
+			direction = Parameter.Direction.IN,
+			description = "Window width (should be uneven)",
+			dataIOOrder = 3)
+	Integer width = 3;
 
-    @Override
-    protected void operate()  throws ALDOperatorException,ALDProcessingDAGException {
-        
-        ApplyToMatrix normalizeOp = new ApplyToMatrix( experiment.getData());
-        normalizeOp.setSummarizeMode( ApplyToMatrix.SummarizeMode.ROW);
-        normalizeOp.setSummarizeOp( new ALDArrayMean());
-        normalizeOp.runOp();
+	/** Standard deviation of Gaussian
+	 */
+	@Parameter( label = "Standdard deviation of Gaussian", required = true,
+			direction = Parameter.Direction.IN,
+			description = "Standdard deviation of Gaussian",
+			dataIOOrder = 3)
+	Float sigma = 1.0F;
 
-        Double[][] normalizedData = (Double[][])(experiment.getData().clone());
-        for ( int e = 0; e < experiment.getNumExperiments(); e++ ) {
-            for ( int f = 0 ; f < experiment.getNumFeatures()  ; f++ ) {
-                normalizedData[f][e] -=  normalizeOp.getSummaries()[f];
-            }
-        }
+	/** Smoothed 1D Experiment
+	 */
+	@Parameter( label= "Smothed 1D Experiment",  
+			direction = Parameter.Direction.OUT, 
+			description = "Smothed1D Experiment",
+			dataIOOrder = 1)
+	protected ExperimentalData1D smoothedExperiment;
 
-        result = new ExperimentalData( experiment.getDescription() + " (Normalized)", normalizedData, true);
-    }
+
+	/**
+	 * Default constructor.
+	 * @throws ALDOperatorException
+	 */
+	public SmoothData1D() throws ALDOperatorException {
+		// necessary handle dynamic parameters correctly
+		smoothingMethodChanged();
+	}
+
+	@Override
+	protected void operate() {
+		this.fireOperatorExecutionProgressEvent(
+				new ALDOperatorExecutionProgressEvent(this, 
+						"Starting to smooth 1D Data..."));
+
+		Double[] smoothedData;
+		if ( smoothingMethod == SmoothingMethod.MEDIAN) {
+			smoothedData = median( experiment.getData(), this.width);
+		} else {
+			smoothedData = smoothByConvolution();
+		}
+
+		smoothedExperiment = new ExperimentalData1D( experiment.getDescription() + " (smoothed)", 
+				smoothedData, experiment.isBaselineCorrected(), experiment.getTimeResolution());
+	}
 </pre>
 
 
@@ -665,7 +681,7 @@ may in turn have a parameter of type <code>ALDOperator</code>.
 
 ==   Invocation via a graphical user interface ==
 
-Invoking and configuring <code>NormalizeExperimentalDataOp</code> from the graphical user interface
+Invoking and configuring <code>SmoothData1D</code> from the graphical user interface
 shows as the only required parameter the experimental data.
 This parameterized class can be configured in a separate  window
 very similar to to configuration of operators.
@@ -676,7 +692,7 @@ Obviously this is a toy example, as we would not expect the measurements to
 be entered manually, but rather stored and read from file in a specialized format.
 This is one of the rare cases where 
 custom data IO provider need to be implemented, in this
-case for <code>ExperimentalData</code>.
+case for <code>ExperimentalData1D</code>.
 
 
 ==   Invocation via command line ==
@@ -688,18 +704,21 @@ enclosed in curly brackets where name refers to annotated member variables of
 the parameterized class.
 
 <pre>
-java de.unihalle.informatik.Alida.tools.ALDOpRunner NormalizeExperimentalDataOp \
-	experiment='{data=[[1,2,3],[2,2,2],[100,103,110]],description="Demo experiment"}' \
-	result=-
+java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
+	experiment='{ baselineCorrected=false , \
+                      description="my experiment" , \
+                      data=[1.0,2.0,2.2,3.3,2.0,1.0,1.0,1.0,1.0,2.0,3.3,2.0] }' \
+        smoothingMethod=GAUSSIAN \
+	smoothedExperiment=-
 </pre>
 yields
 <pre>
-result = { normalized = true , 
-          description = "Demo experiment" (Normalized) , 
-          data = [[-1.0,0.0,1.0],[0.0,0.0,0.0],
-                  [-4.333333333333329,-1.3333333333333286,5.666666666666671]] }
+smoothedExperiment = { baselineCorrected=false , 
+    data=[1.28,1.85,2.37,2.76,2.05,1.23,1.01,1.01,1.23,2.05,2.73,2.35] , 
+    timeResolution=NaN , 
+    description="my experiment" (smoothed) }
 </pre>
 
-If a class derived from <code>ExperimentalData</code> was to be supplied to the operator,
+If a class derived from <code>ExperimentalData1D</code> was to be supplied to the operator,
 the curly brackets can be prefixed by a derive class definition starting with a dollar sign
 and ending with a colon as shown for the summarizing operators above.

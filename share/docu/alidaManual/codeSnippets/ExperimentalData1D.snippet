@@ -22,3 +22,14 @@ public class ExperimentalData1D extends ALDData {
       */
     public ExperimentalData1D() {
     }
+    
+    /** Constructor for an experiment.
+      * Baseline correction is assumed to be false and nothung known about
+      * the time resolution.
+      *
+      * @param  description   a textual description of the experiment
+      * @param  data   measurements
+      */
+    public ExperimentalData1D( String description, Double[] data) {    
+        this( description, data, false, Float.NaN);
+    }

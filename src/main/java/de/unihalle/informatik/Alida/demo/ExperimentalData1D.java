@@ -54,7 +54,7 @@ import de.unihalle.informatik.Alida.operator.ALDData;
 @ALDParametrizedClass
 public class ExperimentalData1D extends ALDData {
 	
-	/** Description */
+    /** Description */
     @ALDClassParameter(label="description", dataIOOrder = 1)
     private String description = null;
 
@@ -75,7 +75,6 @@ public class ExperimentalData1D extends ALDData {
       */
     public ExperimentalData1D() {
     }
-    //SNIPPETCODE:End
     
     /** Constructor for an experiment.
       * Baseline correction is assumed to be false and nothung known about
@@ -87,6 +86,7 @@ public class ExperimentalData1D extends ALDData {
     public ExperimentalData1D( String description, Double[] data) {    
         this( description, data, false, Float.NaN);
     }
+    //SNIPPETCODE:End
 
     /** Constructor for an experiment.
       *
@@ -95,7 +95,8 @@ public class ExperimentalData1D extends ALDData {
       * @param  baselineCorrected   true if the data are baseline corrected
       * @param timeResolution time resolution in millisecconds
       */
-    public ExperimentalData1D( String description, Double[] data, boolean baselineCorrected, Float timeResolution) {    
+    public ExperimentalData1D( String description, Double[] data, 
+    		boolean baselineCorrected, Float timeResolution) {    
         this.baselineCorrected = baselineCorrected;
         this.description = description;
         this.timeResolution = timeResolution;

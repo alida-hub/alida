@@ -22,7 +22,7 @@ to be able to use Java's reflection mechanism.
 Finally, the abstract method \lstinline+operate()+ of \lstinline+ALDOperator+ has to be overridden
 implementing the functionality of the operator.
 
-\renewcommand{\codefile}{../../../../../../src/de/unihalle/informatik/Alida/demo/MatrixSum.java}
+\renewcommand{\codefile}{../../../../../../src/main/java/de/unihalle/informatik/Alida/demo/MatrixSum.java}
 \addtocounter{off}{46}
 \code{73}
 
@@ -119,7 +119,7 @@ which takes a 1D array as input and returns a summarizing scalar.
 As this is an abstract class there is no need to override the \lstinline+operate()+
 method, however some getter and setter methods are provided.
 
-\renewcommand{\codefile}{../../../../../../src/de/unihalle/informatik/Alida/demo/ALDSummarizeArrayOp.java}
+\renewcommand{\codefile}{../../../../../../src/main/java/de/unihalle/informatik/Alida/demo/ALDSummarizeArrayOp.java}
 \setcounter{off}{54}
 \code{33}
 
@@ -139,7 +139,7 @@ More specifically, if an instance of a class is to be supplied in an automatical
 generated user interface as a value for a parameter of one of its super classes,
 Alida requires the annotation \lstinline+@ALDDerivedClass+.
 
-\renewcommand{\codefile}{../../../../../../src/de/unihalle/informatik/Alida/demo/ALDArraySum.java}
+\renewcommand{\codefile}{../../../../../../src/main/java/de/unihalle/informatik/Alida/demo/ALDArraySum.java}
 \setcounter{off}{49}
 \code{18}
 
@@ -168,7 +168,7 @@ Furthermore, it take all necessary measures for Alida's processing
 history which automatically logs
 all manipulative actions on the data and corresponding parameter settings. 
 
-\renewcommand{\codefile}{../../../../../../src/de/unihalle/informatik/Alida/demo/ApplyToMatrix.java}
+\renewcommand{\codefile}{../../../../../../src/main/java/de/unihalle/informatik/Alida/demo/ApplyToMatrix.java}
 \setcounter{off}{51}
 \code{123}
 
@@ -268,19 +268,15 @@ and operators.
 In addition so called parameterized classes are supported.
 Any Java class may be declared to be a parameterized class in Alida
 by annotating the class \lstinline+@ALDParametrizedClass+ as shown in the
-class \lstinline+ExperimentalData+.
+class \lstinline+ExperimentalData1D+.
 All member variables to be known to and handled by Alida's user interface
 simply need to be annotated with \lstinline+@ALDClassParameter+.
 
-Here we implement a toy version of experimental data \lstinline+ExperimentalData+.
-A complete experiment consists of a number of independent repetitions of
-sub experiments. 
-In each of these the same features (measurements) are recorded.
-The measurements a represented in 
-a 2D array of Doubles, where each column represents
-one sub experiment and the rows the distinct features.
-The measurements may be normalized which is indicated by the
-normalized member variable.
+Here we implement a toy version of experimental data \lstinline+ExperimentalData1D+.
+A complete experiment contains
+data of a time series of measurements of variable length.
+Additional information is a descriptive string, the time resolution in milliseconds,
+and whether baseline correction has been applied.
 
 The class is annotated by \lstinline+@ALDParametrizedClass+, and
 and all members to be handle in Alida'a user interfaces are
@@ -288,19 +284,19 @@ to be annotated with \lstinline+@ALDParametrizedClass+.
 The label field has the same semantics as for parameters of operators.
 These annotations are the only implementational overhead
 to allow Alida to automatically generate user interfaces
-where the parameterized class acts a a parameter.
+where the parameterized class acts as a parameter.
 
-\renewcommand{\codefile}{../../../../../../src/de/unihalle/informatik/Alida/demo/ExperimentalData.java}
-\setcounter{off}{53}
-\code{39}
+\renewcommand{\codefile}{../../../../../../src/main/java/de/unihalle/informatik/Alida/demo/ExperimentalData1D.java}
+\setcounter{off}{54}
+\code{34}
 
-This is shown below for a simple normalizing operator \lstinline+NormalizeExperimentalDataOp+
+This is shown below for a simple normalizing operator \lstinline+SmoothData1D+
 which takes experimental data as input an returns a new instance
-of \lstinline+ExperimentalData+ which contains normalized data.
+of \lstinline+ExperimentalData+ which contains smoothed data.
 
-\renewcommand{\codefile}{../../../../../../src/de/unihalle/informatik/Alida/demo/NormalizeExperimentalDataOp.java}
-\setcounter{off}{50}
-\code{51}
+\renewcommand{\codefile}{../../../../../../src/main/java/de/unihalle/informatik/Alida/demo/SmoothData1D.java}
+\setcounter{off}{54}
+\code{76}
 
 
 This mechanism applies in a recursive fashion, i.e. a parameterized class may
@@ -310,7 +306,7 @@ may in turn have a parameter of type \lstinline+ALDOperator+.
 
 \subsection{  Invocation via a graphical user interface}
 
-Invoking and configuring \lstinline+NormalizeExperimentalDataOp+ from the graphical user interface
+Invoking and configuring \lstinline+SmoothData1D+ from the graphical user interface
 shows as the only required parameter the experimental data.
 This parameterized class can be configured in a separate  window
 very similar to to configuration of operators.
@@ -321,7 +317,7 @@ Obviously this is a toy example, as we would not expect the measurements to
 be entered manually, but rather stored and read from file in a specialized format.
 This is one of the rare cases where 
 custom data IO provider need to be implemented, in this
-case for \lstinline+ExperimentalData+.
+case for \lstinline+ExperimentalData1D+.
 
 
 \subsection{  Invocation via command line}
@@ -333,18 +329,21 @@ enclosed in curly brackets where name refers to annotated member variables of
 the parameterized class.
 
 <pre>
-java de.unihalle.informatik.Alida.tools.ALDOpRunner NormalizeExperimentalDataOp \
-	experiment='{data=[[1,2,3],[2,2,2],[100,103,110]],description="Demo experiment"}' \
-	result=-
+java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
+	experiment='{ baselineCorrected=false , \
+                      description="my experiment" , \
+                      data=[1.0,2.0,2.2,3.3,2.0,1.0,1.0,1.0,1.0,2.0,3.3,2.0] }' \
+        smoothingMethod=GAUSSIAN \
+	smoothedExperiment=-
 </pre>
 yields
 <pre>
-result = { normalized = true , 
-          description = "Demo experiment" (Normalized) , 
-          data = [[-1.0,0.0,1.0],[0.0,0.0,0.0],
-                  [-4.333333333333329,-1.3333333333333286,5.666666666666671]] }
+smoothedExperiment = { baselineCorrected=false , 
+    data=[1.28,1.85,2.37,2.76,2.05,1.23,1.01,1.01,1.23,2.05,2.73,2.35] , 
+    timeResolution=NaN , 
+    description="my experiment" (smoothed) }
 </pre>
 
-If a class derived from \lstinline+ExperimentalData+ was to be supplied to the operator,
+If a class derived from \lstinline+ExperimentalData1D+ was to be supplied to the operator,
 the curly brackets can be prefixed by a derive class definition starting with a dollar sign
 and ending with a colon as shown for the summarizing operators above.

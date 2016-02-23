@@ -28,10 +28,6 @@ java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
         smoothedExperiment=-
 
 java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
-	experiment=@../examples/data/Exp1.data  \
-        smoothedExperiment=@Exp1-smooth-txt
-
-java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
 	experiment=@Exp1-txt  \
         smoothedExperiment=@Exp1-smooth-txt
 
