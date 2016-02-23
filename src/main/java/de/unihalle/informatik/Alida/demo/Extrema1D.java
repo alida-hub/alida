@@ -49,20 +49,32 @@ import de.unihalle.informatik.Alida.operator.ALDData;
  *
  */
 
+/**
+ * @author posch
+ *
+ */
+/**
+ * @author posch
+ *
+ */
 @ALDParametrizedClass
 public class Extrema1D extends ALDData {
 	
 	/** x coordinates
 	 */
-    @ALDClassParameter(label="x",
-    		dataIOOrder = 1)
+    @ALDClassParameter(label="x", dataIOOrder = 1,
+    		changeValueHook="xValueChanged")
     private ArrayList<Double> x;
     
-    /** y coordiates
+    /** y coordinates
      */
-    @ALDClassParameter(label="y",
-    		dataIOOrder = 2)
+    @ALDClassParameter(label="y", dataIOOrder = 2)
     private ArrayList<Double> y;
+    
+    /**
+     * Only to test changeValueHook
+     */
+    private int length;
 
     /** 
      * Standard constructor is required
@@ -70,9 +82,10 @@ public class Extrema1D extends ALDData {
     public Extrema1D() {
     	x = new ArrayList<Double>();
     	y = new ArrayList<Double>();
+    	length=0;
     }
 
-    /** Add an extremal point {@code (x,y)}
+  /** Add an extremal point {@code (x,y)}
      * 
      * @param x
      * @param y
@@ -80,6 +93,23 @@ public class Extrema1D extends ALDData {
     public void addPoint( Double x, Double y) {
     	this.x.add(x);
     	this.y.add(y);
+    	length++;
+    }
+    
+    /**
+     * Callback function to be called, e.g., upon de-serialization
+     */
+    @SuppressWarnings("unused")
+	private void xValueChanged () {
+    	length = x.size();
+    }
+    
+    /** print information about this object to stdout
+     */
+    public void print() {
+    	System.out.println( "Extrema1D with " + length + " extrema");
+    	for( int i = 0 ; i < x.size() ; i++ )
+    		System.out.println( getX(i) + "," + getY(i));
     }
     
     /** Return the x coordinate of the i-th extremal point
@@ -121,5 +151,12 @@ public class Extrema1D extends ALDData {
 	 */
 	public ArrayList<Double> getY() {
 		return y;
+	}
+
+	/**
+	 * @return the length
+	 */
+	public int getLength() {
+		return length;
 	}
 }
