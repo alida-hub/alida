@@ -339,11 +339,26 @@ implements ALDWorkflowEventReporter {
 	 * @throws ALDWorkflowException  if the new operator instance is of wrong type.
 	 */
 	public void setOperator( ALDWorkflowNodeID nodeId, ALDOperator newOp) throws ALDWorkflowException {
-		
-		getNode( nodeId).getOperator().removeOperatorExecutionProgressEventListener(this);
+
+		ALDOperator oldOp = getNode( nodeId).getOperator();
+		oldOp.removeOperatorExecutionProgressEventListener(this);
 		
 		getNode(nodeId).setOperator( newOp);
 		newOp.addOperatorExecutionProgressEventListener(this);
+		
+		if ( this.workflowContext == ALDWorkflowContextType.OP_RUNNER &&
+				oldOp instanceof ALDOperatorControllable) {
+			ALDOperatorControllable controlableOp = (ALDOperatorControllable)oldOp;
+			if ( debug >= 1 ) {
+				System.out.println("ALDWorkflow::setOperator remove old operator and register new operator as listener to the workflow");
+			}
+			this.removeALDConfigurationEventListener( controlableOp);
+			this.removeALDControlEventListener(controlableOp);
+			
+			controlableOp =  (ALDOperatorControllable)newOp;
+			this.addALDConfigurationEventListener( controlableOp);
+			this.addALDControlEventListener(controlableOp);
+		}
 		
 		this.nodeParameterChanged(nodeId);
 	}
