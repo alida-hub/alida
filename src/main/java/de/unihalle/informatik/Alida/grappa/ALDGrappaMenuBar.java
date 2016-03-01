@@ -29,6 +29,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +47,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.KeyStroke;
 
 import de.unihalle.informatik.Alida.annotations.ALDAOperator;
 import de.unihalle.informatik.Alida.annotations.ALDAOperator.Level;
@@ -115,16 +117,18 @@ public class ALDGrappaMenuBar extends JMenuBar
 		JMenuItem loadItem = new JMenuItem("Load Workflow...");
 		loadItem.setActionCommand("load");
 		loadItem.addActionListener(this);
-//		loadItem.setAccelerator(KeyStroke.getKeyStroke(
-//				KeyEvent.VK_L, ActionEvent.CTRL_MASK));
+		loadItem.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_L, ActionEvent.CTRL_MASK));
 		JMenuItem saveItem = new JMenuItem("Save Workflow...");
 		saveItem.setActionCommand("save");
 		saveItem.addActionListener(this);
-//		saveItem.setAccelerator(KeyStroke.getKeyStroke(
-//				KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+		saveItem.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		JMenuItem quitItem = new JMenuItem("Quit");
 		quitItem.setActionCommand("quit");
 		quitItem.addActionListener(this);
+		quitItem.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
 		fileM.add(loadItem);
 		fileM.add(saveItem);
 		fileM.addSeparator();
@@ -174,23 +178,23 @@ public class ALDGrappaMenuBar extends JMenuBar
 		JMenuItem newItem = new JMenuItem("New");
 		newItem.setActionCommand("new");
 		newItem.addActionListener(this);
-//		newItem.setAccelerator(KeyStroke.getKeyStroke(
-//				KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+		newItem.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 		JMenuItem closeItem = new JMenuItem("Close");
 		closeItem.setActionCommand("close");
 		closeItem.addActionListener(this);
-//		closeItem.setAccelerator(KeyStroke.getKeyStroke(
-//				KeyEvent.VK_W, ActionEvent.CTRL_MASK));
+		closeItem.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_W, ActionEvent.CTRL_MASK));
 		JMenuItem renameItem = new JMenuItem("Rename");
 		renameItem.setActionCommand("rename");
 		renameItem.addActionListener(this);
-//		renameItem.setAccelerator(KeyStroke.getKeyStroke(
-//				KeyEvent.VK_U, ActionEvent.CTRL_MASK));
+		renameItem.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_U, ActionEvent.CTRL_MASK));
 		JMenuItem runItem = new JMenuItem("Run");
 		runItem.setActionCommand("run");
 		runItem.addActionListener(this);
-//		runItem.setAccelerator(KeyStroke.getKeyStroke(
-//				KeyEvent.VK_A, ActionEvent.CTRL_MASK));
+		runItem.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_A, ActionEvent.CTRL_MASK));
 		JMenuItem stopItem = new JMenuItem("Stop");
 		stopItem.setActionCommand("stop");
 		stopItem.addActionListener(this);

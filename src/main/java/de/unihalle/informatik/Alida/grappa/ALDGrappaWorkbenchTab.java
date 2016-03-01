@@ -2060,10 +2060,10 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 			// process the key press
 			switch(e.getKeyCode())
 			{
-			case KeyEvent.VK_A:
-				// execute the whole workflow
-				ALDGrappaWorkbenchTab.this.runWorkflow();
-				break;
+//			case KeyEvent.VK_A:
+//				// execute the whole workflow
+//				ALDGrappaWorkbenchTab.this.runWorkflow();
+//				break;
 			case KeyEvent.VK_C: 
 				System.out.println("Copying node...");
 //				if (selectedCells.length == 1) {
@@ -2121,16 +2121,16 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 //			case KeyEvent.VK_S: 
 //				ALDGrappaWorkbenchTab.this.workBench.saveWorkflow();
 //				break;
-			case KeyEvent.VK_U: 
-				ALDGrappaWorkbenchTab.this.workBench.renameWorkflow();
-				break;
+//			case KeyEvent.VK_U: 
+//				ALDGrappaWorkbenchTab.this.workBench.renameWorkflow();
+//				break;
 			case KeyEvent.VK_V: 
 				System.out.println("Pasting node...");
 				break;
-			case KeyEvent.VK_W: 
-				// close workflow
-				ALDGrappaWorkbenchTab.this.workBench.removeWorkflow();
-				break;
+//			case KeyEvent.VK_W: 
+//				// close workflow
+//				ALDGrappaWorkbenchTab.this.workBench.removeWorkflow();
+//				break;
 			case KeyEvent.VK_X: 
 				// remove selected nodes
 				for (Object cell : 
@@ -2776,38 +2776,38 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 			JMenuItem newItem = new JMenuItem("New");
 			newItem.setActionCommand("new");
 			newItem.addActionListener(this);
-			newItem.setAccelerator(KeyStroke.getKeyStroke(
-					KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+//			newItem.setAccelerator(KeyStroke.getKeyStroke(
+//					KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 			JMenuItem closeItem = new JMenuItem("Close");
 			closeItem.setActionCommand("close");
 			closeItem.addActionListener(this);
-			closeItem.setAccelerator(KeyStroke.getKeyStroke(
-					KeyEvent.VK_W, ActionEvent.CTRL_MASK));
+//			closeItem.setAccelerator(KeyStroke.getKeyStroke(
+//					KeyEvent.VK_W, ActionEvent.CTRL_MASK));
 			JMenuItem loadItem = new JMenuItem("Load");
 			loadItem.setActionCommand("load");
 			loadItem.addActionListener(this);
-			loadItem.setAccelerator(KeyStroke.getKeyStroke(
-					KeyEvent.VK_L, ActionEvent.CTRL_MASK));
+//			loadItem.setAccelerator(KeyStroke.getKeyStroke(
+//					KeyEvent.VK_L, ActionEvent.CTRL_MASK));
 			JMenuItem saveItem = new JMenuItem("Save");
 			saveItem.setActionCommand("save");
 			saveItem.addActionListener(this);
-			saveItem.setAccelerator(KeyStroke.getKeyStroke(
-					KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+//			saveItem.setAccelerator(KeyStroke.getKeyStroke(
+//					KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 			JMenuItem renameItem = new JMenuItem("Rename");
 			renameItem.setActionCommand("rename");
 			renameItem.addActionListener(this);
-			renameItem.setAccelerator(KeyStroke.getKeyStroke(
-					KeyEvent.VK_U, ActionEvent.CTRL_MASK));
+//			renameItem.setAccelerator(KeyStroke.getKeyStroke(
+//					KeyEvent.VK_U, ActionEvent.CTRL_MASK));
 			JMenuItem runItem = new JMenuItem("Run");
 			runItem.setActionCommand("run");
 			runItem.addActionListener(this);
-			runItem.setAccelerator(KeyStroke.getKeyStroke(
-					KeyEvent.VK_A, ActionEvent.CTRL_MASK));
+//			runItem.setAccelerator(KeyStroke.getKeyStroke(
+//					KeyEvent.VK_A, ActionEvent.CTRL_MASK));
 			JMenuItem stopItem = new JMenuItem("Stop");
 			stopItem.setActionCommand("stop");
 			stopItem.addActionListener(this);
-			stopItem.setAccelerator(KeyStroke.getKeyStroke(
-					KeyEvent.VK_K, ActionEvent.CTRL_MASK));
+//			stopItem.setAccelerator(KeyStroke.getKeyStroke(
+//					KeyEvent.VK_K, ActionEvent.CTRL_MASK));
 			this.add(newItem);
 			this.add(renameItem);
 			this.add(closeItem);
