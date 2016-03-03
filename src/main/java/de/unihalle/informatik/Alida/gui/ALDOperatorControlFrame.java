@@ -776,7 +776,6 @@ public class ALDOperatorControlFrame extends ALDOperatorConfigurationFrame
 			this.execProxy.stopWorkflow();
 			this.stopButton.setEnabled(false);
 			this.pauseButton.setEnabled(false);
-			this.setStatus("Operator stopped.");
 		}
 		// pause operator execution
 		else if (command.equals("pause")) {
