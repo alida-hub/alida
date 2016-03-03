@@ -61,7 +61,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>2.6</version>
+        <version>2.5</version>
         <executions>
           <!-- files needed for execution -->
           <execution>
@@ -431,7 +431,7 @@
     <dependency>
       <groupId>org.eclipse.jgit</groupId>
       <artifactId>org.eclipse.jgit</artifactId>
-      <version>4.2.0.201601211800-r</version>
+      <version>3.7.1.201504261725-r</version>
     </dependency>
     <dependency>
       <groupId>de.unihalle.informatik.Alida</groupId>
