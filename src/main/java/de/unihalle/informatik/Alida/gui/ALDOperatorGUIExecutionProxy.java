@@ -275,6 +275,8 @@ public class ALDOperatorGUIExecutionProxy
 				// if node is runnable, run it
 				if (state.equals(ALDWorkflowNodeState.RUNNABLE)) {
 					this.resultFrame = null;
+					this.alidaWorkflow.handleALDControlEvent(
+							new ALDControlEvent(this, ALDControlEventType.RUN_EVENT));
 					this.workflowStatus = WorkflowThreadStatus.THREAD_RUNNING;
 					this.alidaWorkflow.runWorkflow();
 				}
@@ -566,6 +568,7 @@ public class ALDOperatorGUIExecutionProxy
 //			JOptionPane.showMessageDialog(null, "Execution was aborted!", 
 //					"Workflow Execution Message", JOptionPane.ERROR_MESSAGE);
 			this.workflowStatus = WorkflowThreadStatus.THREAD_INTERRUPTED;
+			this.controlWin.setStatus("Operator stopped.");
 			break;
 		case EXECUTION_FINISHED:
 			if (this.workflowStatus.equals(WorkflowThreadStatus.THREAD_STOPPED))

@@ -73,7 +73,14 @@ public class ALDDemoOpControllable extends ALDOperatorControllable {
     while (loopCounter < 15) {
 
     	if (this.operatorStatus == OperatorControlStatus.OP_STOP) {
-    		System.err.println("Demo operator cancelled!");
+    		System.err.println("Demo operator cancelled, " 
+    				+ "waiting to finish...");
+    		// simulate that operate needs some time before actually stopping
+        try {
+        	Thread.sleep(2000);
+        } catch (InterruptedException e) {
+        	// just ignore the exception
+        }
     		break;
     	}
     	else if (this.operatorStatus == OperatorControlStatus.OP_PAUSE) {
