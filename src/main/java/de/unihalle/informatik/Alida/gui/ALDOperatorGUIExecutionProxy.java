@@ -568,6 +568,7 @@ public class ALDOperatorGUIExecutionProxy
 //			JOptionPane.showMessageDialog(null, "Execution was aborted!", 
 //					"Workflow Execution Message", JOptionPane.ERROR_MESSAGE);
 			this.workflowStatus = WorkflowThreadStatus.THREAD_INTERRUPTED;
+			this.controlWin.updateNodeStatus(ALDWorkflowNodeState.RUNNABLE);
 			this.controlWin.setStatus("Operator stopped.");
 			break;
 		case EXECUTION_FINISHED:
