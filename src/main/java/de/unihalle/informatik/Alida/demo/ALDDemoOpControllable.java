@@ -22,19 +22,11 @@
  *
  */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev$
- * $Date$
- * $Author$
- * 
- */
-
 package de.unihalle.informatik.Alida.demo;
 
 import de.unihalle.informatik.Alida.exceptions.ALDOperatorException;
 import de.unihalle.informatik.Alida.operator.ALDOperatorControllable;
+import de.unihalle.informatik.Alida.operator.events.ALDOperatorExecutionProgressEvent;
 import de.unihalle.informatik.Alida.annotations.ALDAOperator;
 import de.unihalle.informatik.Alida.annotations.ALDAOperator.ExecutionMode;
 import de.unihalle.informatik.Alida.annotations.ALDAOperator.Level;
@@ -44,13 +36,19 @@ import de.unihalle.informatik.Alida.annotations.ALDAOperator.Level;
  * 
  * @author moeller
  */
-@ALDAOperator(genericExecutionMode=ExecutionMode.ALL,level=Level.STANDARD)
+@ALDAOperator(genericExecutionMode=ExecutionMode.ALL,
+	level=Level.STANDARD)
 public class ALDDemoOpControllable extends ALDOperatorControllable {
+
+	/**
+	 * Operator identifier.
+	 */
+	protected	final static String operatorID = "[ALDDemoOpControllable]";
 
 	/**
 	 * Default constructor.
 	 * 
-	 * @throws ALDOperatorException
+	 * @throws ALDOperatorException Thrown in case of failure.
 	 */
 	public ALDDemoOpControllable() throws ALDOperatorException {
 		// nothing to do here
@@ -73,8 +71,11 @@ public class ALDDemoOpControllable extends ALDOperatorControllable {
     while (loopCounter < 15) {
 
     	if (this.operatorStatus == OperatorControlStatus.OP_STOP) {
-    		System.err.println("Demo operator cancelled, " 
-    				+ "waiting to finish...");
+    		
+    		this.fireOperatorExecutionProgressEvent(
+    				new ALDOperatorExecutionProgressEvent(this, 
+   						operatorID + " operator cancelled, going to stop..."));
+    		
     		// simulate that operate needs some time before actually stopping
         try {
         	Thread.sleep(2000);
@@ -84,7 +85,9 @@ public class ALDDemoOpControllable extends ALDOperatorControllable {
     		break;
     	}
     	else if (this.operatorStatus == OperatorControlStatus.OP_PAUSE) {
-    		System.err.println("Demo operator paused...");
+    		this.fireOperatorExecutionProgressEvent(
+    				new ALDOperatorExecutionProgressEvent(this, 
+   						operatorID + " operator paused, sleeping now..."));
     		do {
 					try {
 	          Thread.sleep(500);
@@ -92,7 +95,9 @@ public class ALDDemoOpControllable extends ALDOperatorControllable {
           	// just ignore the exception
           }
     		} while (this.operatorStatus != OperatorControlStatus.OP_RESUME);
-    		System.err.println("Demo operator running again...");
+    		this.fireOperatorExecutionProgressEvent(
+    				new ALDOperatorExecutionProgressEvent(this, 
+   						operatorID + " waking up and running again..."));
     	}
 
       switch (this.operatorStatus) {
@@ -130,7 +135,9 @@ public class ALDDemoOpControllable extends ALDOperatorControllable {
       }
 
       // do one step
-      System.out.println("Iteration = " + loopCounter);
+  		this.fireOperatorExecutionProgressEvent(
+  				new ALDOperatorExecutionProgressEvent(this, 
+ 						operatorID + " iteration = " + loopCounter));
       try {
       	Thread.sleep(500);
       } catch (InterruptedException e) {
