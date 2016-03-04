@@ -554,7 +554,7 @@ public class ALDOperatorGUIExecutionProxy
 	      String msg = this.alidaWorkflow.getNode(nodeID.next()).
 	      		getOperatorExecutionProgressDescr();
 	      // update status message in control window
-	      this.controlWin.setStatus(msg);
+	      this.controlWin.postStatusMessage(msg);
       } catch (ALDWorkflowException e1) {
       	System.err.println("[ALDOperatorGUIExecutionProxy] " 
       		+ "could not handle/update operator status message... ignoring!");
@@ -569,7 +569,7 @@ public class ALDOperatorGUIExecutionProxy
 //					"Workflow Execution Message", JOptionPane.ERROR_MESSAGE);
 			this.workflowStatus = WorkflowThreadStatus.THREAD_INTERRUPTED;
 			this.controlWin.updateNodeStatus(ALDWorkflowNodeState.RUNNABLE);
-			this.controlWin.setStatus("Operator stopped.");
+			this.controlWin.postStatusMessage("[GUI-Proxy] Operator stopped.");
 			break;
 		case EXECUTION_FINISHED:
 			if (this.workflowStatus.equals(WorkflowThreadStatus.THREAD_STOPPED))

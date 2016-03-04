@@ -646,7 +646,6 @@ public class ALDOperatorControlFrame extends ALDOperatorConfigurationFrame
 						this.runButton.setBackground(buttonColor_unconfigured);
 						this.runButton.setToolTipText("Operator not configured");
 					}
-					this.setStatus("Operator is unconfigured.");
 					this.resultDisplayButton.setEnabled(false);
 					// enable the parameter components
 					this.operatorParameterPanel.enableComponents();
@@ -678,9 +677,8 @@ public class ALDOperatorControlFrame extends ALDOperatorConfigurationFrame
 								|| !this.stepThroughBox.isSelected()) {
 							this.runButton.setEnabled(true);
 							this.runButton.setBackground(buttonColor_runnable);
-							this.runButton.setToolTipText("Operator ready to be executed");
+							this.runButton.setToolTipText("Operator ready to run");
 						}
-						this.setStatus("Operator is ready to run.");
 						this.resultDisplayButton.setEnabled(false);
 						// enable the parameter components
 						this.operatorParameterPanel.enableComponents();
@@ -691,9 +689,8 @@ public class ALDOperatorControlFrame extends ALDOperatorConfigurationFrame
 				if (this.stepThroughBox== null || !this.stepThroughBox.isSelected()) {
 					this.runButton.setEnabled(true);
 					this.runButton.setBackground(buttonColor_runnable);
-					this.runButton.setToolTipText("Operator ready to be executed");
+					this.runButton.setToolTipText("Operator ready to run");
 				}
-				this.setStatus("Operator is ready to run.");
 				this.resultDisplayButton.setEnabled(false);
 				// enable the parameter components
 				this.operatorParameterPanel.enableComponents();
@@ -705,7 +702,6 @@ public class ALDOperatorControlFrame extends ALDOperatorConfigurationFrame
 				}
 				this.runButton.setEnabled(false);
 				this.resultDisplayButton.setEnabled(false);
-				this.setStatus("Operator is running...");
 				// disable the parameter components
 				this.operatorParameterPanel.disableComponents();
 				break;
@@ -717,7 +713,6 @@ public class ALDOperatorControlFrame extends ALDOperatorConfigurationFrame
 							"Operator execution finished, results available.");
 					this.resultDisplayButton.setEnabled(true);
 				}
-				this.setStatus("Ready.");
 				// enable the parameter components
 				this.operatorParameterPanel.enableComponents();
 				break;
@@ -776,6 +771,7 @@ public class ALDOperatorControlFrame extends ALDOperatorConfigurationFrame
 			this.execProxy.stopWorkflow();
 			this.stopButton.setEnabled(false);
 			this.pauseButton.setEnabled(false);
+			this.postSystemMessage(" Operator requested to stop...");
 		}
 		// pause operator execution
 		else if (command.equals("pause")) {
@@ -783,7 +779,7 @@ public class ALDOperatorControlFrame extends ALDOperatorConfigurationFrame
 			this.pauseButton.setActionCommand("continue");
 			this.pauseButton.setText("Continue");
 			this.stopButton.setEnabled(false);
-			this.setStatus("Operator paused...");
+			this.postSystemMessage(" Operator requested to pause...");
 		}
 		// resume operator execution
 		else if (command.equals("continue")) {
@@ -791,7 +787,7 @@ public class ALDOperatorControlFrame extends ALDOperatorConfigurationFrame
 			this.pauseButton.setActionCommand("pause");
 			this.pauseButton.setText("Pause");
 			this.stopButton.setEnabled(true);
-			this.setStatus("Running...");
+			this.postSystemMessage(" Operator is running again...");
 		}
 		// next step in step-wise execution
 		else if (command.equals("step")) {
@@ -802,7 +798,7 @@ public class ALDOperatorControlFrame extends ALDOperatorConfigurationFrame
 			}
 			// start the thread
 			else {
-				this.setStatus("Running...");
+				this.postSystemMessage(" Operator is running...");
 				try {
 					String stepSizeText = this.stepThroughStepSize.getText();
 					int size = Integer.valueOf(stepSizeText).intValue();

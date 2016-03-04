@@ -36,6 +36,7 @@ import java.util.Set;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
+import javax.swing.text.DefaultCaret;
 
 import de.unihalle.informatik.Alida.operator.*;
 import de.unihalle.informatik.Alida.operator.events.ALDOpParameterUpdateEvent;
@@ -106,9 +107,10 @@ public class ALDOperatorConfigurationFrame extends JFrame
 	protected ALDOperatorParameterPanel operatorParameterPanel;
 
 	/**
-	 * Label of status bar, changes dynamically.
+	 * Text field for displaying status messages at the bottom,
+	 * changes dynamically according to operator and GUI events.
 	 */
-	protected JLabel status;
+	protected JTextArea messageBoard;
 
 	/**
 	 * Ok label to be used on button of Ok message boxes.
@@ -147,8 +149,9 @@ public class ALDOperatorConfigurationFrame extends JFrame
 	
 	/** 
 	 * Constructs a control frame for an operator object.
-	 * @param _op Operator to be associated with this frame object.
-	 * @throws ALDOperatorException
+	 * @param _op 		Operator to be associated with this frame object.
+	 * @param pListen Set of listeners to add to the window.
+	 * @throws ALDOperatorException Thrown in case of failure.
 	 */
 	public ALDOperatorConfigurationFrame(ALDOperator _op, 
 		ALDOpParameterUpdateEventListener pListen) 
@@ -203,7 +206,7 @@ public class ALDOperatorConfigurationFrame extends JFrame
 		// estimate size according to number of parameters in panel...
 		int paramNum = this.op.getParameterNames().size();
 
-		int windowWidth = 800, windowHeight = 500;
+		int windowWidth = 800, windowHeight = 600;
 		if (desktopWidth > 1600)
 			windowWidth = (int)(widthFraction * 1600);
 		else
@@ -256,15 +259,28 @@ public class ALDOperatorConfigurationFrame extends JFrame
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
 				this.inputPanel, buttonPanel);
 		splitPane.setOneTouchExpandable(true);
-		splitPane.setDividerLocation((int)(windowHeight*3.0/4.0));
+		// for controllable operators we need more space for button panel
+		if (ALDOperatorControllable.class.isAssignableFrom(
+					this.op.getClass()))
+			splitPane.setDividerLocation(windowHeight-250);
+		else
+			splitPane.setDividerLocation(windowHeight-185);
 		mainPanel.add(splitPane, BorderLayout.CENTER);
 		
 		// add status bar
-		this.status = new JLabel("Status: Ready");
-		JPanel statusBar = new JPanel();
-		statusBar.setBorder(BorderFactory.createLoweredBevelBorder());
-		statusBar.add(this.status);
-		mainPanel.add(statusBar, BorderLayout.SOUTH);
+		this.messageBoard = new JTextArea(5, 200);
+		this.messageBoard.setLineWrap(true);
+		// make sure that scrollbar  is always at bottom
+		DefaultCaret caret = (DefaultCaret)this.messageBoard.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		// add the scroll pane
+		JScrollPane statusScrollPane = new JScrollPane(this.messageBoard); 
+		statusScrollPane.setVerticalScrollBarPolicy(
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		this.messageBoard.setEditable(false);
+		this.postSystemMessage(" Window setup procedure completed!");
+		this.add(statusScrollPane, BorderLayout.SOUTH);
+		mainPanel.add(statusScrollPane, BorderLayout.SOUTH);
 
 		// add pane to this window
 		this.add(mainPanel);
@@ -321,6 +337,7 @@ public class ALDOperatorConfigurationFrame extends JFrame
 		// and go ..
 		this.setTitle(this.titleString);
 		this.setJMenuBar(mainWindowMenu);
+		this.pack();
 		this.setSize(new Dimension(windowWidth, windowHeight));
 	}
 
@@ -328,6 +345,8 @@ public class ALDOperatorConfigurationFrame extends JFrame
 	 * Adds operator parameter configuration panel to input panel.
 	 * <p>
 	 * This function is to be overwritten by other frameworks.
+	 * 
+	 * @return Generated parameter panel. 
 	 */
 	protected ALDOperatorParameterPanel setupParamConfigPanel() {
 		ALDOperatorParameterPanel opPanel = new ALDOperatorParameterPanel(
@@ -374,6 +393,8 @@ public class ALDOperatorConfigurationFrame extends JFrame
 	 * Adds set of control buttons to the input panel.
 	 * <p>
 	 * This function is to be overwritten by subclasses and other frameworks.
+	 * 
+	 * @return Generated parameter panel.
 	 */
 	protected JPanel addContextSpecificButtonPanel() {
 		return new JPanel();
@@ -381,6 +402,8 @@ public class ALDOperatorConfigurationFrame extends JFrame
 
 	/**
 	 * Adds set of control buttons to the input panel.
+	 * 
+	 * @return Generated parameter panel. 
 	 */
 	protected JPanel addCloseButtonPanel() {
 
@@ -429,11 +452,21 @@ public class ALDOperatorConfigurationFrame extends JFrame
 	}
 
 	/**
-	 * Changes the status message to the given string.
-	 * @param msg	Message to be shown in statusbar.
+	 * Posts a system status message in the status text field.
+	 * @param msg	Message to be posted in status text field.
 	 */
-	protected void setStatus(String msg) {
-		this.status.setText("Status: " + msg);
+	protected synchronized void postSystemMessage(String msg) {
+		if (this.messageBoard != null)
+			this.messageBoard.append("[OpControl]" + msg + "\n");
+	}
+
+	/**
+	 * Posts a general status message in the status text field.
+	 * @param msg	Message to be posted in status text field.
+	 */
+	protected synchronized void postStatusMessage(String msg) {
+		if (this.messageBoard != null)
+			this.messageBoard.append(msg + "\n");
 	}
 
 	/**
