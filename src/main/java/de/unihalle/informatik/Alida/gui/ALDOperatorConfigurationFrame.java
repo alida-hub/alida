@@ -102,6 +102,11 @@ public class ALDOperatorConfigurationFrame extends JFrame
 			ProviderInteractionLevel.ALL_ALLOWED;
 
 	/**
+	 * Main panel.
+	 */
+	protected JPanel mainPanel;
+
+	/**
 	 * Panel where operator parameters are embedded.
 	 */
 	protected ALDOperatorParameterPanel operatorParameterPanel;
@@ -111,6 +116,11 @@ public class ALDOperatorConfigurationFrame extends JFrame
 	 * changes dynamically according to operator and GUI events.
 	 */
 	protected JTextArea messageBoard;
+	
+	/**
+	 * Scrollable pane containing the {@link #messageBoard}.
+	 */
+	protected JScrollPane messageBoardScroller;
 
 	/**
 	 * Ok label to be used on button of Ok message boxes.
@@ -217,8 +227,8 @@ public class ALDOperatorConfigurationFrame extends JFrame
 			windowHeight = (int)(heightFraction * desktopHeight);
 
 		// set up the main panel containing input panel and status bar
-		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BorderLayout());
+		this.mainPanel = new JPanel();
+		this.mainPanel.setLayout(new BorderLayout());
 		
 		// set up the input panel
 		this.inputPanel = new JPanel();
@@ -265,8 +275,10 @@ public class ALDOperatorConfigurationFrame extends JFrame
 			splitPane.setDividerLocation(windowHeight-250);
 		else
 			splitPane.setDividerLocation(windowHeight-185);
-		mainPanel.add(splitPane, BorderLayout.CENTER);
-		
+		this.mainPanel.add(splitPane, BorderLayout.CENTER);
+		// add pane to this window
+		this.add(this.mainPanel);
+
 		// add status bar
 		this.messageBoard = new JTextArea(5, 200);
 		this.messageBoard.setLineWrap(true);
@@ -274,16 +286,12 @@ public class ALDOperatorConfigurationFrame extends JFrame
 		DefaultCaret caret = (DefaultCaret)this.messageBoard.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		// add the scroll pane
-		JScrollPane statusScrollPane = new JScrollPane(this.messageBoard); 
-		statusScrollPane.setVerticalScrollBarPolicy(
+		this.messageBoardScroller = new JScrollPane(this.messageBoard); 
+		this.messageBoardScroller.setVerticalScrollBarPolicy(
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		this.messageBoard.setEditable(false);
 		this.postSystemMessage(" Window setup procedure completed!");
-		this.add(statusScrollPane, BorderLayout.SOUTH);
-		mainPanel.add(statusScrollPane, BorderLayout.SOUTH);
-
-		// add pane to this window
-		this.add(mainPanel);
+		this.add(this.messageBoardScroller, BorderLayout.SOUTH);
 
 		// add a nice menubar
 		JMenuBar mainWindowMenu = new JMenuBar();

@@ -854,10 +854,20 @@ public class ALDOperatorControlFrame extends ALDOperatorConfigurationFrame
 		
 		// step through optimization
 		if (idString.equals("optionShowProgress")) {
-			if (((JCheckBox)source).isSelected())
+			if (((JCheckBox)source).isSelected()) {
 				this.showProgressEvents = true;
-			else
+				this.messageBoardScroller.setVisible(true);
+				this.add(this.messageBoardScroller, BorderLayout.SOUTH);
+				this.setSize(this.getWidth(), 
+						this.getHeight() + this.messageBoardScroller.getHeight());
+			}
+			else {
 				this.showProgressEvents = false;
+				this.messageBoardScroller.setVisible(false);
+				this.remove(this.messageBoardScroller);
+				this.setSize(this.getWidth(), 
+						this.getHeight() - this.messageBoardScroller.getHeight());
+			}
 		}
 		else if (idString.equals("stepFlagToggled")) {
 			if (this.stepThroughBox.isSelected()) {
