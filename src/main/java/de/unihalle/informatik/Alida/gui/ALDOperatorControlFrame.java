@@ -70,8 +70,8 @@ import de.unihalle.informatik.Alida.gui.ALDOperatorGUIExecutionProxy.WorkflowThr
  * @author Stefan Posch
  * @author Birgit Moeller
  */
-public class ALDOperatorControlFrame extends ALDOperatorConfigurationFrame 
-	implements ItemListener {
+public class ALDOperatorControlFrame 
+	extends ALDOperatorConfigurationFrame {
 
 	/* ***********************************
 	 * Some local data type declarations.
@@ -175,11 +175,6 @@ public class ALDOperatorControlFrame extends ALDOperatorConfigurationFrame
 	protected Vector<JCheckBox> outputCheckBoxes;
 	
 	/**
-	 * Flag to indicate if progress events are to be shown in status bar or not.
-	 */
-	private boolean showProgressEvents = true;
-
-	/**
 	 * Constructs a new control frame for an operator object.
 	 * @param _op		Operator to be associated with this frame object.	
 	 * @param em		Reference to the surrounding execution proxy.
@@ -224,23 +219,6 @@ public class ALDOperatorControlFrame extends ALDOperatorConfigurationFrame
 			return map;
 		}
 		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see de.unihalle.informatik.Alida.gui.ALDOperatorConfigurationFrame#setupAdditionalMenuOptionItems()
-	 */
-	@Override
-  protected Collection<JComponent> setupAdditionalMenuOptionItems() {
-		LinkedList<JComponent> list = new LinkedList<JComponent>();
-		list.add(new JLabel("<html><u>Status Bar</u></html>"));
-		JCheckBox optionCheckboxProgressEvents = 
-				new JCheckBox("Show Progress Messages");
-		optionCheckboxProgressEvents.setSelected(true);
-		this.showProgressEvents = true;
-		optionCheckboxProgressEvents.setActionCommand("optionShowProgress");
-		optionCheckboxProgressEvents.addItemListener(this);
-		list.add(optionCheckboxProgressEvents);
-		return list;
 	}
 
 	/* (non-Javadoc)
@@ -557,14 +535,6 @@ public class ALDOperatorControlFrame extends ALDOperatorConfigurationFrame
 	}
 
 	/**
-	 * Method to request whether to display progress events or not.
-	 * @return True, if progress event messages are to be shown.
-	 */
-	public boolean showProgressEvents() {
-		return this.showProgressEvents;
-	}
-
-	/**
 	 * Check if batch mode is currently active.
 	 * @return	True, if batch mode is active.
 	 */
@@ -853,23 +823,7 @@ public class ALDOperatorControlFrame extends ALDOperatorConfigurationFrame
 			return;
 		
 		// step through optimization
-		if (idString.equals("optionShowProgress")) {
-			if (((JCheckBox)source).isSelected()) {
-				this.showProgressEvents = true;
-				this.messageBoardScroller.setVisible(true);
-				this.add(this.messageBoardScroller, BorderLayout.SOUTH);
-				this.setSize(this.getWidth(), 
-						this.getHeight() + this.messageBoardScroller.getHeight());
-			}
-			else {
-				this.showProgressEvents = false;
-				this.messageBoardScroller.setVisible(false);
-				this.remove(this.messageBoardScroller);
-				this.setSize(this.getWidth(), 
-						this.getHeight() - this.messageBoardScroller.getHeight());
-			}
-		}
-		else if (idString.equals("stepFlagToggled")) {
+		if (idString.equals("stepFlagToggled")) {
 			if (this.stepThroughBox.isSelected()) {
 				// step-wise execution
 				this.stepThroughStepSize.setEnabled(true);
@@ -933,6 +887,10 @@ public class ALDOperatorControlFrame extends ALDOperatorConfigurationFrame
 		else if (idString.startsWith("output_")) {
 			// propagate event to super class
 			super.handleValueChangeEvent(new ALDSwingValueChangeEvent(this, null));
+		}
+		else {
+			// this event is not for us, propagate to super class
+			super.itemStateChanged(e);
 		}
 		// update GUI
 		this.repaint();

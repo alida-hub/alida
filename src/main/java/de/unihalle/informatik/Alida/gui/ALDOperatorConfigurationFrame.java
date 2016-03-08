@@ -35,6 +35,8 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 import javax.swing.text.DefaultCaret;
 
@@ -59,8 +61,8 @@ import de.unihalle.informatik.Alida.helpers.ALDIcon;
  * @author Birgit Moeller
  */
 public class ALDOperatorConfigurationFrame extends JFrame 
-	implements ActionListener, ALDSwingValueChangeListener,
-		ALDOpParameterUpdateEventReporter {
+	implements ActionListener, ChangeListener, ItemListener,
+		ALDSwingValueChangeListener, ALDOpParameterUpdateEventReporter {
 
 	/**
 	 * The operator associated with this frame.
@@ -112,6 +114,11 @@ public class ALDOperatorConfigurationFrame extends JFrame
 	protected ALDOperatorParameterPanel operatorParameterPanel;
 
 	/**
+	 * Flag to indicate if progress events are to be shown in status bar or not.
+	 */
+	private boolean showProgressEvents = true;
+
+	/**
 	 * Text field for displaying status messages at the bottom,
 	 * changes dynamically according to operator and GUI events.
 	 */
@@ -122,6 +129,21 @@ public class ALDOperatorConfigurationFrame extends JFrame
 	 */
 	protected JScrollPane messageBoardScroller;
 
+	/**
+	 * Label attached to message board line configuration spinner.
+	 */
+	protected JLabel messageBoardLineConfigLabel;
+
+	/**
+	 * Message board line configuration spinner.
+	 */
+	protected JSpinner messageBoardLineConfigSpinner;
+	
+	/**
+	 * Number of lines currently visible in {@link #messageBoard}.
+	 */
+	protected int messageBoardLineNumber;
+	
 	/**
 	 * Ok label to be used on button of Ok message boxes.
 	 */
@@ -282,6 +304,7 @@ public class ALDOperatorConfigurationFrame extends JFrame
 		// add status bar
 		this.messageBoard = new JTextArea(5, 200);
 		this.messageBoard.setLineWrap(true);
+		this.messageBoardLineNumber = 5;
 		// make sure that scrollbar  is always at bottom
 		DefaultCaret caret = (DefaultCaret)this.messageBoard.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
@@ -319,11 +342,48 @@ public class ALDOperatorConfigurationFrame extends JFrame
 		mainWindowMenu.add(actionM);
 
 		JMenu optionsMenu = new JMenu("Options");
+		optionsMenu.setLayout(new FlowLayout(FlowLayout.LEFT));
+		JPanel parameterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		this.showAllParameters = new JCheckBox("Show All Parameters", false);
 		this.showAllParameters.setActionCommand("viewM_changed");
 		this.showAllParameters.addActionListener(this);
-		optionsMenu.add(this.showAllParameters);
-		Collection<JComponent> addOptions = this.setupAdditionalMenuOptionItems();
+		parameterPanel.add(this.showAllParameters);
+		optionsMenu.add(parameterPanel);
+
+		// add options for configuration of message board
+		JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		labelPanel.add(new JLabel("<html><u>Status Bar</u></html>", 
+				SwingConstants.LEFT));
+		optionsMenu.add(labelPanel);
+		
+		JPanel checkPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JCheckBox optionCheckboxProgressEvents = 
+				new JCheckBox("Show Progress Messages");
+		optionCheckboxProgressEvents.setSelected(true);
+		this.showProgressEvents = true;
+		optionCheckboxProgressEvents.setActionCommand("optionShowProgress");
+		optionCheckboxProgressEvents.addItemListener(this);
+		checkPanel.add(optionCheckboxProgressEvents);
+		optionsMenu.add(checkPanel);
+		
+		// elements for configuring number of lines in message board
+		JPanel messageBoardLineConfigPanel = 
+				new JPanel(new FlowLayout(FlowLayout.LEFT));
+		this.messageBoardLineConfigLabel = 
+				new JLabel("   Number of lines: ");
+		messageBoardLineConfigPanel.add(this.messageBoardLineConfigLabel);
+    SpinnerNumberModel lineSpinnerModel;
+    Integer current = new Integer(5);
+    Integer min = new Integer(1);
+    Integer max = new Integer(10);
+    Integer step = new Integer(1);
+    lineSpinnerModel = new SpinnerNumberModel(current, min, max, step);
+		this.messageBoardLineConfigSpinner = new JSpinner(lineSpinnerModel);
+		this.messageBoardLineConfigSpinner.addChangeListener(this);
+    messageBoardLineConfigPanel.add(this.messageBoardLineConfigSpinner);
+    optionsMenu.add(messageBoardLineConfigPanel);
+
+		Collection<JPanel> addOptions= this.setupAdditionalMenuOptionItems();
 		// add additional entries to the options menu
 		if (addOptions != null && !addOptions.isEmpty()) {
 			optionsMenu.addSeparator();
@@ -380,9 +440,9 @@ public class ALDOperatorConfigurationFrame extends JFrame
 	 *
 	 * @return	List of items to be added to the options menu.
 	 */
-	protected Collection<JComponent> setupAdditionalMenuOptionItems() {
+	protected Collection<JPanel> setupAdditionalMenuOptionItems() {
 		// no additional menus to add
-		return new LinkedList<JComponent>();
+		return new LinkedList<JPanel>();
 	}
 
 	/**
@@ -475,6 +535,14 @@ public class ALDOperatorConfigurationFrame extends JFrame
 	protected synchronized void postStatusMessage(String msg) {
 		if (this.messageBoard != null)
 			this.messageBoard.append(msg + "\n");
+	}
+
+	/**
+	 * Method to request whether to display progress events or not.
+	 * @return True, if progress event messages are to be shown.
+	 */
+	public boolean showProgressEvents() {
+		return this.showProgressEvents;
 	}
 
 	/**
@@ -738,6 +806,81 @@ public class ALDOperatorConfigurationFrame extends JFrame
 			  	JOptionPane.INFORMATION_MESSAGE, ALDIcon.getInstance().getIcon(), 
 			  		options, options[0]);
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
+	 */
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+
+		String idString = null;
+
+		// get the object affected by the event
+		Object source = e.getItemSelectable();
+
+		if (source instanceof JCheckBox) {
+			JCheckBox box = (JCheckBox) source;
+			idString = box.getActionCommand();
+		}
+		else if (source instanceof JComboBox) {
+			JComboBox box = (JComboBox) source;
+			idString = box.getActionCommand();
+		}
+
+		// error check
+		if (idString == null)
+			return;
+		
+		// step through optimization
+		if (idString.equals("optionShowProgress")) {
+			if (((JCheckBox)source).isSelected()) {
+				this.showProgressEvents = true;
+				this.messageBoardLineConfigLabel.setEnabled(true);
+				this.messageBoardLineConfigSpinner.setEnabled(true);
+				this.messageBoardScroller.setVisible(true);
+				this.add(this.messageBoardScroller, BorderLayout.SOUTH);
+				this.setSize(this.getWidth(), 
+						this.getHeight() + this.messageBoardScroller.getHeight());
+			}
+			else {
+				this.showProgressEvents = false;
+				this.messageBoardLineConfigLabel.setEnabled(false);
+				this.messageBoardLineConfigSpinner.setEnabled(false);
+				this.messageBoardScroller.setVisible(false);
+				this.remove(this.messageBoardScroller);
+				this.setSize(this.getWidth(), 
+						this.getHeight() - this.messageBoardScroller.getHeight());
+			}
+		}
+		// update GUI
+		this.repaint();
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		// get the object affected by the event
+		Object source = e.getSource();
+		
+		if (source instanceof JSpinner) {
+			// spinner for changing number of lines in message board changed
+			JSpinner spinner = (JSpinner)source;
+			int lineNumber = ((Integer)spinner.getValue()).intValue();
+			int oldMsgBoardHeight = this.messageBoardScroller.getHeight();
+			int newHeight = this.messageBoardScroller.getHeight()
+					/	this.messageBoardLineNumber * lineNumber + 5;
+			this.messageBoardScroller.setPreferredSize(
+					new Dimension(200, newHeight));
+			this.messageBoardScroller.setSize(new Dimension(200, newHeight));
+			this.messageBoardScroller.updateUI();
+			int newMsgBoardHeight = this.messageBoardScroller.getHeight();
+			this.setSize(this.getWidth(), 
+					this.getHeight() - oldMsgBoardHeight + newMsgBoardHeight);
+			this.messageBoardLineNumber = lineNumber;
+		}		
 	}
 
 	@Override
