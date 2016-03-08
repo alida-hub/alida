@@ -63,10 +63,14 @@ public class TestALDVersionProviderFactory {
 		
 		// extract current class path and runtime environment
 		String strClassPath = System.getProperty("java.class.path");
+		// make sure that corresponding java executable is used
+		String javaHome = System.getProperty("java.home");
+		javaHome = javaHome.substring(0,javaHome.lastIndexOf('/')+1);
+		String javaExec = javaHome + "bin/java";
 		
 		// define java command to test and build process
 		String[] myCmd = new String[]{
-			"java", "-cp", strClassPath,
+			javaExec, "-cp", strClassPath,
 			"de.unihalle.informatik.Alida.version.TestALDVersionProviderFactory",
 			"null"};
 		ProcessBuilder pb = new ProcessBuilder(myCmd);
@@ -133,7 +137,7 @@ public class TestALDVersionProviderFactory {
 		  	"de.unihalle.informatik.Alida.version.ALDVersionProviderReleaseJar",
 				"de.unihalle.informatik.Alida.version.ALDVersionProviderReleaseJar"};
 			myCmd = new String[]{
-					"java", "-cp", strClassPath,
+					javaExec, "-cp", strClassPath,
 					"de.unihalle.informatik.Alida.version.TestALDVersionProviderFactory",
 					"de.unihalle.informatik.Alida.version.ALDVersionProviderReleaseJar"};
 			pb = new ProcessBuilder(myCmd);
@@ -155,7 +159,7 @@ public class TestALDVersionProviderFactory {
 					"de.unihalle.informatik.Alida.version.ALDVersionProviderGit", 
 					"de.unihalle.informatik.Alida.version.ALDVersionProviderGit"};
 			myCmd = new String[]{
-					"java", "-cp", strClassPath,
+					javaExec, "-cp", strClassPath,
 					"de.unihalle.informatik.Alida.version.TestALDVersionProviderFactory",
 					"de.unihalle.informatik.Alida.version.ALDVersionProviderReleaseJar"};
 			pb = new ProcessBuilder(myCmd);
@@ -175,7 +179,7 @@ public class TestALDVersionProviderFactory {
 		  
 		  // now unset again, i.e. environment should be used
 			myCmd = new String[]{
-					"java", "-cp", strClassPath,
+					javaExec, "-cp", strClassPath,
 					"de.unihalle.informatik.Alida.version.TestALDVersionProviderFactory",
 					"null"};
 			pb = new ProcessBuilder(myCmd);
