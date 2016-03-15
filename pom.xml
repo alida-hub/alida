@@ -3,7 +3,7 @@
 
   <groupId>de.unihalle.informatik.Alida</groupId>
   <artifactId>alida</artifactId>
-  <version>2.7-SNAPSHOT</version>
+  <version>2.7</version>
   <packaging>jar</packaging>
 
   <name>alida</name>
@@ -15,7 +15,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <YEAR>2016</YEAR>
     <alida.xml.version>1.2</alida.xml.version>
-    <alida.mitobo.help.version>1.7-SNAPSHOT</alida.mitobo.help.version>
+    <alida.mitobo.help.version>1.6</alida.mitobo.help.version>
   </properties>
 
   <licenses>
@@ -385,12 +385,6 @@
       <layout>default</layout>
     </repository>
     <repository>
-      <id>internal</id>
-      <name>Archiva Internal Repository on 'moon'</name>
-      <url>https://moon.informatik.uni-halle.de/archiva/repository/internal/</url>
-      <layout>default</layout>
-    </repository>
-    <repository>
       <id>releases</id>
       <name>Archiva Release Repository on 'moon'</name>
       <url>https://moon.informatik.uni-halle.de/archiva/repository/releases/</url>
@@ -403,12 +397,6 @@
       <id>snapshots</id>
       <name>Archiva Public Snapshot Repository on 'moon'</name>
       <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots-pub/</url>
-      <layout>default</layout>
-    </pluginRepository>
-    <pluginRepository>
-      <id>internal</id>
-      <name>Archiva Internal Repository on 'moon'</name>
-      <url>https://moon.informatik.uni-halle.de/archiva/repository/internal/</url>
       <layout>default</layout>
     </pluginRepository>
     <pluginRepository>
