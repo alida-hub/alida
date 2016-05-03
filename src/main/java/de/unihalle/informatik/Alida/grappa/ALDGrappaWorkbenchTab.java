@@ -502,6 +502,10 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 	 * Initialize node name count map on reload of workflow.
 	 */
 	private void initNodeNameCountMap() {
+		
+		// regular expression how new node names with count ID look like
+		String nameRegExp = ".*\\[(0|1|2|3|4|5|6|7|8|9)+\\]$";
+
 		this.nodeNameCountMap = new HashMap<>();
 		Set<mxCell> cells = this.graphNodeIDs.keySet();
 		ALDGrappaNodeInfo nInfo; 
@@ -510,18 +514,33 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 		for (mxCell c : cells) {
 			nInfo = (ALDGrappaNodeInfo)c.getValue();
 			nName = nInfo.getNodeName();
-			int bracketStart = nName.lastIndexOf("[");
-			int bracketEnd = nName.lastIndexOf("]");
-			nCount = 
-				Integer.valueOf(nName.substring(bracketStart+1, bracketEnd)).intValue();
-			// extract pure name without ID number
-			nName = nName.substring(0,bracketStart);
-			if (this.nodeNameCountMap.containsKey(nName)) {
-				if (nCount > this.nodeNameCountMap.get(nName).intValue())
-					this.nodeNameCountMap.put(nName, new Integer(nCount));
+			// check if the node name follows new conventions with count ID,
+			// i.e., if it looks like <operatorname[count]>
+			if (nName.matches(nameRegExp)) {
+				int bracketStart = nName.lastIndexOf("[");
+				int bracketEnd = nName.lastIndexOf("]");
+				nCount = Integer.valueOf(
+						nName.substring(bracketStart+1, bracketEnd)).intValue();
+				// extract pure name without ID number
+				nName = nName.substring(0,bracketStart);
+				if (this.nodeNameCountMap.containsKey(nName)) {
+					if (nCount > this.nodeNameCountMap.get(nName).intValue())
+						this.nodeNameCountMap.put(nName, new Integer(nCount));
+				}
+				else {
+					this.nodeNameCountMap.put(nName, new Integer(nCount));				
+				}
 			}
+			// if the name is old-fashioned, just count operator nodes so that 
+			// at least new nodes will get unique names with count ID
 			else {
-				this.nodeNameCountMap.put(nName, new Integer(nCount));				
+				if (this.nodeNameCountMap.containsKey(nName)) {
+					this.nodeNameCountMap.put(nName, new Integer(
+						this.nodeNameCountMap.get(nName).intValue()+1));
+				}
+				else {
+					this.nodeNameCountMap.put(nName, new Integer(1));				
+				}				
 			}
 		}
 	}
