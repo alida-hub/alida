@@ -187,6 +187,11 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 	protected boolean popupFinalResults = true;
 	
 	/**
+	 * Map to count nodes of an operator type and allow for unique labels. 
+	 */
+	private HashMap<String, Integer> nodeNameCountMap = new HashMap<>();
+	
+	/**
 	 * List of actions performed on the Alida workflow object.
 	 */
 	protected HashMap<ALDWorkflowID, WorkflowModifyAction> actionsOnWorkflow;
@@ -278,6 +283,9 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 
 		// make sure that all nodes and all wins show correct configurations
 		this.updateWorkflowNodeStates();
+		
+		// properly initialize node name count map
+		this.initNodeNameCountMap();
 	
 		this.graph.setMinimumGraphSize(new mxRectangle(0, 0, 500, 500));
 		this.graph.setAllowDanglingEdges(false);
@@ -488,6 +496,34 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 		// ATTENTION: never call this method here, at this point node 
 		//            parameters are always up-to-date!
 		//		this.handleNodeParameterChangeEvent(tmpList);
+	}
+	
+	/**
+	 * Initialize node name count map on reload of workflow.
+	 */
+	private void initNodeNameCountMap() {
+		this.nodeNameCountMap = new HashMap<>();
+		Set<mxCell> cells = this.graphNodeIDs.keySet();
+		ALDGrappaNodeInfo nInfo; 
+		String nName;
+		int nCount;
+		for (mxCell c : cells) {
+			nInfo = (ALDGrappaNodeInfo)c.getValue();
+			nName = nInfo.getNodeName();
+			int bracketStart = nName.lastIndexOf("[");
+			int bracketEnd = nName.lastIndexOf("]");
+			nCount = 
+				Integer.valueOf(nName.substring(bracketStart+1, bracketEnd)).intValue();
+			// extract pure name without ID number
+			nName = nName.substring(0,bracketStart);
+			if (this.nodeNameCountMap.containsKey(nName)) {
+				if (nCount > this.nodeNameCountMap.get(nName).intValue())
+					this.nodeNameCountMap.put(nName, new Integer(nCount));
+			}
+			else {
+				this.nodeNameCountMap.put(nName, new Integer(nCount));				
+			}
+		}
 	}
 	
 	/**
@@ -1421,7 +1457,20 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 		// add the vertex
 //		mxCell v = (mxCell)this.graph.insertVertex(
 //				this.graph.getDefaultParent(), null, op.getName(), x, y, 160, height);
-		ALDGrappaNodeInfo nodeInf = new ALDGrappaNodeInfo(op.getName());
+		
+		// register name
+		int nodeCountID = 1;
+		String nodeName = op.getName();
+		if (this.nodeNameCountMap.containsKey(nodeName)) {
+			this.nodeNameCountMap.put(nodeName, new Integer(
+					this.nodeNameCountMap.get(nodeName).intValue() + 1));
+		}
+		else {
+			this.nodeNameCountMap.put(nodeName, new Integer(1));
+		}
+		nodeCountID = this.nodeNameCountMap.get(nodeName).intValue();
+		ALDGrappaNodeInfo nodeInf = 
+				new ALDGrappaNodeInfo(nodeName + "[" + nodeCountID + "]");
 		mxCell v = (mxCell)this.graph.insertVertex(
 				this.graph.getDefaultParent(), null, nodeInf, x, y, 160, height);
 		v.setConnectable(false);
@@ -1678,8 +1727,10 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 		ALDOperator op;
 		try {
 			op = this.alidaWorkflow.getOperator(nodeID);
+			ALDGrappaNodeInfo nInfo = 
+					(ALDGrappaNodeInfo)this.graphNodes.get(nodeID).getValue();
 			ALDOperatorResultFrame resultFrame = 
-					new ALDOperatorResultFrame(op, 
+					new ALDOperatorResultFrame(nInfo.getNodeName(), op, 
 							ProviderInteractionLevel.ALL_ALLOWED);
 			resultFrame.setVisible(true);
 		} catch (ALDWorkflowException e) {
