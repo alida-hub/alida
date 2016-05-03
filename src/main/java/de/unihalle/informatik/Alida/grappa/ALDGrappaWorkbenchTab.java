@@ -169,9 +169,22 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 	protected HashMap<mxCell, Boolean> nodeConfigShowAllParameters;
 
 	/**
+	 * Map of flags for immediately showing node results.
+	 * <p>
+	 * The values stored in this hashmap are updated by  
+	 * menus of type {@link ContextMenuNodeEdge}.
+	 */
+	protected HashMap<mxCell, Boolean> nodeConfigShowResultsAtOnce;
+
+	/**
 	 * Title of this workflow as shown on the tab.
 	 */
 	protected String workflowTitle;
+	
+	/**
+	 * Flag to enable/disable automatic pop-up of results at terminal nodes.
+	 */
+	protected boolean popupFinalResults = true;
 	
 	/**
 	 * List of actions performed on the Alida workflow object.
@@ -205,6 +218,7 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 		this.configWindows = 
 				new HashMap<mxCell, ALDOperatorConfigurationFrame>();
 		this.nodeConfigShowAllParameters = new HashMap<mxCell, Boolean>();
+		this.nodeConfigShowResultsAtOnce = new HashMap<mxCell, Boolean>();
 		this.workBench = bench;
 		try {
 			this.alidaWorkflow = new ALDWorkflow(ALDWorkflowContextType.GRAPPA);
@@ -250,6 +264,7 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 		this.configWindows = 
 				new HashMap<mxCell, ALDOperatorConfigurationFrame>();
 		this.nodeConfigShowAllParameters = new HashMap<mxCell, Boolean>();
+		this.nodeConfigShowResultsAtOnce = new HashMap<mxCell, Boolean>();
 		this.workBench = bench;
 		this.workflowTitle = _flow.getName();
 		this.alidaWorkflow = _flow;
@@ -444,6 +459,7 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 				// initially configuration windows always show only standard
 				// parameters
 				this.nodeConfigShowAllParameters.put(node,new Boolean(false));
+				this.nodeConfigShowResultsAtOnce.put(node,new Boolean(false));
 				// fire a parameter change event, this is the first time when the
 				// listener can react on that
 				confWin.fireALDOpParameterUpdateEvent(new ALDOpParameterUpdateEvent(
@@ -1183,6 +1199,7 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 				this.graphNodes.remove(eventInfo);
 				this.configWindows.remove(cell);
 				this.nodeConfigShowAllParameters.remove(cell);
+				this.nodeConfigShowResultsAtOnce.remove(cell);
 				// remove node from JGraphX model
 				this.graph.getModel().remove(cell);
 				// remove event reference
@@ -1344,13 +1361,13 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 					"Workflow Execution Message", JOptionPane.ERROR_MESSAGE);
 			break;
 		case SHOW_RESULTS:
-			System.out.println("Received show_results event...");
-			if (!(eventInfo instanceof ALDWorkflowNodeID)) {
-				JOptionPane.showMessageDialog(null, "Cannot display results!", 
-						"Workflow Execution Error", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			this.handleShowResultsEvent((ALDWorkflowNodeID)eventInfo);
+//			System.out.println("Received show_results event...");
+//			if (!(eventInfo instanceof ALDWorkflowNodeID)) {
+//				JOptionPane.showMessageDialog(null, "Cannot display results!", 
+//						"Workflow Execution Error", JOptionPane.ERROR_MESSAGE);
+//				return;
+//			}
+//			this.handleShowResultsEvent((ALDWorkflowNodeID)eventInfo);
 			break;
 		default:
 			if ( this.debug ) {
@@ -1424,6 +1441,7 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 		// store the control frame and the node id
 		this.configWindows.put(v, controlFrame);
 		this.nodeConfigShowAllParameters.put(v, new Boolean(false));
+		this.nodeConfigShowResultsAtOnce.put(v, new Boolean(false));
 		this.graphNodeIDs.put(v, id);
 		this.graphNodes.put(id, v);
 		
@@ -1550,8 +1568,8 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 			Collection<ALDWorkflowNodeID> idList) {
 		for (ALDWorkflowNodeID nodeID: idList) {
 			try {
-				ALDWorkflowNodeState nodeState = 
-						this.alidaWorkflow.getNode(nodeID).getState();
+				ALDWorkflowNode wNode = this.alidaWorkflow.getNode(nodeID);
+				ALDWorkflowNodeState nodeState = wNode.getState();
 				mxCell node = this.graphNodes.get(nodeID);
 				Object [] nodeToModify = new Object[]{node};
 				switch(nodeState)
@@ -1569,7 +1587,23 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 					this.graph.setCellStyle(getNodeStyleString("blue"),nodeToModify);
 					break;
 				case READY:
-					this.graph.setCellStyle(getNodeStyleString("green"),nodeToModify);
+					// change node color
+					this.graph.setCellStyle(getNodeStyleString("green"),
+							nodeToModify);
+					// check if node is a terminal node and if to display results
+					if (wNode.getChildren().isEmpty()) {
+						if (   this.popupFinalResults 
+								|| this.nodeConfigShowResultsAtOnce.get(node).booleanValue()) {
+
+							handleShowResultsEvent(nodeID);
+						}
+					}
+					// check for other nodes if results are to be displayed
+					else {
+						if (this.nodeConfigShowResultsAtOnce.get(node).booleanValue()){
+							handleShowResultsEvent(nodeID);
+						}
+					}
 					break;
 				}
 			}
@@ -2463,6 +2497,11 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 		private JCheckBoxMenuItem parameterShowModeItem;
 
 		/**
+		 * Checkbox for enabling/disabling immediate display of results.
+		 */
+		private JCheckBoxMenuItem resultsShowImmediateItem;
+
+		/**
 		 * Default constructor for context menu.
 		 * @param x		X-coordinate of mouse-click position.
 		 * @param y		Y-coordinate of mouse-click position.
@@ -2553,15 +2592,24 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 
 				JMenu viewMenu = new JMenu("Options");
 				// request the view mode of the node
-				Boolean selected = 
-						ALDGrappaWorkbenchTab.this.
-							nodeConfigShowAllParameters.get(this.cell);
+				Boolean selected = ALDGrappaWorkbenchTab.this.
+						nodeConfigShowAllParameters.get(this.cell);
 				this.parameterShowModeItem = 
 						new JCheckBoxMenuItem("Show All Parameters", 
 								selected.booleanValue());
-				this.parameterShowModeItem.setActionCommand("viewModeChanged");
+				this.parameterShowModeItem.setActionCommand(
+						"viewModeChanged");
 				this.parameterShowModeItem.addActionListener(this);
 				viewMenu.add(this.parameterShowModeItem);
+				selected = ALDGrappaWorkbenchTab.this.
+						nodeConfigShowResultsAtOnce.get(this.cell);
+				this.resultsShowImmediateItem = 
+						new JCheckBoxMenuItem("Show Results At Once",
+								selected.booleanValue());
+				this.resultsShowImmediateItem.setActionCommand(
+						"resultShowModeChanged");
+				this.resultsShowImmediateItem.addActionListener(this);
+				viewMenu.add(this.resultsShowImmediateItem);
 
 				this.add(confItem);
 				this.add(runMenu);
@@ -2625,7 +2673,17 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 					ALDGrappaWorkbenchTab.this.setWorkflowNodeViewMode(
 							this.cell, Parameter.ExpertMode.STANDARD);
 				}
-			}			
+			}
+			else if (command.equals("resultShowModeChanged")) {
+				if (this.resultsShowImmediateItem.isSelected())
+					ALDGrappaWorkbenchTab.this.
+						nodeConfigShowResultsAtOnce.put(this.cell, 
+							new Boolean(true));
+				else
+					ALDGrappaWorkbenchTab.this.
+						nodeConfigShowResultsAtOnce.put(this.cell, 
+							new Boolean(false));
+			}
 			// copy node including links and configuration
 			else if (command.equals("copyNodeComplete")) {
 			} 
@@ -2808,6 +2866,16 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 			stopItem.addActionListener(this);
 //			stopItem.setAccelerator(KeyStroke.getKeyStroke(
 //					KeyEvent.VK_K, ActionEvent.CTRL_MASK));
+			
+			JMenu optionsMenu = new JMenu("Options");
+			// flag to enable automatic display of results at the end
+			boolean flag = ALDGrappaWorkbenchTab.this.popupFinalResults;
+			JMenuItem displayFinalResultsItem = 
+					new JCheckBoxMenuItem("Pop-up final results", flag); 
+			displayFinalResultsItem.setActionCommand("popupFinalResults");
+			displayFinalResultsItem.addActionListener(this);
+			optionsMenu.add(displayFinalResultsItem);
+
 			this.add(newItem);
 			this.add(renameItem);
 			this.add(closeItem);
@@ -2817,6 +2885,9 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 			this.addSeparator();
 			this.add(runItem);
 			this.add(stopItem);
+			this.addSeparator();
+			this.add(optionsMenu);
+			
 		}
 
 		/* (non-Javadoc)
@@ -2845,6 +2916,12 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 			}
 			else if (command.equals("stop")) {
 				ALDGrappaWorkbenchTab.this.interruptExecution();
+			}
+			else if (command.equals("popupFinalResults")) {
+				if (((JCheckBoxMenuItem)e.getSource()).isSelected())
+					ALDGrappaWorkbenchTab.this.popupFinalResults = true;
+				else
+					ALDGrappaWorkbenchTab.this.popupFinalResults = false;				
 			}
 		}
 	}
