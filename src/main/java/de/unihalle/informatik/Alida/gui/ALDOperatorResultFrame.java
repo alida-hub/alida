@@ -68,11 +68,12 @@ public class ALDOperatorResultFrame extends JFrame
 	private ALDOperatorParamDisplayFrame paramFrame;
 	
 	/**
-	 * Constructor.
+	 * Constructor with title parameter.
+	 * @param title			Window title.
 	 * @param operator	Associated operator.
 	 * @param pLevel		Level of interaction the providers should obey to.
 	 */
-	public ALDOperatorResultFrame(ALDOperator operator, 
+	public ALDOperatorResultFrame(String title, ALDOperator operator, 
 			ProviderInteractionLevel pLevel) {
 		
 		this.op = operator;
@@ -198,13 +199,23 @@ public class ALDOperatorResultFrame extends JFrame
 		JScrollPane scrollPane = new JScrollPane( mainPanel);
 		this.add( scrollPane);
 
-		this.setTitle("Operator Results for " + this.op.getName());
+		this.setTitle("Operator Results for " + title);
 		if (numPanels == 0)
 			this.getContentPane().setPreferredSize(new Dimension(400, 200));
 		else
 			this.getContentPane().setPreferredSize(new Dimension(400, 250));
 		this.pack();
 		this.setDefaultCloseOperation( DISPOSE_ON_CLOSE);
+	}
+	
+	/**
+	 * Constructor.
+	 * @param operator	Associated operator.
+	 * @param pLevel		Level of interaction the providers should obey to.
+	 */
+	public ALDOperatorResultFrame(ALDOperator operator, 
+			ProviderInteractionLevel pLevel) {
+		this(operator.getName(), operator, pLevel);
 	}
 	
 	@Override
