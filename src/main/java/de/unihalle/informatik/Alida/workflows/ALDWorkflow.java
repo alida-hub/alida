@@ -2169,13 +2169,16 @@ implements ALDWorkflowEventReporter {
 			System.out.println( "ALDWorkflow::updateStates for nodes " +
 					ALDWorkflow.nodeIdsToString(nodesToCheck));
 		}
-		HashSet<ALDWorkflowNodeID> changeSet = new HashSet<ALDWorkflowNodeID>();
-
+//		HashSet<ALDWorkflowNodeID> changeSet = new HashSet<ALDWorkflowNodeID>();
+		HashMap<ALDWorkflowNodeID, ALDWorkflowNode.ALDWorkflowNodeState>
+			changeSet = new HashMap<>();
+		
 		// first check impact of local changes to state
 		try {
 			for ( ALDWorkflowNode node : this.topSort(nodesToCheck)) {
 				if ( this.checkLocalStateChange(node)) {
-					changeSet.add( ALDWorkflow.mapNodeToNodeId(node));
+					changeSet.put( 
+						ALDWorkflow.mapNodeToNodeId(node), node.getState());
 				}
 			}
 		} catch (ALDWorkflowException e1) {
@@ -2193,7 +2196,8 @@ implements ALDWorkflowEventReporter {
 		try {
 			for ( ALDWorkflowNode node : this.topSort(nodesToConsider) ) {
 				if ( this.checkDataflowStateChange( node) ) {
-					changeSet.add( ALDWorkflow.mapNodeToNodeId(node));
+					changeSet.put( 
+						ALDWorkflow.mapNodeToNodeId(node), node.getState());
 				}
 			}
 		} catch (ALDWorkflowException e) {
@@ -2375,8 +2379,10 @@ implements ALDWorkflowEventReporter {
 
 		node.setState(newState);
 		
-		HashSet<ALDWorkflowNodeID> changeSet = new HashSet<ALDWorkflowNodeID>();
-		changeSet.add( ALDWorkflow.mapNodeToNodeId(node));	
+//		HashSet<ALDWorkflowNodeID> changeSet = new HashSet<ALDWorkflowNodeID>();
+		HashMap<ALDWorkflowNodeID, ALDWorkflowNodeState> changeSet =
+				new HashMap<>();
+		changeSet.put( ALDWorkflow.mapNodeToNodeId(node), newState);	
 		fireALDWorkflowEvent(new ALDWorkflowEvent(this, ALDWorkflowEventType.NODE_STATE_CHANGE, changeSet));
 	}
 	

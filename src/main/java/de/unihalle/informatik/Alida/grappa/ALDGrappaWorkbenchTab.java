@@ -485,13 +485,25 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 	 */
 	private void updateWorkflowNodeStates() {
 		Set<ALDWorkflowNodeID> keys = this.graphNodes.keySet();
-		LinkedList<ALDWorkflowNodeID> tmpList = 
-				new LinkedList<ALDWorkflowNodeID>();
+//		LinkedList<ALDWorkflowNodeID> tmpList = 
+//				new LinkedList<ALDWorkflowNodeID>();
+//		for (ALDWorkflowNodeID nodeID : keys) {
+//			tmpList.add(nodeID);
+//		}
+		HashMap<ALDWorkflowNodeID, ALDWorkflowNodeState> statusMap = 
+				new HashMap<>();
 		for (ALDWorkflowNodeID nodeID : keys) {
-			tmpList.add(nodeID);
+			ALDWorkflowNodeState state;
+			try {
+				state = this.alidaWorkflow.getNode(nodeID).getState();
+				statusMap.put(nodeID, state);
+			} catch (ALDWorkflowException e) {
+				// just print stack trace and continue...
+				e.printStackTrace();
+			}
 		}
 		// make sure that all node state are correct
-		this.handleNodeStateChangeEvent(tmpList);
+		this.handleNodeStateChangeEvent(statusMap);
 		
 		// ATTENTION: never call this method here, at this point node 
 		//            parameters are always up-to-date!
@@ -1348,12 +1360,12 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 		case NODE_PARAMETER_CHANGE:
 			this.handleNodeParameterChangeEvent(
 																		(Collection<ALDWorkflowNodeID>)eventInfo);
-			this.handleNodeStateChangeEvent(
-																		(Collection<ALDWorkflowNodeID>)eventInfo);
+//			this.handleNodeStateChangeEvent(
+//																		(Collection<ALDWorkflowNodeID>)eventInfo);
 			break;
 		case NODE_STATE_CHANGE:
 			this.handleNodeStateChangeEvent(
-																		(Collection<ALDWorkflowNodeID>)eventInfo);
+				(HashMap<ALDWorkflowNodeID, ALDWorkflowNodeState>)eventInfo);
 			break;
 			//		case LOAD_WORKFLOW:
 			//			if (!(eventID instanceof ALDWorkflowStorageInfo)) {
@@ -1536,10 +1548,19 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 	protected synchronized void handleNodeParameterChangeEvent(
 			Collection<ALDWorkflowNodeID> idList) {
 		
+		// init map for later status update call
+		HashMap<ALDWorkflowNodeID, ALDWorkflowNodeState> statusMap = 
+				new HashMap<>();
 		for (ALDWorkflowNodeID nodeID: idList) {
 			try {
-				// update the configuration window
 				mxCell node = this.graphNodes.get(nodeID);
+				
+				// store node status
+				ALDWorkflowNodeState state = 
+						this.alidaWorkflow.getNode(nodeID).getState();
+				statusMap.put(nodeID, state);
+				
+				// update the configuration window
 				ALDOperator op = this.alidaWorkflow.getOperator(nodeID);
 				this.configWindows.get(node).updateOperator(op);
 				this.configWindows.get(node).updateParamConfigurationStatus(
@@ -1625,7 +1646,7 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 			}
 		}
 		// update nodes themselves, i.e. their color
-		this.handleNodeStateChangeEvent(idList);
+		this.handleNodeStateChangeEvent(statusMap);
 	}
 
 	/**
@@ -1633,11 +1654,13 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 	 * @param idList	List of nodes that are to be updated.
 	 */
 	protected synchronized void handleNodeStateChangeEvent(
-			Collection<ALDWorkflowNodeID> idList) {
-		for (ALDWorkflowNodeID nodeID: idList) {
+			HashMap<ALDWorkflowNodeID, ALDWorkflowNodeState> idList) {
+		Set<ALDWorkflowNodeID> nodeIDs = idList.keySet();
+		for (ALDWorkflowNodeID nodeID: nodeIDs) {
 			try {
 				ALDWorkflowNode wNode = this.alidaWorkflow.getNode(nodeID);
-				ALDWorkflowNodeState nodeState = wNode.getState();
+//				ALDWorkflowNodeState nodeState = wNode.getState();
+				ALDWorkflowNodeState nodeState = idList.get(nodeID);
 				mxCell node = this.graphNodes.get(nodeID);
 				Object [] nodeToModify = new Object[]{node};
 				switch(nodeState)

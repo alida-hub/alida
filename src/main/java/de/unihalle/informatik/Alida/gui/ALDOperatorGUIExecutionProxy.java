@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.concurrent.BlockingDeque;
 
 import javax.swing.JButton;
@@ -534,12 +535,24 @@ public class ALDOperatorGUIExecutionProxy
 				this.handleNodeParameterChangeEvent(
 					(Collection<ALDWorkflowNodeID>)eventInfo);
 			// update node states as well
-			this.handleNodeStateChangeEvent(
-				(Collection<ALDWorkflowNodeID>)eventInfo);
+			HashMap<ALDWorkflowNodeID, ALDWorkflowNodeState> statusMap = 
+					new HashMap<>();
+			for (ALDWorkflowNodeID nodeID: 
+				(Collection<ALDWorkflowNodeID>)eventInfo) {
+				ALDWorkflowNodeState state;
+				try {
+					state = this.alidaWorkflow.getNode(nodeID).getState();
+					statusMap.put(nodeID, state);
+				} catch (ALDWorkflowException e) {
+					// if something goes wrong, just skip...
+					e.printStackTrace();
+				}
+			}
+			this.handleNodeStateChangeEvent(statusMap);
 			break;
 		case NODE_STATE_CHANGE:
 			this.handleNodeStateChangeEvent(
-																(Collection<ALDWorkflowNodeID>)eventInfo);
+					(HashMap<ALDWorkflowNodeID, ALDWorkflowNodeState>)eventInfo);
 			break;
 		case NODE_EXECUTION_PROGRESS:
 			// only proceed if progress event messages are to be displayed
@@ -749,18 +762,13 @@ public class ALDOperatorGUIExecutionProxy
 	 * @param idList	List of nodes that are to be updated.
 	 */
 	protected synchronized void handleNodeStateChangeEvent(
-			Collection<ALDWorkflowNodeID> idList) {
+			HashMap<ALDWorkflowNodeID, ALDWorkflowNodeState> idList) {
 		// in this case list contains only a single node
-		for (ALDWorkflowNodeID nodeID: idList) {
-			try {
-				ALDWorkflowNodeState nodeState = this.alidaWorkflow.getState(nodeID);
-				// update the configuration window
-				this.controlWin.updateNodeStatus(nodeState);
-			}
-			catch (ALDWorkflowException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		Set<ALDWorkflowNodeID> nodeIDs = idList.keySet();
+		for (ALDWorkflowNodeID nodeID: nodeIDs) {
+			ALDWorkflowNodeState nodeState = idList.get(nodeID);
+			// update the configuration window
+			this.controlWin.updateNodeStatus(nodeState);
 		}
 	}
 	
