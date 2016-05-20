@@ -136,7 +136,7 @@ public class ALDGrappaMenuBar extends JMenuBar
 
 		// operator level menue
 		JMenu opSelectM = new JMenu("Options");
-		opSelectM.add(new JLabel("<html><u>Operator View</u></html>"));
+		JMenu opViewM = new JMenu("Operator View");
 		JMenu operatorSet = new JMenu("Operators to Show");
 		ButtonGroup operatorSetGroup = new ButtonGroup();
 		JRadioButtonMenuItem radioItemApplication =
@@ -157,7 +157,9 @@ public class ALDGrappaMenuBar extends JMenuBar
 		operatorSetGroup.add(radioItemAll);
 		operatorSet.add(radioItemApplication);
 		operatorSet.add(radioItemAll);
-		opSelectM.add(operatorSet);
+		opViewM.add(operatorSet);
+		opSelectM.add(opViewM);
+		
 		// set correct initial display mode
 		if ( this.opTree.getLevel() == Level.APPLICATION)
 			radioItemApplication.setSelected(true);
@@ -165,13 +167,15 @@ public class ALDGrappaMenuBar extends JMenuBar
 			radioItemAll.setSelected(true);
 		
 		opSelectM.addSeparator();
-		opSelectM.add(new JLabel("<html><u>Status View</u></html>"));
+		JMenu statusViewM = new JMenu("Status View");
 		this.optionCheckboxProgressEvents = 
 				new JCheckBox("Show Progress Messages");
 		this.optionCheckboxProgressEvents.setSelected(true);
-		this.optionCheckboxProgressEvents.setActionCommand("optionShowProgress");
+		this.optionCheckboxProgressEvents.setActionCommand(
+				"optionShowProgress");
 		this.optionCheckboxProgressEvents.addActionListener(this);
-		opSelectM.add(this.optionCheckboxProgressEvents);
+		statusViewM.add(this.optionCheckboxProgressEvents);
+		opSelectM.add(statusViewM);
 
 		// workflow menu
 		JMenu actionsM = new JMenu("Workflow");
@@ -261,6 +265,13 @@ public class ALDGrappaMenuBar extends JMenuBar
 			g.drawImage(img, 0, 0, 20, 20, null);
 		}
 		this.aboutIcon = new ImageIcon(img);
+		if (is != null)
+			try {
+				is.close();
+			} catch (IOException e) {
+				System.err.println(
+						"ALDGrappaMenuBar - problems closing icon resource...!");
+			}
 	}
 
 	/**
