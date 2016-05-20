@@ -35,8 +35,6 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 import javax.swing.text.DefaultCaret;
 
@@ -61,7 +59,7 @@ import de.unihalle.informatik.Alida.helpers.ALDIcon;
  * @author Birgit Moeller
  */
 public class ALDOperatorConfigurationFrame extends JFrame 
-	implements ActionListener, ChangeListener, ItemListener,
+	implements ActionListener, ItemListener,
 		ALDSwingValueChangeListener, ALDOpParameterUpdateEventReporter {
 
 	/**
@@ -130,14 +128,14 @@ public class ALDOperatorConfigurationFrame extends JFrame
 	protected JScrollPane messageBoardScroller;
 
 	/**
-	 * Label attached to message board line configuration spinner.
+	 * Sub-menu for configuring message board.
 	 */
-	protected JLabel messageBoardLineConfigLabel;
-
+	JMenu messageBoardMenu;
+	
 	/**
-	 * Message board line configuration spinner.
+	 * Message board number of line configuration buttons.
 	 */
-	protected JSpinner messageBoardLineConfigSpinner;
+	HashMap<JRadioButtonMenuItem, Integer> messageBoardLineConfigButtons;
 	
 	/**
 	 * Number of lines currently visible in {@link #messageBoard}.
@@ -172,7 +170,7 @@ public class ALDOperatorConfigurationFrame extends JFrame
 	/**
 	 * Checkbox to enable/disable display of advanced parameters.
 	 */
-	protected JCheckBox showAllParameters;
+	protected JCheckBoxMenuItem showAllParameters;
 
 	/**
 	 * Tab pane for configuration pane, batch mode pane, etc.
@@ -342,46 +340,45 @@ public class ALDOperatorConfigurationFrame extends JFrame
 		mainWindowMenu.add(actionM);
 
 		JMenu optionsMenu = new JMenu("Options");
-		optionsMenu.setLayout(new FlowLayout(FlowLayout.LEFT));
-		JPanel parameterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		this.showAllParameters = new JCheckBox("Show All Parameters", false);
-		this.showAllParameters.setActionCommand("viewM_changed");
+		this.showAllParameters =
+			new JCheckBoxMenuItem("Show All Parameters", false);
+		this.showAllParameters.setActionCommand("optionsM_paramViewChanged");
 		this.showAllParameters.addActionListener(this);
-		parameterPanel.add(this.showAllParameters);
-		optionsMenu.add(parameterPanel);
+		optionsMenu.add(this.showAllParameters);
 
 		// add options for configuration of message board
-		JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		labelPanel.add(new JLabel("<html><u>Status Bar</u></html>", 
-				SwingConstants.LEFT));
-		optionsMenu.add(labelPanel);
-		
-		JPanel checkPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JCheckBox optionCheckboxProgressEvents = 
-				new JCheckBox("Show Progress Messages");
-		optionCheckboxProgressEvents.setSelected(true);
+		JMenu statusBarMenu = new JMenu("Status Bar");
+		JCheckBoxMenuItem optionCheckboxProgressEvents =
+				new JCheckBoxMenuItem("Show Progress Messages", true);
 		this.showProgressEvents = true;
-		optionCheckboxProgressEvents.setActionCommand("optionShowProgress");
-		optionCheckboxProgressEvents.addItemListener(this);
-		checkPanel.add(optionCheckboxProgressEvents);
-		optionsMenu.add(checkPanel);
+		optionCheckboxProgressEvents.setActionCommand(
+				"optionsM_progressViewChanged");
+		optionCheckboxProgressEvents.addActionListener(this);
+		statusBarMenu.add(optionCheckboxProgressEvents);
 		
 		// elements for configuring number of lines in message board
-		JPanel messageBoardLineConfigPanel = 
-				new JPanel(new FlowLayout(FlowLayout.LEFT));
-		this.messageBoardLineConfigLabel = 
-				new JLabel("   Number of lines: ");
-		messageBoardLineConfigPanel.add(this.messageBoardLineConfigLabel);
-    SpinnerNumberModel lineSpinnerModel;
-    Integer current = new Integer(5);
-    Integer min = new Integer(1);
-    Integer max = new Integer(10);
-    Integer step = new Integer(1);
-    lineSpinnerModel = new SpinnerNumberModel(current, min, max, step);
-		this.messageBoardLineConfigSpinner = new JSpinner(lineSpinnerModel);
-		this.messageBoardLineConfigSpinner.addChangeListener(this);
-    messageBoardLineConfigPanel.add(this.messageBoardLineConfigSpinner);
-    optionsMenu.add(messageBoardLineConfigPanel);
+		this.messageBoardMenu = new JMenu("Number of lines...");
+		ButtonGroup lineButtons = new ButtonGroup();
+		this.messageBoardLineConfigButtons = new HashMap<>();
+		JRadioButtonMenuItem fiveButton = null;
+		for (int i=3;i<=10;++i) {
+			JRadioButtonMenuItem item = 
+					new JRadioButtonMenuItem(Integer.toString(i));
+			item.setActionCommand("optionsM_messageLinesChanged");
+			item.addActionListener(this);
+			this.messageBoardMenu.add(item);
+			lineButtons.add(item);
+			this.messageBoardLineConfigButtons.put(item, new Integer(i));
+			if (i == 5)
+				fiveButton = item;
+		}
+		// default is five
+		if (fiveButton != null)
+			fiveButton.setSelected(true);
+		
+		statusBarMenu.add(optionCheckboxProgressEvents);
+		statusBarMenu.add(this.messageBoardMenu);
+		optionsMenu.add(statusBarMenu);
 
 		Collection<JPanel> addOptions= this.setupAdditionalMenuOptionItems();
 		// add additional entries to the options menu
@@ -661,6 +658,7 @@ public class ALDOperatorConfigurationFrame extends JFrame
 	public void actionPerformed(ActionEvent e) {
 
 		// local variables
+		Object source = e.getSource();
 		String command = e.getActionCommand();
 
 		// close the frame
@@ -752,14 +750,6 @@ public class ALDOperatorConfigurationFrame extends JFrame
 //			this.operatorParameterPanel
 //					.changeViewMode(Parameter.ExpertMode.ADVANCED);
 //			this.repaint();
-		} else if (command.equals("viewM_changed")) {
-			if (this.showAllParameters.isSelected())
-				this.operatorParameterPanel
-						.changeViewMode(Parameter.ExpertMode.ADVANCED);
-			else
-				this.operatorParameterPanel
-						.changeViewMode(Parameter.ExpertMode.STANDARD);
-			this.repaint();
 		}
 		else if (command.equals("actionM_reset")) {
 			try {
@@ -782,6 +772,48 @@ public class ALDOperatorConfigurationFrame extends JFrame
       			JOptionPane.WARNING_MESSAGE, null,
       			this.okOption, this.okOption[0]);
       }
+		} else if (command.equals("optionsM_paramViewChanged")) {
+			if (this.showAllParameters.isSelected())
+				this.operatorParameterPanel
+						.changeViewMode(Parameter.ExpertMode.ADVANCED);
+			else
+				this.operatorParameterPanel
+						.changeViewMode(Parameter.ExpertMode.STANDARD);
+			this.repaint();
+		} else if (command.equals("optionsM_progressViewChanged")) {
+			if (((JCheckBoxMenuItem)source).isSelected()) {
+				this.showProgressEvents = true;
+				this.messageBoardMenu.setEnabled(true);
+				this.messageBoardScroller.setVisible(true);
+				this.add(this.messageBoardScroller, BorderLayout.SOUTH);
+				this.setSize(this.getWidth(), 
+						this.getHeight() + this.messageBoardScroller.getHeight());
+			}
+			else {
+				this.showProgressEvents = false;
+				this.messageBoardMenu.setEnabled(false);
+				this.messageBoardScroller.setVisible(false);
+				this.remove(this.messageBoardScroller);
+				this.setSize(this.getWidth(), 
+						this.getHeight() - this.messageBoardScroller.getHeight());
+			}
+			this.repaint();
+		}
+		else if (command.equals("optionsM_messageLinesChanged")) {
+			// number of lines in message board changed
+			int lineNumber = 
+					this.messageBoardLineConfigButtons.get(source).intValue();
+			int oldMsgBoardHeight = this.messageBoardScroller.getHeight();
+			int newHeight = this.messageBoardScroller.getHeight()
+					/	this.messageBoardLineNumber * lineNumber + 5;
+			this.messageBoardScroller.setPreferredSize(
+					new Dimension(200, newHeight));
+			this.messageBoardScroller.setSize(new Dimension(200, newHeight));
+			this.messageBoardScroller.updateUI();
+			int newMsgBoardHeight = this.messageBoardScroller.getHeight();
+			this.setSize(this.getWidth(), 
+					this.getHeight() - oldMsgBoardHeight + newMsgBoardHeight);
+			this.messageBoardLineNumber = lineNumber;
 		}
 		else if (command.equals("helpM_about")) {
 			Object[] options = { "OK" };
@@ -816,71 +848,7 @@ public class ALDOperatorConfigurationFrame extends JFrame
 	 */
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-
-		String idString = null;
-
-		// get the object affected by the event
-		Object source = e.getItemSelectable();
-
-		if (source instanceof JCheckBox) {
-			JCheckBox box = (JCheckBox) source;
-			idString = box.getActionCommand();
-		}
-		else if (source instanceof JComboBox) {
-			JComboBox box = (JComboBox) source;
-			idString = box.getActionCommand();
-		}
-
-		// error check
-		if (idString == null)
-			return;
-		
-		// step through optimization
-		if (idString.equals("optionShowProgress")) {
-			if (((JCheckBox)source).isSelected()) {
-				this.showProgressEvents = true;
-				this.messageBoardLineConfigLabel.setEnabled(true);
-				this.messageBoardLineConfigSpinner.setEnabled(true);
-				this.messageBoardScroller.setVisible(true);
-				this.add(this.messageBoardScroller, BorderLayout.SOUTH);
-				this.setSize(this.getWidth(), 
-						this.getHeight() + this.messageBoardScroller.getHeight());
-			}
-			else {
-				this.showProgressEvents = false;
-				this.messageBoardLineConfigLabel.setEnabled(false);
-				this.messageBoardLineConfigSpinner.setEnabled(false);
-				this.messageBoardScroller.setVisible(false);
-				this.remove(this.messageBoardScroller);
-				this.setSize(this.getWidth(), 
-						this.getHeight() - this.messageBoardScroller.getHeight());
-			}
-		}
-		// update GUI
-		this.repaint();
-	}
-
-	@Override
-	public void stateChanged(ChangeEvent e) {
-		// get the object affected by the event
-		Object source = e.getSource();
-		
-		if (source instanceof JSpinner) {
-			// spinner for changing number of lines in message board changed
-			JSpinner spinner = (JSpinner)source;
-			int lineNumber = ((Integer)spinner.getValue()).intValue();
-			int oldMsgBoardHeight = this.messageBoardScroller.getHeight();
-			int newHeight = this.messageBoardScroller.getHeight()
-					/	this.messageBoardLineNumber * lineNumber + 5;
-			this.messageBoardScroller.setPreferredSize(
-					new Dimension(200, newHeight));
-			this.messageBoardScroller.setSize(new Dimension(200, newHeight));
-			this.messageBoardScroller.updateUI();
-			int newMsgBoardHeight = this.messageBoardScroller.getHeight();
-			this.setSize(this.getWidth(), 
-					this.getHeight() - oldMsgBoardHeight + newMsgBoardHeight);
-			this.messageBoardLineNumber = lineNumber;
-		}		
+		// just for compatibility reasons...
 	}
 
 	@Override
