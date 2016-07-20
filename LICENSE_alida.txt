@@ -35,6 +35,6 @@ http://www2.informatik.uni-halle.de/agprbio/mitobo-bts/bug_report_page.php
 
 Alida is licensed under the GPL.
 
-See the file 'gpl-3.0.txt' for more details on the license.
+See the file 'LICENSE_gpl-3.0.txt' for more details on the license.
 
 
