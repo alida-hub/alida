@@ -17,12 +17,12 @@
 # http://www2.informatik.uni-halle.de/agprbio/mitobo-bts/bug_report_page.php
 # 
 # Alida is licensed under the GPL.
-# See the files 'LICENSE.txt' and 'gpl-3.0.txt' for more details.
+# See the files 'LICENSE_alida.txt' and 'LICENSE_gpl-3.0.txt' for more details.
 #
 ############################################################################################
 
 ==== PREREQUISITES ====
-Alida requires Java 1.6. Note that Java 1.7 is currently not (fully) supported.
+Alida requires Java 1.8.
 
 ==== INSTALLATION INSTRUCTIONS ====
 Installation instructions for Alida can be found online at
