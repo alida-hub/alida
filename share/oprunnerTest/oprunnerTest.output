@@ -1,0 +1,57 @@
+======================================================
+## Double[][]
+sums = [6.0,15.0]
+======================================================
+## wrong input parameter name
+ERROR:found no matching parameter names for <mmmatrix>
+
+Interface of ALDOperator: MatrixSum
+Required input parameters
+  Parameter <summarizeMode> (IN) required, type: SummarizeMode, label: Summarize mode, (Sum over columns or rows?) permanent = true modifies parameter descriptors = MODIFIES_NOTHING
+  Parameter <matrix> (IN) required, type: Double[][], label: Input matrix, (Input matrix.) permanent = true modifies parameter descriptors = MODIFIES_NOTHING
+Output parameters
+  Parameter <sums> (OUT), type: Double[], label: sums, (Row or column wise sums.) permanent = true modifies parameter descriptors = MODIFIES_NOTHING
+Supplemental parameters
+  Parameter <verbose> (IN supplemental), type: Boolean, label: Verbose, (Verbose flag) permanent = true modifies parameter descriptors = MODIFIES_NOTHING
+======================================================
+## wrong array element to parse
+Exception of type ALDDataIOProviderException: syntax problem in input data!
+ALDParametrizedClassDataIOCmdline::parse cannot read element <matrix>
+     of class <java.lang.Double[][]>
+     from <[[1,b,3],[4,5,6]]>
+ALDParser::readArray2D cannot read 1-th element in 0-th row from <b>
+    java.lang.NumberFormatException: For input string: "b"
+======================================================
+## Double[]
+mean = 2.0
+======================================================
+## wrong array element to parse
+Exception of type ALDDataIOProviderException: syntax problem in input data!
+ALDParametrizedClassDataIOCmdline::parse cannot read element <data>
+     of class <java.lang.Double[]>
+     from <[1,x,3]>
+ALDParser::readArray1D cannot read 1-th element  from <x>
+    java.lang.NumberFormatException: For input string: "x"
+======================================================
+## ApplyToMatrix
+summaries = [2.0,5.0]
+======================================================
+## ExperimentatData1D
+## SmoothData1D
+Exception of type ALDDataIOProviderException: object type error!
+ALDParametrizedClassDataIOCmdline::parse cannot read element <experiment>
+     of class <de.unihalle.informatik.Alida.demo.ExperimentalData1D>
+     from <{ baselineCorrected=false , \
+                      description="my experiment" , \
+                      data=[1.0,2.0,2.2,3.3,2.0,1.0,1.0,1.0,1.0,2.0,3.3,2.0] }>
+ALDParametrizedClassDataIOCmdline::parsede.unihalle.informatik.Alida.demo.ExperimentalData1D does not contain a parameter \
+                      data   existing parameters:         baselineCorrected         data         timeResolution         description
+======================================================
+## SmoothData1D: read experiment from file and write to file
+======================================================
+## SmoothData1D: read only data of experiment from file, write experiment to same file as above
+======================================================
+## SmoothData1D: read and write only data of experiment from/to file
+smoothedExperiment = { data written using @myexp-smooth.data , description="Demo experiment" (smoothed) }
+======================================================
+## DemoWorkflow1D: read and write experiments from/to file

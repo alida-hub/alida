@@ -1,25 +1,40 @@
 #!/bin/sh
-## Double[][]
+echo '======================================================'
+echo '## Double[][]'
 java de.unihalle.informatik.Alida.tools.ALDOpRunner MatrixSum \
       matrix='[[1,2,3],[4,5,6]]' sums=-
 
-## wrong input parameter name
+echo '======================================================'
+echo '## wrong input parameter name'
 java de.unihalle.informatik.Alida.tools.ALDOpRunner MatrixSum \
       mmmatrix='[[1,2,3],[4,5,6]]' sums=-
 
-## wrong array element to parse
+echo '======================================================'
+echo '## wrong array element to parse'
 java de.unihalle.informatik.Alida.tools.ALDOpRunner MatrixSum \
       matrix='[[1,b,3],[4,5,6]]' sums=-
 
-## Double[]
+echo '======================================================'
+echo '## Double[]'
 java de.unihalle.informatik.Alida.tools.ALDOpRunner ALDCalcMeanArray \
 	data='[1,2,3]' mean=-
 
-## wrong array element to parse
+echo '======================================================'
+echo '## wrong array element to parse'
 java de.unihalle.informatik.Alida.tools.ALDOpRunner ALDCalcMeanArray \
 	data='[1,x,3]' mean=-
 
-## ExperimentatData1D
+echo '======================================================'
+echo '## ApplyToMatrix'
+java \
+    de.unihalle.informatik.Alida.tools.ALDOpRunner  ApplyToMatrix \
+    matrix='[[1,2,3],[4,5,6]]' \
+    summarizeOp='$ALDArrayMean:' summarizeMode=ROW \
+    summaries=-
+
+echo '======================================================'
+echo '## ExperimentatData1D'
+echo '## SmoothData1D'
 java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
 	experiment='{ baselineCorrected=false , \
                       description="my experiment" , \
@@ -27,18 +42,26 @@ java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
         smoothingMethod=MEAN width=3 \
         smoothedExperiment=-
 
+echo '======================================================'
+echo '## SmoothData1D: read experiment from file and write to file'
 java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
 	experiment=@Exp1-txt  \
         smoothedExperiment=@Exp1-smooth-txt
 
+echo '======================================================'
+echo '## SmoothData1D: read only data of experiment from file, write experiment to same file as above'
 java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
 	experiment='{data=@myexp.data,description="Demo experiment"}' \
         smoothedExperiment=@Exp1-smooth-txt
 
+echo '======================================================'
+echo '## SmoothData1D: read and write only data of experiment from/to file'
 java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
 	experiment='{data=@myexp.data,description="Demo experiment"}' \
         smoothedExperiment='{data=@myexp-smooth.data,description=-}'
 
+echo '======================================================'
+echo '## DemoWorkflow1D: read and write experiments from/to file'
 java de.unihalle.informatik.Alida.tools.ALDOpRunner DemoWorkflow1D \
 	experiment=@Exp1-txt  smoothedExperiment=@Exp1-smooth-txt \
 	correctedExtrema=@Exp1-correctedMaxima-txt
