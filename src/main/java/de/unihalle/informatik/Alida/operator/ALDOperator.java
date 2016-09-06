@@ -592,13 +592,13 @@ public abstract class ALDOperator
 		if ( hasParameter(name) ) {
 			throw new ALDOperatorException(
 					ALDOperatorException.OperatorExceptionType.INVALID_PARAMETERNAME,
-					name + " alread defined");
+					name + " already defined");
 		}
 		
 		if ( ! parameterDescriptorsInactive.containsKey(name)) {
 			throw new ALDOperatorException(
 					ALDOperatorException.OperatorExceptionType.INVALID_PARAMETERNAME,
-					name + " has no known desriptor");
+					name + " has no known descriptor");
 		}
 		
 		this.addParameterUnconditioned( this.parameterDescriptorsInactive.get(name));
