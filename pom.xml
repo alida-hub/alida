@@ -441,7 +441,7 @@
     <dependency>
       <groupId>org.eclipse.jgit</groupId>
       <artifactId>org.eclipse.jgit</artifactId>
-      <version>4.2.0.201601211800-r</version>
+      <version>4.5.0.201609210915-r</version>
     </dependency>
     <dependency>
       <groupId>de.unihalle.informatik.Alida</groupId>
@@ -463,7 +463,7 @@
     <dependency> 
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>1.7.18</version>
+      <version>1.7.22</version>
     </dependency>
     <!-- Test dependencies -->
     <dependency>
