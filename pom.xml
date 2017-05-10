@@ -441,7 +441,7 @@
     <dependency>
       <groupId>org.eclipse.jgit</groupId>
       <artifactId>org.eclipse.jgit</artifactId>
-      <version>4.5.0.201609210915-r</version>
+      <version>4.7.0.201704051617-r</version>
     </dependency>
     <dependency>
       <groupId>de.unihalle.informatik.Alida</groupId>

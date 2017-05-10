@@ -78,27 +78,43 @@ public class ALDVersionProviderGit extends ALDVersionProvider {
 		ALDVersionProviderGit.localVersion = "Unknown";
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
     try {
-  		Repository repo = builder.readEnvironment().build();
+    	Repository repo = null;
+  		try {
+  			repo = builder.readEnvironment().build();
+  		} catch (IllegalArgumentException e) {
+  			// problem accessing environment... fall back to default
+  			if (repo != null)
+  				repo.close();
+  			return ALDVersionProviderGit.localVersion;
+  		}
   		
   		// check if GIT_DIR is set
-  		if (!builder.getGitDir().isDirectory())
+  		if (!builder.getGitDir().isDirectory()) {
+  			if (repo != null)
+  				repo.close();
   			return ALDVersionProviderGit.localVersion;
+  		}
   		
   		// extract the active branch
   		String activeBranch = repo.getBranch();
 
   		// extract last commit 
-  		Ref HEAD = repo.getRef(activeBranch);
+  		Ref HEAD = repo.findRef(activeBranch);
 
   		// safety check if everything is alright with repository
-  		if (HEAD == null)
+  		if (HEAD == null) {
+  			repo.close();
   			throw new IOException();
+  		}
   		
   		// extract state of repository
   		String state = repo.getRepositoryState().toString(); 
 
   		ALDVersionProviderGit.localVersion = 
   				activeBranch + " : " + HEAD.toString() + " ( " + state + " ) ";
+  		
+  		// clean-up
+  		repo.close();
     } catch (IOException e) {
     	// accessing the Git repository failed, search for file
     	InputStream is= null;
@@ -115,12 +131,24 @@ public class ALDVersionProviderGit extends ALDVersionProvider {
     		if (vLine == null) {
     			System.err.println("ALDVersionProviderGit: " + 
     					"revision file is empty...!?");
+    			br.close();
+    			is.close();
     			return ALDVersionProviderGit.localVersion;
     		}	
     		ALDVersionProviderGit.localVersion = vLine;
+    		br.close();
+    		is.close();
     		return vLine;
     	}
     	catch (Exception ex) {
+    		try {
+    			if (br != null)
+    				br.close();
+    			if (is != null)
+    				is.close();
+				} catch (IOException eo) {
+					// nothing to do here
+				}
     		return ALDVersionProviderGit.localVersion;
     	}
     }
