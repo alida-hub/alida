@@ -229,7 +229,7 @@ public class ALDCollectionDataIOSwing
 		 * @param		descr	Optional descriptor with additional information.
 		 */
 		public CollectionShowButton(Object obj, ALDParameterDescriptor descr) {
-			super("Show data...");
+			super("Show collection data...");
 			this.setActionCommand("showButtonPressed");
 			this.addActionListener(this);
 			this.data = obj;
@@ -246,13 +246,30 @@ public class ALDCollectionDataIOSwing
 				JPanel winPanel = new JPanel();
 				GridLayout grl =  new GridLayout(c.size(),1);
 				winPanel.setLayout(grl);
+				int objectID = -1;
 				for (Object o: c) {
+					
+					// objects being null are skipped
 					if (o == null)
 						continue;
+					
+					// update object ID counter
+					++objectID;
+					
 					try {
 						// get a component for a single element of the collection...
+						ALDParameterDescriptor p = new ALDParameterDescriptor(
+							this.descriptor.getName(), this.descriptor.getClass(), 
+							this.descriptor.getExplanation(), 
+							"Show entry " + objectID + "...",
+							this.descriptor.isRequired(), this.descriptor.getField(),
+							this.descriptor.getDataIOOrder(), 
+							this.descriptor.getHandlingMode(),
+							this.descriptor.getCallback(), 
+							this.descriptor.parameterModificationMode(),
+							this.descriptor.isInfo());
 						JComponent comp = 
-								ALDDataIOManagerSwing.getInstance().writeData(o, null); 
+								ALDDataIOManagerSwing.getInstance().writeData(o, p); 
 						if (comp == null) {
 							String type = o.getClass().getSimpleName();
 	      			Object[] options = { "OK" };
