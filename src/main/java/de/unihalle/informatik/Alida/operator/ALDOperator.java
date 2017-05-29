@@ -907,7 +907,7 @@ public abstract class ALDOperator
 		} catch (Exception e) {
 			throw new ALDOperatorException(
 					ALDOperatorException.OperatorExceptionType.CALLBACK_ERROR,
-					name);
+					name + "\n(" + e.getMessage() + ")");
 		}
 	}
 

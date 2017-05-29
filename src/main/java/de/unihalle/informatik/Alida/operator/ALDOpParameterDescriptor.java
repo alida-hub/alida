@@ -227,7 +227,8 @@ public class ALDOpParameterDescriptor extends ALDParameterDescriptor
 				this.field.set(instance, _value);
 			} catch (Exception e) {
 				throw new ALDOperatorException(OperatorExceptionType.PARAMETER_ERROR,
-						"failed to set value of parameter " + this.name);
+						"failed to set value of parameter " + this.name + "...\n " 
+								+ e.getMessage());
 			}
 
 		} else {
