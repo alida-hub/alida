@@ -23,15 +23,6 @@
  *
  */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev: 3376 $
- * $Date: 2011-03-11 11:21:44 +0100 (Fr, 11 Mrz 2011) $
- * $Author: moeller $
- * 
- */
-
 package de.unihalle.informatik.Alida.exceptions;
 
 
@@ -86,14 +77,17 @@ public class ALDOperatorException extends ALDException {
 		 * File extension does not match expected one.
 		 */
 		ILLEGAL_EXTENSION,
+		
 		/**
 		 * Operator object cannot be instantiated.
 		 */
 		INSTANTIATION_ERROR,
+		
 		/**
 		 * error handling parameters, e.g. setting of value failed
 		 */
 		PARAMETER_ERROR,
+		
 		/**
 		 * An unspecified error.
 		 */
@@ -123,6 +117,7 @@ public class ALDOperatorException extends ALDException {
 
 	/**
 	 * Returns the type of this exception.
+	 * @return Type of exception.
 	 */
 	public OperatorExceptionType getType() {
 		return this.type;
@@ -138,7 +133,7 @@ public class ALDOperatorException extends ALDException {
 		case OPERATE_FAILED:
 			return typeID + ": operate()-call failed!";
 		case INVALID_PARAMETERNAME:
-			return typeID + ": invalid parameter name";
+			return typeID + ": invalid parameter name: ";
 		case CALLBACK_ERROR:
 			return typeID + ": error invoking callback function of a parameter";
 		case INVALID_CLASS:
@@ -146,9 +141,11 @@ public class ALDOperatorException extends ALDException {
 		case ALD_DATA_REQUIRED:
 			return typeID + ": class derived from ALDData required";
 		case ILLEGAL_EXTENSION:
-			return typeID + ": illegal extension in filename ";
+			return typeID + ": illegal extension in filename: ";
 		case PARAMETER_ERROR:
-			return typeID + ": parameter handling error ";
+			return typeID + ": parameter handling error: ";
+		case INSTANTIATION_ERROR:
+			return typeID + ": operator object cannot be instantiated ";
 		case UNSPECIFIED_ERROR:
 			return typeID + ": operator run failed - unknown reason!";			
 		}
