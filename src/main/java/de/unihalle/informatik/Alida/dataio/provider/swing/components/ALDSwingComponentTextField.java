@@ -83,6 +83,7 @@ public class ALDSwingComponentTextField extends ALDSwingComponent
 	 * is disabled.
 	 * 
 	 * @param cl	Class of objects to be read via text field.
+	 * @param d		Descriptor of corresponding parameter.
 	 * @param columns		Width of text field.
 	 */
 	public ALDSwingComponentTextField(Class<?> cl, ALDParameterDescriptor d,
@@ -104,7 +105,7 @@ public class ALDSwingComponentTextField extends ALDSwingComponent
 	 * @param t		New text to be displayed.
 	 */
 	public void setText(String t) {
-		if (this.checkValue()) {
+		if (this.checkValue(t)) {
 			this.compTextField.setText(t);
 			// remember text for later reference and checks
 			this.value = t;
@@ -121,7 +122,7 @@ public class ALDSwingComponentTextField extends ALDSwingComponent
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		this.checkValue();
+		this.checkValue(null);
 	}
 
 	@Override
@@ -131,7 +132,7 @@ public class ALDSwingComponentTextField extends ALDSwingComponent
 
 	@Override
 	public void focusLost(FocusEvent e) {
-		this.checkValue();
+		this.checkValue(null);
 	}
 	
 	/**
@@ -142,8 +143,11 @@ public class ALDSwingComponentTextField extends ALDSwingComponent
 	 * to the class linked to this GUI element. If both checks are passed
 	 * a {@link ALDSwingValueChangeEvent} is triggered. If the new value is 
 	 * invalid, a warning is displayed to the user.
+	 * 
+	 * @param textToCheck	New text to be set in text field.
+	 * @return	True if text value is valid.
 	 */
-	protected boolean checkValue() {
+	protected boolean checkValue(String textToCheck) {
 		// only do the checks if providers are allowed to show warnings
 		ProviderInteractionLevel plevel = 
 				ALDDataIOManagerSwing.getInstance().getProviderInteractionLevel();
@@ -156,12 +160,16 @@ public class ALDSwingComponentTextField extends ALDSwingComponent
 			return true;
 		}
 		
-		String newText = this.compTextField.getText();
+		String newText = textToCheck;
+		if (textToCheck == null)
+			newText = this.compTextField.getText();
+		
 		if (this.value != null && this.value.equals(newText)) {
 			// text did not change or was not set before, nothing happens...
 			return true;
 		}
-		if (newText.isEmpty()) {
+		// if new text is empty this is only allowed if class is String
+		if (newText.isEmpty() && this.objCl.equals(String.class)) {
 			if (   this.value != null && !this.value.isEmpty()
 					|| this.value == null) {
 				this.value = newText;
