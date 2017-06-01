@@ -1467,6 +1467,10 @@ public class ALDNativeArray2DDataIOSwing
 						"Error reading file!", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
+				
+				ProviderInteractionLevel plevel =
+						ALDDataIOManagerSwing.getInstance().getProviderInteractionLevel();
+
 				FileInputStream fis = new FileInputStream(file.getPath());
 				BufferedReader br = 
 						new BufferedReader(new InputStreamReader(fis));
@@ -1476,6 +1480,8 @@ public class ALDNativeArray2DDataIOSwing
 					entries.add(line.split("\t"));
 					line = br.readLine();
 				}
+				br.close();
+
 				int colNum = entries.elementAt(0).length;
 				Class<?> cl = this.entryClass;
 				if (   cl.equals(Boolean[][].class)
@@ -1489,6 +1495,23 @@ public class ALDNativeArray2DDataIOSwing
 					for (int i=0;i<entries.size(); ++i) {
 						for (int j=0;j<colNum; ++j) {
 							tableData[i][j] = entries.elementAt(i)[j];
+							// check if entry can be transformed to object of requested type
+							if (!this.validateEntry(
+										this.entryClass, tableData[i][j].toString())) {
+								// only do the checks if providers are allowed to show warnings
+								if (   !plevel.equals(ProviderInteractionLevel.ALL_ALLOWED)
+										&& !plevel.equals(ProviderInteractionLevel.WARNINGS_ONLY)) 
+									return;
+								Object[] options = { "OK" };
+								JOptionPane.showOptionDialog(null,
+									"Loading table failed! The file contains data of wrong type!\n"
+								+ "Position: (" + i + "," + j + ") - Please check! \n"	
+								+ "Explanation: no auto-conversion takes place, e.g. if we " 
+								+ "found doubles,\n but expected integers, this does not work!",
+										"Error", JOptionPane.DEFAULT_OPTION,
+										JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+								return;
+							}
 						}
 					}
 					this.setValue(null, this.entryClass, tableData);
@@ -1553,7 +1576,6 @@ public class ALDNativeArray2DDataIOSwing
 					}
 					this.setValue(null, this.entryClass, tableData);
 				}
-				br.close();
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(null,"Error!!! " +
 						"Could not open input file " + file.getPath() + "!");

@@ -1387,12 +1387,176 @@ public class ALDNativeArray1DDataIOSwing
 					entries.add(line.split("\t")[0]);
 					line = br.readLine();
 				}
-				Object[] tableData = new Object[entries.size()];
-				for (int i=0;i<entries.size(); ++i) {
-					tableData[i] = entries.elementAt(i);
-				}
 				br.close();
-				this.setValue(null, this.elementClass, tableData);
+
+				ProviderInteractionLevel plevel =
+						ALDDataIOManagerSwing.getInstance().getProviderInteractionLevel();
+				
+				int colNum = entries.size();
+				Class<?> cl = this.elementClass;
+				if (   cl.equals(Boolean[].class)
+						|| cl.equals(Byte[].class)
+						|| cl.equals(Double[].class)
+						|| cl.equals(Float[].class)
+						|| cl.equals(Integer[].class)
+						|| cl.equals(Short[].class)
+						|| cl.equals(String[].class)) {
+
+					Object[] tableData = new Object[colNum];
+					for (int i=0;i<entries.size(); ++i) {
+						tableData[i] = entries.elementAt(i);
+						// check if entry can be transformed to object of requested type
+						if (!this.validateEntry(
+									this.elementClass, tableData[i].toString())) {
+							// only do the checks if providers are allowed to show warnings
+							if (   !plevel.equals(ProviderInteractionLevel.ALL_ALLOWED)
+									&& !plevel.equals(ProviderInteractionLevel.WARNINGS_ONLY)) 
+								return;
+							Object[] options = { "OK" };
+							JOptionPane.showOptionDialog(null,
+								"Loading table failed! Your file contains data of wrong type!\n"
+									+ "Position: (" + i + ") - Please check! \n"	
+									+ "Explanation: no auto-conversion takes place, e.g. if we " 
+									+ "found doubles,\n but expected integers, this does not work!",
+										"Error", JOptionPane.DEFAULT_OPTION,
+											JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+							return;
+						}
+					}
+					this.setValue(null, this.elementClass, tableData);
+				}
+				else if (cl.equals(boolean[].class)) {
+					boolean[] tableData = new boolean[colNum];
+					for (int j=0;j<colNum; ++j) {
+						if (!this.validateEntry(
+								this.elementClass, entries.elementAt(j).toString())) {
+							// only do the checks if providers are allowed to show warnings
+							if (   !plevel.equals(ProviderInteractionLevel.ALL_ALLOWED)
+									&& !plevel.equals(ProviderInteractionLevel.WARNINGS_ONLY)) 
+								return;
+							Object[] options = { "OK" };
+							JOptionPane.showOptionDialog(null,
+								"Loading table failed! Your file contains data of wrong type!\n"
+									+ "Position: (" + j + ") - Please check! \n"	
+									+ "Explanation: no auto-conversion is done!",
+										"Error", JOptionPane.DEFAULT_OPTION,
+											JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+							return;
+						}
+						tableData[j] = new Boolean(entries.elementAt(j)).booleanValue();
+					}
+					this.setValue(null, this.elementClass, tableData);
+				}
+				else if (cl.equals(byte[].class)) {
+					byte[] tableData = new byte[colNum];
+					for (int j=0;j<colNum; ++j) {
+						if (!this.validateEntry(
+								this.elementClass, entries.elementAt(j).toString())) {
+							// only do the checks if providers are allowed to show warnings
+							if (   !plevel.equals(ProviderInteractionLevel.ALL_ALLOWED)
+									&& !plevel.equals(ProviderInteractionLevel.WARNINGS_ONLY)) 
+								return;
+							Object[] options = { "OK" };
+							JOptionPane.showOptionDialog(null,
+								"Loading table failed! Your file contains data of wrong type!\n"
+									+ "Position: (" + j + ") - Please check! \n"	
+									+ "Explanation: no auto-conversion is done!",
+										"Error", JOptionPane.DEFAULT_OPTION,
+											JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+							return;
+						}
+						tableData[j] = new Byte(entries.elementAt(j)).byteValue();
+					}
+					this.setValue(null, this.elementClass, tableData);
+				}
+				else if (cl.equals(double[].class)) {
+					double[] tableData = new double[colNum];
+					for (int j=0;j<colNum; ++j) {
+						if (!this.validateEntry(
+								this.elementClass, entries.elementAt(j).toString())) {
+							// only do the checks if providers are allowed to show warnings
+							if (   !plevel.equals(ProviderInteractionLevel.ALL_ALLOWED)
+									&& !plevel.equals(ProviderInteractionLevel.WARNINGS_ONLY)) 
+								return;
+							Object[] options = { "OK" };
+							JOptionPane.showOptionDialog(null,
+								"Loading table failed! Your file contains data of wrong type!\n"
+									+ "Position: (" + j + ") - Please check! \n"	
+									+ "Explanation: no auto-conversion is done!",
+										"Error", JOptionPane.DEFAULT_OPTION,
+											JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+							return;
+						}
+						tableData[j] = new Double(entries.elementAt(j)).doubleValue();
+					}
+					this.setValue(null, this.elementClass, tableData);
+				}
+				else if (cl.equals(float[].class)) {
+					float[] tableData = new float[colNum];
+					for (int j=0;j<colNum; ++j) {
+						if (!this.validateEntry(
+								this.elementClass, entries.elementAt(j).toString())) {
+							// only do the checks if providers are allowed to show warnings
+							if (   !plevel.equals(ProviderInteractionLevel.ALL_ALLOWED)
+									&& !plevel.equals(ProviderInteractionLevel.WARNINGS_ONLY)) 
+								return;
+							Object[] options = { "OK" };
+							JOptionPane.showOptionDialog(null,
+								"Loading table failed! Your file contains data of wrong type!\n"
+									+ "Position: (" + j + ") - Please check! \n"	
+									+ "Explanation: no auto-conversion is done!",
+										"Error", JOptionPane.DEFAULT_OPTION,
+											JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+							return;
+						}
+						tableData[j] = new Float(entries.elementAt(j)).floatValue();
+					}
+					this.setValue(null, this.elementClass, tableData);
+				}
+				else if (cl.equals(int[].class)) {
+					int[] tableData = new int[colNum];
+					for (int j=0;j<colNum; ++j) {
+						if (!this.validateEntry(
+								this.elementClass, entries.elementAt(j).toString())) {
+							// only do the checks if providers are allowed to show warnings
+							if (   !plevel.equals(ProviderInteractionLevel.ALL_ALLOWED)
+									&& !plevel.equals(ProviderInteractionLevel.WARNINGS_ONLY)) 
+								return;
+							Object[] options = { "OK" };
+							JOptionPane.showOptionDialog(null,
+								"Loading table failed! Your file contains data of wrong type!\n"
+									+ "Position: (" + j + ") - Please check! \n"	
+									+ "Explanation: no auto-conversion is done!",
+										"Error", JOptionPane.DEFAULT_OPTION,
+											JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+							return;
+						}
+						tableData[j] = new Integer(entries.elementAt(j)).intValue();
+					}
+					this.setValue(null, this.elementClass, tableData);
+				}
+				else if (cl.equals(short[].class)) {
+					short[] tableData = new short[colNum];
+					for (int j=0;j<colNum; ++j) {
+						if (!this.validateEntry(
+								this.elementClass, entries.elementAt(j).toString())) {
+							// only do the checks if providers are allowed to show warnings
+							if (   !plevel.equals(ProviderInteractionLevel.ALL_ALLOWED)
+									&& !plevel.equals(ProviderInteractionLevel.WARNINGS_ONLY)) 
+								return;
+							Object[] options = { "OK" };
+							JOptionPane.showOptionDialog(null,
+								"Loading table failed! Your file contains data of wrong type!\n"
+									+ "Position: (" + j + ") - Please check! \n"	
+									+ "Explanation: no auto-conversion is done!",
+										"Error", JOptionPane.DEFAULT_OPTION,
+											JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+							return;
+						}
+						tableData[j] = new Short(entries.elementAt(j)).shortValue();
+					}
+					this.setValue(null, this.elementClass, tableData);
+				}
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(null,"Error!!! " +
 						"Could not open input file " + file.getPath() + "!");
