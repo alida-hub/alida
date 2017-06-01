@@ -35,6 +35,8 @@ import java.util.*;
 import de.unihalle.informatik.Alida.operator.*;
 import de.unihalle.informatik.Alida.annotations.Parameter;
 import de.unihalle.informatik.Alida.annotations.Parameter.Direction;
+import de.unihalle.informatik.Alida.dataio.ALDDataIOManagerSwing;
+import de.unihalle.informatik.Alida.dataio.ALDDataIOManagerSwing.ProviderInteractionLevel;
 import de.unihalle.informatik.Alida.dataio.provider.swing.events.*;
 import de.unihalle.informatik.Alida.datatypes.ALDConfigurationValidator;
 import de.unihalle.informatik.Alida.exceptions.ALDDataIOException;
@@ -623,6 +625,18 @@ public class ALDOperatorParameterPanel extends ALDParameterPanelParent {
 				try {
 					value = this.panelRequiredParams.readParameter(paramDescr);
 				} catch (ALDDataIOException ex) {
+					// only display error if providers are allowed to show warnings
+					ProviderInteractionLevel plevel = 
+							ALDDataIOManagerSwing.getInstance().getProviderInteractionLevel();
+					if (   !plevel.equals(ProviderInteractionLevel.ALL_ALLOWED)
+							&& !plevel.equals(ProviderInteractionLevel.WARNINGS_ONLY)) 
+						return false;
+					Object[] options = { "OK" };
+					JOptionPane.showOptionDialog(null,
+						"Updating required parameters failed, check your last action!\n"
+							+ "Hint:\n" + ex.getCommentString(), "Error",	
+								JOptionPane.DEFAULT_OPTION,
+									JOptionPane.ERROR_MESSAGE, null, options, options[0]);
 					return false;
 				}
 			} else {
@@ -635,6 +649,18 @@ public class ALDOperatorParameterPanel extends ALDParameterPanelParent {
 				try {
 					value = this.panelOptionalParams.readParameter(paramDescr);
 				} catch (ALDDataIOException ex) {
+					// only display error if providers are allowed to show warnings
+					ProviderInteractionLevel plevel = 
+							ALDDataIOManagerSwing.getInstance().getProviderInteractionLevel();
+					if (   !plevel.equals(ProviderInteractionLevel.ALL_ALLOWED)
+							&& !plevel.equals(ProviderInteractionLevel.WARNINGS_ONLY)) 
+						return false;
+					Object[] options = { "OK" };
+					JOptionPane.showOptionDialog(null,
+						"Updating optional parameters failed, check your last action!\n"
+							+ "Hint:\n" + ex.getCommentString(), "Error",	
+								JOptionPane.DEFAULT_OPTION,
+									JOptionPane.ERROR_MESSAGE, null, options, options[0]);
 					return false;
 				}
 			} else {
@@ -647,6 +673,18 @@ public class ALDOperatorParameterPanel extends ALDParameterPanelParent {
 				try {
 					value = this.panelSupplementalParams.readParameter(paramDescr);
 				} catch (ALDDataIOException ex) {
+					// only display error if providers are allowed to show warnings
+					ProviderInteractionLevel plevel = 
+							ALDDataIOManagerSwing.getInstance().getProviderInteractionLevel();
+					if (   !plevel.equals(ProviderInteractionLevel.ALL_ALLOWED)
+							&& !plevel.equals(ProviderInteractionLevel.WARNINGS_ONLY)) 
+						return false;
+					Object[] options = { "OK" };
+					JOptionPane.showOptionDialog(null,
+						"Updating supplemental parameters failed, check your last action!\n"
+							+ "Hint:\n" + ex.getCommentString(), "Error",	
+								JOptionPane.DEFAULT_OPTION,
+									JOptionPane.ERROR_MESSAGE, null, options, options[0]);
 					return false;
 				}
 			} else {
