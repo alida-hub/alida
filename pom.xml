@@ -13,7 +13,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <YEAR>2016</YEAR>
+    <YEAR>2017</YEAR>
     <alida.xml.version>1.2</alida.xml.version>
     <alida.mitobo.help.version>1.7-SNAPSHOT</alida.mitobo.help.version>
   </properties>
