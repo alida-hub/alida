@@ -25,6 +25,7 @@
 
 package de.unihalle.informatik.Alida.demo;
 
+import java.util.EnumSet;
 import java.util.Vector;
 
 import de.unihalle.informatik.Alida.datatypes.ALDDirectoryString;
@@ -128,6 +129,11 @@ public class ALDParameterTester extends ALDOperator {
   		direction = Parameter.Direction.IN,	description = "Dummy parameter.")
   private EnumSelection param_enum = null;
 
+  @Parameter( label= "Enum Selection", required = false, dataIOOrder = 19,
+  		direction = Parameter.Direction.IN,	description = "Dummy parameter.")
+  private EnumSet<EnumSelection> eSelect =
+  	EnumSet.of(EnumSelection.FIRST_VALUE, EnumSelection.THIRD_VALUE);
+
   @Parameter( label= "Vector_Double", required = false, dataIOOrder = 20,
   		direction = Parameter.Direction.IN,	description = "Dummy parameter.")
   private Vector<Double> param_vectorDouble = null;
@@ -185,6 +191,10 @@ public class ALDParameterTester extends ALDOperator {
 	  		direction = Parameter.Direction.OUT,	description = "Dummy parameter.")
 	  private Integer [] out_array_Integer = null;
 
+	  @Parameter( label= "Out Enum Selection", required = false, dataIOOrder = 19,
+	  		direction = Parameter.Direction.OUT,	description = "Dummy parameter.")
+	  private EnumSet<EnumSelection> outSelect = null;
+
 	/**
 	 * Default constructor.
 	 * @throws ALDOperatorException
@@ -237,6 +247,11 @@ public class ALDParameterTester extends ALDOperator {
 			System.out.println("Parameter vector double not configured!");
 		}
 		
+		System.out.println("Selected enum values:");
+		for (EnumSelection e: this.eSelect) {
+			System.out.println(e.toString());
+		}
+		
 		this.out_Boolean = this.param_Boolean;
 		this.out_Byte = this.param_Byte;
 		this.out_Short = this.param_Short;
@@ -249,6 +264,7 @@ public class ALDParameterTester extends ALDOperator {
 		this.out_vectorByte = this.param_vectorByte;
 		this.out_array_String = this.array_String;
 		this.out_array_Integer = this.array_Integer;
+		this.outSelect = this.eSelect;
 	}
 }
 
