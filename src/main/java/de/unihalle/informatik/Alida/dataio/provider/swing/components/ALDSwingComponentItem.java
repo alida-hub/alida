@@ -44,8 +44,8 @@ package de.unihalle.informatik.Alida.dataio.provider.swing.components;
  * 
  * @author moeller
  */
-public class ALDSwingComponentComboBoxItem 
-	implements Comparable<ALDSwingComponentComboBoxItem> {
+public class ALDSwingComponentItem 
+	implements Comparable<ALDSwingComponentItem> {
 	
 	/**
 	 * Item linked to the combobox entry.
@@ -68,7 +68,7 @@ public class ALDSwingComponentComboBoxItem
 	 * @param _text			Textual representation of object.
 	 * @param _tooltip	Tooltip text.
 	 */
-	public ALDSwingComponentComboBoxItem(
+	public ALDSwingComponentItem(
 															Object _item, String _text, String _tooltip) {
 		this.item = _item;
 		this.itemText = _text;
@@ -100,7 +100,7 @@ public class ALDSwingComponentComboBoxItem
 	}
 
 	@Override
-  public int compareTo(ALDSwingComponentComboBoxItem o) {
+  public int compareTo(ALDSwingComponentItem o) {
 		return this.itemText.compareTo(o.itemText);
   }
 

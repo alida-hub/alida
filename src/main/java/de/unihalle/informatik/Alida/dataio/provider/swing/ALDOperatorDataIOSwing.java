@@ -50,7 +50,7 @@ import de.unihalle.informatik.Alida.dataio.provider.ALDDataIOSwing;
 import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDOperatorParameterPanel;
 import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponent;
 import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponentComboBox;
-import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponentComboBoxItem;
+import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponentItem;
 import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponentLabel;
 import de.unihalle.informatik.Alida.dataio.provider.swing.events.ALDSwingValueChangeEvent;
 import de.unihalle.informatik.Alida.dataio.provider.swing.events.ALDSwingValueChangeListener;
@@ -1189,12 +1189,12 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 				
 				// replace old set with new filtered set of classes 
 				this.availableClasses = filteredClasses;
-				Vector<ALDSwingComponentComboBoxItem> comboFields = 
-						new Vector<ALDSwingComponentComboBoxItem>();
+				Vector<ALDSwingComponentItem> comboFields = 
+						new Vector<ALDSwingComponentItem>();
 				for (Class<?> c : this.availableClasses) {
 					String shortName = c.getSimpleName();
 					// add item object to combobox fields
-					comboFields.add(new ALDSwingComponentComboBoxItem(c, shortName,
+					comboFields.add(new ALDSwingComponentItem(c, shortName,
 							c.getCanonicalName()));
 					this.shortNames.put(shortName, c);
 					// generate configuration window for each class
@@ -1232,7 +1232,7 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 				Collections.sort(comboFields);
 				// insert default entry as first element
 				comboFields.add(0,
-						new ALDSwingComponentComboBoxItem(null,"none",null));
+						new ALDSwingComponentItem(null,"none",null));
 				this.classSelection = new ALDSwingComponentComboBox(
 						this.paramDescriptor, comboFields);
 				this.classSelection.addValueChangeEventListener(this);
@@ -1311,7 +1311,7 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 //				else
 //					selectedClass = (Class<?>)item;
 				Class<?> selectedClass = 
-						(Class<?>)((ALDSwingComponentComboBoxItem)item).getObject();
+						(Class<?>)((ALDSwingComponentItem)item).getObject();
 				if (this.configWins.get(selectedClass) == null) {
 					return null;
 				}
@@ -1333,7 +1333,7 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 //					else
 //						selectedClass = (Class<?>)item;
 					Class<?> selectedClass = 
-							(Class<?>)((ALDSwingComponentComboBoxItem)item).getObject();
+							(Class<?>)((ALDSwingComponentItem)item).getObject();
 					if (selectedClass == null)
 						return;
 //					if (this.configWins.get(selectedClass).confWin.window == null)
@@ -1353,19 +1353,19 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 //					comboFields.add(c.getSimpleName());
 //				}
 				
-				LinkedList<ALDSwingComponentComboBoxItem> comboFields = 
-						new LinkedList<ALDSwingComponentComboBoxItem>();
+				LinkedList<ALDSwingComponentItem> comboFields = 
+						new LinkedList<ALDSwingComponentItem>();
 				for (Class<?> c : this.availableClasses) {
 					String shortName = c.getSimpleName();
 					// add item object to combobox fields
-					comboFields.add(new ALDSwingComponentComboBoxItem(c, shortName, 
+					comboFields.add(new ALDSwingComponentItem(c, shortName, 
 																												c.getCanonicalName()));
 				}
 				// sort list of classes lexicographically
 				Collections.sort(comboFields);
 				//			comboFields.add(0, "none");
 				comboFields.add(0,
-						new ALDSwingComponentComboBoxItem(null,"none",null));
+						new ALDSwingComponentItem(null,"none",null));
 
 				// add default selection
 //				this.classSelection.getJComponent().addItem("none");
@@ -1385,7 +1385,7 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 //					for (String s: comboFields) {
 //						this.classSelection.getJComponent().addItem(s);
 //					}
-				for (ALDSwingComponentComboBoxItem item: comboFields) {
+				for (ALDSwingComponentItem item: comboFields) {
 					this.classSelection.getJComponent().addItem(item);
 				}
 			}
@@ -1399,7 +1399,7 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 				// check which item was selected
 				Object item = this.classSelection.getJComponent().getSelectedItem();
 				Class<?> selectedClass = 
-						(Class<?>)((ALDSwingComponentComboBoxItem)item).getObject();
+						(Class<?>)((ALDSwingComponentItem)item).getObject();
 				if (selectedClass == null) {
 					// "none" was selected, just fire an event...
 					this.fireALDSwingValueChangeEvent(event);

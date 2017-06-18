@@ -29,7 +29,7 @@ import de.unihalle.informatik.Alida.annotations.ALDDataIOProvider;
 import de.unihalle.informatik.Alida.dataio.provider.ALDDataIOSwingInitialGUIValueDefaultHandler;
 import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponent;
 import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponentComboBox;
-import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponentComboBoxItem;
+import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponentItem;
 import de.unihalle.informatik.Alida.exceptions.ALDDataIOProviderException;
 import de.unihalle.informatik.Alida.exceptions.ALDDataIOProviderException.ALDDataIOProviderExceptionType;
 import de.unihalle.informatik.Alida.operator.ALDParameterDescriptor;
@@ -52,8 +52,8 @@ public class ALDEnumDataIOSwing
 	/**
 	 * Default item if no value is selected.
 	 */
-	private static ALDSwingComponentComboBoxItem boxItemNone = 
-			new ALDSwingComponentComboBoxItem(null, "none", "none");
+	private static ALDSwingComponentItem boxItemNone = 
+			new ALDSwingComponentItem(null, "none", "none");
 
 	/**
 	 * Interface method to announce class for which IO is provided for.
@@ -74,15 +74,15 @@ public class ALDEnumDataIOSwing
 	public ALDSwingComponent createGUIElement(Field field, Class<?> cl, 
 			Object obj, ALDParameterDescriptor descr) {
 
-		Vector<ALDSwingComponentComboBoxItem> fields = 
-				new Vector<ALDSwingComponentComboBoxItem>();
+		Vector<ALDSwingComponentItem> fields = 
+				new Vector<ALDSwingComponentItem>();
 
 		Object[]    consts = cl.getEnumConstants();
 		// add the default item for no selection
 		fields.add(boxItemNone);
 		for ( Object c : consts ) {
 			fields.add(
-					new ALDSwingComponentComboBoxItem(c, c.toString(), null));
+					new ALDSwingComponentItem(c, c.toString(), null));
 		}
 
 		ALDSwingComponentComboBox combo = 
@@ -116,7 +116,7 @@ public class ALDEnumDataIOSwing
 			throw new ALDDataIOProviderException(
 					ALDDataIOProviderExceptionType.INVALID_GUI_ELEMENT, 
 					"ALDEnumDataIOSwing: readData received invalid GUI element!");
-		return ((ALDSwingComponentComboBoxItem)
+		return ((ALDSwingComponentItem)
 				((ALDSwingComponentComboBox)guiElement).getJComponent().
 				getSelectedItem()).getObject();
 	}

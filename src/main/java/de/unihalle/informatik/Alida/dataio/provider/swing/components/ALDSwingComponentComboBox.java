@@ -70,7 +70,7 @@ public class ALDSwingComponentComboBox extends ALDSwingComponent
 	 * @param its	Set of items to be shown in combobox.
 	 */
 	public ALDSwingComponentComboBox(ALDParameterDescriptor descr,
-			Vector<ALDSwingComponentComboBoxItem> its){
+			Vector<ALDSwingComponentItem> its){
 		this.paramDescriptor = descr;
 		this.compComboBox = new JComboBox(its);
 		this.compComboBox.addItemListener(this);
@@ -104,8 +104,8 @@ public class ALDSwingComponentComboBox extends ALDSwingComponent
 		int itemNum = this.compComboBox.getItemCount();
 		for (int i=0;i<itemNum;++i) {
 			Object item = this.compComboBox.getItemAt(i);
-			ALDSwingComponentComboBoxItem boxItem =
-					(ALDSwingComponentComboBoxItem)item;
+			ALDSwingComponentItem boxItem =
+					(ALDSwingComponentItem)item;
 			// if value is null, set selection to first entry 
 			if (obj == null) {
 				this.compComboBox.setSelectedIndex(0);
@@ -147,14 +147,14 @@ public class ALDSwingComponentComboBox extends ALDSwingComponent
 		/**
 		 * List of items represented by combobox.
 		 */
-		private Vector<ALDSwingComponentComboBoxItem> items = null;
+		private Vector<ALDSwingComponentItem> items = null;
 		
 		/**
 		 * Default constructor.
 		 * @param itms	Set of combobox item objects.
 		 */
 		public ComboBoxTooltipRenderer(
-														Vector<ALDSwingComponentComboBoxItem> itms){
+														Vector<ALDSwingComponentItem> itms){
 			this.items = itms;
 		}
 		

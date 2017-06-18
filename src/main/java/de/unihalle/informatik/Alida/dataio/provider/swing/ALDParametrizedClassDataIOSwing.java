@@ -35,7 +35,7 @@ import de.unihalle.informatik.Alida.dataio.provider.helpers.ALDParametrizedClass
 import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDParametrizedClassConfigWindow;
 import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponent;
 import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponentComboBox;
-import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponentComboBoxItem;
+import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponentItem;
 import de.unihalle.informatik.Alida.dataio.provider.swing.events.ALDSwingValueChangeEvent;
 import de.unihalle.informatik.Alida.dataio.provider.swing.events.ALDSwingValueChangeListener;
 import de.unihalle.informatik.Alida.exceptions.ALDDataIOException;
@@ -225,8 +225,8 @@ public class ALDParametrizedClassDataIOSwing implements ALDDataIOSwing {
 		/**
 		 * Default item if no value is selected.
 		 */
-		private ALDSwingComponentComboBoxItem boxItemNone = 
-				new ALDSwingComponentComboBoxItem(null, "none", "none");
+		private ALDSwingComponentItem boxItemNone = 
+				new ALDSwingComponentItem(null, "none", "none");
 		
 		/**
 		 * Main panel containing elements for class selection.
@@ -280,12 +280,12 @@ public class ALDParametrizedClassDataIOSwing implements ALDDataIOSwing {
 					&& !(Modifier.isAbstract(cl.getModifiers())) 
 					&& !(this.availableClasses.contains(cl)) )
 					this.availableClasses.add(cl);
-			Vector<ALDSwingComponentComboBoxItem> comboFields =
-					new Vector<ALDSwingComponentComboBoxItem>();
+			Vector<ALDSwingComponentItem> comboFields =
+					new Vector<ALDSwingComponentItem>();
 			for (Class<?> c : this.availableClasses) {
 				String shortName = c.getSimpleName();
 				comboFields.add(
-						new ALDSwingComponentComboBoxItem(c, shortName, 
+						new ALDSwingComponentItem(c, shortName, 
 								c.getCanonicalName()));
 				this.shortNames.put(shortName, c);
 				// generate configuration window for each class
@@ -387,7 +387,7 @@ public class ALDParametrizedClassDataIOSwing implements ALDDataIOSwing {
 //	  	else
 //	  		selectedClass = (Class<?>)item;
 			Class<?> selectedClass = 
-					(Class<?>)((ALDSwingComponentComboBoxItem)item).getObject();
+					(Class<?>)((ALDSwingComponentItem)item).getObject();
 	  	if (this.configWins.get(selectedClass) == null) {
 	  		return null;
 	  	}
@@ -410,7 +410,7 @@ public class ALDParametrizedClassDataIOSwing implements ALDDataIOSwing {
 				if (item.equals(this.boxItemNone))
 					return;
 				Class<?> selectedClass = 
-						(Class<?>)((ALDSwingComponentComboBoxItem)item).getObject();
+						(Class<?>)((ALDSwingComponentItem)item).getObject();
 				try {
 					// trigger event
 	        this.configWins.get(selectedClass).setVisible(true);
@@ -455,12 +455,12 @@ public class ALDParametrizedClassDataIOSwing implements ALDDataIOSwing {
 //				comboFields.add(c.getSimpleName());
 //			}
 			
-			LinkedList<ALDSwingComponentComboBoxItem> comboFields = 
-					new LinkedList<ALDSwingComponentComboBoxItem>();
+			LinkedList<ALDSwingComponentItem> comboFields = 
+					new LinkedList<ALDSwingComponentItem>();
 			for (Class<?> c : this.availableClasses) {
 				String shortName = c.getSimpleName();
 				// add item object to combobox fields
-				comboFields.add(new ALDSwingComponentComboBoxItem(c, shortName, 
+				comboFields.add(new ALDSwingComponentItem(c, shortName, 
 						c.getCanonicalName()));
 			}
 			// sort list of classes lexicographically
@@ -495,7 +495,7 @@ public class ALDParametrizedClassDataIOSwing implements ALDDataIOSwing {
 //					this.classSelection.addItem(c.getSimpleName());
 //				}
 //			}
-			for (ALDSwingComponentComboBoxItem item: comboFields) {
+			for (ALDSwingComponentItem item: comboFields) {
 				this.classSelection.getJComponent().addItem(item);
 			}
 		}
