@@ -25,13 +25,11 @@
 
 package de.unihalle.informatik.Alida.dataio.provider.swing.components;
 
-import java.awt.Component;
 import java.util.Vector;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import de.unihalle.informatik.Alida.dataio.ALDDataIOManagerSwing;
 import de.unihalle.informatik.Alida.dataio.provider.swing.events.ALDSwingValueChangeEvent;
@@ -82,15 +80,19 @@ public class ALDSwingComponentList extends ALDSwingComponent
 		this.compList.setVisibleRowCount(-1);
 		this.compList.addListSelectionListener(this);
 		this.items = its;
-		// add our own tooltip renderer
-//		this.compList.setRenderer(new ComboBoxTooltipRenderer(its));
 	}
 
+	/* (non-Javadoc)
+	 * @see de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponent#getJComponent()
+	 */
 	@Override
 	public JList<ALDSwingComponentItem> getJComponent() {
 		return this.compList;
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+	 */
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		if (this.ignoreEvents)
@@ -122,23 +124,6 @@ public class ALDSwingComponentList extends ALDSwingComponent
 			++id;
 		}
 		this.compList.setSelectedIndices(sIndices);
-//		this.compList.updateUI();
-//			// if tooltip text is given, use this for item matching
-//			if (boxItem.getTooltip() != null) {
-//				if (obj.getClass().getCanonicalName().equals(boxItem.getTooltip())) {
-//					this.compComboBox.setSelectedIndex(i);
-//					// reset event handling to default behaviour
-//					this.ignoreEvents = false;
-//					return;
-//				}
-//			}
-//			// otherwise use item text directly for matching
-//			else if (obj.toString().equals(boxItem.getItemText())) {
-//				this.compComboBox.setSelectedIndex(i);
-//				// reset event handling to default behaviour
-//				this.ignoreEvents = false;
-//				return;
-//			}
 		// reset event handling to default behaviour
 		this.ignoreEvents = false;
 	}
@@ -156,59 +141,25 @@ public class ALDSwingComponentList extends ALDSwingComponent
 		return sItems;
 	}
 
-	/**
-	 * Tooltip renderer class, adds a tooltip to each item in the combobox.
-	 * <p>
-	 * Source code originally taken from here:
-	 * @see <a href="http://www.java2s.com/Code/Java/Swing-Components/ToolTipComboBoxExample.htm">Java Swing documentation</a>
-	 * 
-	 * @author moeller
+	/* (non-Javadoc)
+	 * @see de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponent#disableComponent()
 	 */
-	protected class ComboBoxTooltipRenderer extends BasicComboBoxRenderer {
-		
-		/**
-		 * List of items represented by combobox.
-		 */
-		private Vector<ALDSwingComponentItem> items = null;
-		
-		/**
-		 * Default constructor.
-		 * @param itms	Set of combobox item objects.
-		 */
-		public ComboBoxTooltipRenderer(Vector<ALDSwingComponentItem> itms){
-			this.items = itms;
-		}
-		
-    @Override
-    public Component getListCellRendererComponent(JList list, Object value,
-        int index, boolean isSelected, boolean cellHasFocus) {
-      if (isSelected) {
-        setBackground(list.getSelectionBackground());
-        setForeground(list.getSelectionForeground());
-        if (  this.items != null 
-        		&& -1 < index	&& index < this.items.size()) {
-          list.setToolTipText(this.items.get(index).getTooltip());
-        }
-      } else {
-        setBackground(list.getBackground());
-        setForeground(list.getForeground());
-      }
-      setFont(list.getFont());
-      setText((value == null) ? "" : value.toString());
-      return this;
-    }
-  }
-
 	@Override
   public void disableComponent() {
 		this.compList.setEnabled(false);
   }
 
+	/* (non-Javadoc)
+	 * @see de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponent#enableComponent()
+	 */
 	@Override
   public void enableComponent() {
 		this.compList.setEnabled(true);
   }
 	
+	/* (non-Javadoc)
+	 * @see de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponent#dispose()
+	 */
 	@Override
   public void dispose() {
 		// nothing to do here
