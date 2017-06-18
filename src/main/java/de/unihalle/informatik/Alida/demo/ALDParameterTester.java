@@ -122,7 +122,16 @@ public class ALDParameterTester extends ALDOperator {
   private static enum EnumSelection {
   	FIRST_VALUE,
   	SECOND_VALUE,
-  	THIRD_VALUE
+  	THIRD_VALUE,
+  	FORTH_VALUE,
+  	FIFTH_VALUE,
+  	SIXTH_VALUE,
+  	SEVENTH_VALUE,
+  	EIGHTH_VALUE,
+  	NINETH_VALUE,
+  	TENTH_VALUE,
+  	ELEVEN,
+  	TWELVE
   }
   
   @Parameter( label= "Enum", required = false, dataIOOrder = 19,
