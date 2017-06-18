@@ -152,6 +152,9 @@ public class ALDEnumSetDataIOSwing
 			this.confButton.addActionListener(this.confWin);
 		}
 		
+		/* (non-Javadoc)
+		 * @see de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponent#getJComponent()
+		 */
 		@Override
 		public JButton getJComponent() {
 			return this.confButton;
@@ -180,22 +183,34 @@ public class ALDEnumSetDataIOSwing
 			this.confWin.setValue(value);
 		}
 
+		/* (non-Javadoc)
+		 * @see de.unihalle.informatik.Alida.dataio.provider.swing.events.ALDSwingValueChangeListener#handleValueChangeEvent(de.unihalle.informatik.Alida.dataio.provider.swing.events.ALDSwingValueChangeEvent)
+		 */
 		@Override
 		public void handleValueChangeEvent(ALDSwingValueChangeEvent event) {
 			this.fireALDSwingValueChangeEvent(event);
 		}
 
+		/* (non-Javadoc)
+		 * @see de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponent#disableComponent()
+		 */
 		@Override
     public void disableComponent() {
 			this.confWin.disableComponent();
     }
 
+		/* (non-Javadoc)
+		 * @see de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponent#enableComponent()
+		 */
 		@Override
     public void enableComponent() {
 			this.confWin.enableComponent();
 			this.confButton.setEnabled(true);
     }
 		
+		/* (non-Javadoc)
+		 * @see de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponent#dispose()
+		 */
 		@Override
 	  public void dispose() {
 			// close the associated configuration window
@@ -223,6 +238,9 @@ public class ALDEnumSetDataIOSwing
 		 */
 		private ALDParameterDescriptor pDesc;
 		
+		/**
+		 * Main window.
+		 */
 		private JFrame window;
 		
 		/**
@@ -238,6 +256,9 @@ public class ALDEnumSetDataIOSwing
 			this.pDesc = descr;
 		}
 		
+		/* (non-Javadoc)
+		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+		 */
 		@Override
     public void actionPerformed(ActionEvent e) {
 			String cmd = e.getActionCommand(); 
@@ -361,6 +382,7 @@ public class ALDEnumSetDataIOSwing
 				@SuppressWarnings("unused") Class<?> cl, Object obj, 
 				ALDParameterDescriptor descr) {
 
+			// figure out type of enumeration
 			this.elemFieldType = ALDCollectionDataIOHelper.lookupType(field);
 			this.elemClass = (Class<? extends Enum<?>>)this.elemFieldType;
 			this.paramDescriptor = descr;
@@ -389,7 +411,11 @@ public class ALDEnumSetDataIOSwing
 		@SuppressWarnings("unchecked")
     public EnumSet<?> readData(@SuppressWarnings("unused") Field field, 
     		@SuppressWarnings("unused") Class<?> cl) {
-			EnumSet<?> eSet = EnumSet.allOf((Class<Enum>) this.elemClass);
+			// this is a bit ugly: we first create a set with all enums, then 
+			// remove selected ones and finally return the complement of the
+			// set with non-selected elements; reason is that it is not possible
+			// to add an object without known type, but one can remove it...
+			EnumSet<?> eSet = EnumSet.allOf((Class<Enum>)this.elemClass);
 			Vector<ALDSwingComponentItem> sItems = this.enumList.getSelectedItems(); 
 			for (ALDSwingComponentItem i: sItems) {
 				eSet.remove(i.getObject());
@@ -504,6 +530,9 @@ public class ALDEnumSetDataIOSwing
 			this.window.validate();
 		}
 		
+		/* (non-Javadoc)
+		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+		 */
 		@Override
     public void actionPerformed(ActionEvent e) {
 			String cmd = e.getActionCommand(); 
@@ -515,6 +544,9 @@ public class ALDEnumSetDataIOSwing
 			}
 	  }
 
+		/* (non-Javadoc)
+		 * @see de.unihalle.informatik.Alida.dataio.provider.swing.events.ALDSwingValueChangeListener#handleValueChangeEvent(de.unihalle.informatik.Alida.dataio.provider.swing.events.ALDSwingValueChangeEvent)
+		 */
 		@Override
 		public void handleValueChangeEvent(ALDSwingValueChangeEvent event) {
 			this.fireALDSwingValueChangeEvent(event);
