@@ -23,15 +23,6 @@
  *
  */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev: 4370 $
- * $Date: 2011/11/20 20:18:51 $
- * $Author: posch $
- * 
- */
-
 package de.unihalle.informatik.Alida.dataio;
 
 import de.unihalle.informatik.Alida.dataio.provider.ALDDataIO;
@@ -54,6 +45,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.Vector;
 import java.util.LinkedList;
 import java.lang.reflect.Array;
@@ -213,6 +205,8 @@ public abstract class ALDDataIOManager {
 						(providerName = mapTable.get( ALDOperator.class)) != null ) ||
 					 ( cl.isArray() &&
 						(providerName = mapTable.get( Array.class)) != null ) ||
+					 ( EnumSet.class.isAssignableFrom( cl) &&
+						(providerName = mapTable.get( EnumSet.class)) != null ) ||
 					 ( Collection.class.isAssignableFrom( cl) &&
 						(providerName = mapTable.get( Collection.class)) != null ) ||
 					 ( cl.getAnnotation( ALDParametrizedClass.class) != null &&

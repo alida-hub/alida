@@ -25,6 +25,7 @@
 
 package de.unihalle.informatik.Alida.dataio.provider.swing;
 
+import de.unihalle.informatik.Alida.annotations.ALDDataIOProvider;
 import de.unihalle.informatik.Alida.dataio.provider.ALDDataIOSwingInitialGUIValueDefaultHandler;
 import de.unihalle.informatik.Alida.dataio.provider.helpers.ALDCollectionDataIOHelper;
 import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponent;
@@ -55,6 +56,7 @@ import java.util.*;
  * 
  * @author moeller
  */
+@ALDDataIOProvider
 public class ALDEnumSetDataIOSwing 
 	extends ALDDataIOSwingInitialGUIValueDefaultHandler {
 
@@ -63,7 +65,9 @@ public class ALDEnumSetDataIOSwing
 	 */
 	@Override
 	public Collection<Class<?>> providedClasses() {
-		return new LinkedList<Class<?>>();
+		LinkedList<Class<?>> classes = new LinkedList<Class<?>>();
+		classes.add(EnumSet.class);
+		return classes;
 	}
 	
 	/* (non-Javadoc)
@@ -472,6 +476,7 @@ public class ALDEnumSetDataIOSwing
 		
 		/**
 		 * Displays the selection in the window.
+		 * @param selection Set of currently selected items.
 		 */
 		private void setupWindow(EnumSet<?> selection) {
 			

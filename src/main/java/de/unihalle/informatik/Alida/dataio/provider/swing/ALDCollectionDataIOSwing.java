@@ -57,8 +57,6 @@ import java.util.*;
 public class ALDCollectionDataIOSwing 
 	extends ALDDataIOSwingInitialGUIValueDefaultHandler {
 
-	ALDEnumSetDataIOSwing enumHelper;
-	
 	/**
 	 * Interface method to announce class for which IO is provided for.
 	 * 
@@ -80,10 +78,6 @@ public class ALDCollectionDataIOSwing
 	@Override
 	public ALDSwingComponent createGUIElement(
 			Field field, Class<?> cl, Object obj, ALDParameterDescriptor descr) {
-		if (EnumSet.class.isAssignableFrom(cl)) {
-			this.enumHelper = new ALDEnumSetDataIOSwing();
-			return this.enumHelper.createGUIElement(field, cl, obj, descr);
-		}
 		return new CollectionConfigButton(field, cl, obj, descr);
 	}
 
@@ -92,13 +86,9 @@ public class ALDCollectionDataIOSwing
   		Field field, Class<?> cl, ALDSwingComponent guiElement,	Object value) 
   	throws ALDDataIOProviderException {
 		if (!(guiElement instanceof CollectionConfigButton)) {
-			if (this.enumHelper == null)
-				this.enumHelper = new ALDEnumSetDataIOSwing();
-//				throw new ALDDataIOProviderException(
-//					ALDDataIOProviderExceptionType.INVALID_GUI_ELEMENT, 
-//						"CollectionDataIO: setValue() received invalid GUI element!");
-			this.enumHelper.setValue(field, cl, guiElement, value);
-			return;
+			throw new ALDDataIOProviderException(
+				ALDDataIOProviderExceptionType.INVALID_GUI_ELEMENT, 
+					"CollectionDataIO: setValue() received invalid GUI element!");
 		}
 		((CollectionConfigButton)guiElement).setValue(field, cl, value);
   }
@@ -108,12 +98,9 @@ public class ALDCollectionDataIOSwing
 			Field field, Class<?> cl, ALDSwingComponent guiElement) 
 		throws ALDDataIOProviderException {
 		if (!(guiElement instanceof CollectionConfigButton)) {
-			if (this.enumHelper == null)
-				this.enumHelper = new ALDEnumSetDataIOSwing();
-//				throw new ALDDataIOProviderException(
-//					ALDDataIOProviderExceptionType.INVALID_GUI_ELEMENT, 
-//						"CollectionDataIO: readData received invalid GUI element!");
-			return this.enumHelper.readData(field, cl, guiElement);
+			throw new ALDDataIOProviderException(
+				ALDDataIOProviderExceptionType.INVALID_GUI_ELEMENT, 
+					"CollectionDataIO: readData received invalid GUI element!");
 		}
 		return ((CollectionConfigButton)guiElement).readData(field, cl);
 	}
@@ -121,14 +108,6 @@ public class ALDCollectionDataIOSwing
 	@Override
 	public JComponent writeData(Object obj, ALDParameterDescriptor descr) 
 			throws ALDDataIOProviderException {
-		if (obj instanceof EnumSet) {
-			if (this.enumHelper == null)
-				this.enumHelper = new ALDEnumSetDataIOSwing();
-//				throw new ALDDataIOProviderException(
-//					ALDDataIOProviderExceptionType.OBJECT_TYPE_ERROR, 
-//						"CollectionDataIO: object to write has wrong type!");
-			return this.enumHelper.writeData(obj, descr);
-		}
 		if (!(obj instanceof Collection))
 			throw new ALDDataIOProviderException(
 					ALDDataIOProviderExceptionType.OBJECT_TYPE_ERROR, 
