@@ -43,7 +43,7 @@ import de.unihalle.informatik.Alida.annotations.Parameter;
  * 
  * @author moeller
  */
-@ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.SWING)
+@ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL)
 public class ALDParameterTester extends ALDOperator {
 
   @Parameter( label= "Info-String", required = false, dataIOOrder = -1,
