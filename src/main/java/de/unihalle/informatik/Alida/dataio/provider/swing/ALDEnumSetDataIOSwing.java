@@ -360,14 +360,9 @@ public class ALDEnumSetDataIOSwing
 		private JButton closeButton;
 		
 		/**
-		 * Collection element type.
+		 * EnumSet element type.
 		 */
-		private Type elemFieldType;
-
-		/**
-		 * Collection element class.
-		 */
-		private Class<? extends Enum<?>> elemClass;
+		private Type elemType;
 
 		/**
 		 * Parameter descriptor of associated parameter.
@@ -381,14 +376,12 @@ public class ALDEnumSetDataIOSwing
 		 * @param obj			Initial value of collection.
 		 * @param descr		Optional descriptor for additional information.
 		 */
-		@SuppressWarnings("unchecked")
 		public EnumSelectionConfigWindow(Field field, 
 				@SuppressWarnings("unused") Class<?> cl, Object obj, 
 				ALDParameterDescriptor descr) {
 
 			// figure out type of enumeration
-			this.elemFieldType = ALDCollectionDataIOHelper.lookupType(field);
-			this.elemClass = (Class<? extends Enum<?>>)this.elemFieldType;
+			this.elemType = ALDCollectionDataIOHelper.lookupType(field);
 			this.paramDescriptor = descr;
 
 			// initialize the window
@@ -396,8 +389,8 @@ public class ALDEnumSetDataIOSwing
 			this.window.setResizable(true);
 			String title = "unknown";
 			if (descr != null) title = descr.getLabel();
-			String type = this.elemClass.getSimpleName();
-			this.window.setTitle("Enum selection <" +title+ ">, type <" + type +">");
+			this.window.setTitle("Enum selection <" +title+ ">, type <" 
+					+ this.elemType +">");
 			this.window.setSize(frameWidthMin, frameHeightMin);
 			this.window.setPreferredSize(
 					new Dimension(frameWidthMin, frameHeightMin));
@@ -419,7 +412,7 @@ public class ALDEnumSetDataIOSwing
 			// remove selected ones and finally return the complement of the
 			// set with non-selected elements; reason is that it is not possible
 			// to add an object without known type, but one can remove it...
-			EnumSet<?> eSet = EnumSet.allOf((Class<Enum>)this.elemClass);
+			EnumSet<?> eSet = EnumSet.allOf((Class<Enum>)this.elemType);
 			Vector<ALDSwingComponentItem> sItems = this.enumList.getSelectedItems(); 
 			for (ALDSwingComponentItem i: sItems) {
 				eSet.remove(i.getObject());
@@ -492,7 +485,7 @@ public class ALDEnumSetDataIOSwing
 				this.mainPanel.setLayout(bl);
 
 				this.enumListItems = new Vector<>();
-				EnumSet<?> s = EnumSet.allOf((Class<Enum>) this.elemClass);
+				EnumSet<?> s = EnumSet.allOf((Class<Enum>)this.elemType);
 				for (Object o: s) {
 					ALDSwingComponentItem item = 
 							new ALDSwingComponentItem(o, o.toString(), o.toString());
