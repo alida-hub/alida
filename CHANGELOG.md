@@ -5,14 +5,24 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 
 ## [Unreleased]
 ### Added
-- New data I/O provider for Java data type EnumSet
 
 ### Changed
-- Updated to JGraphX 3.4.1.3
 
 ### Deprecated
 
 ### Removed
+
+### Fixed
+
+## [2.7.4] - 2017-07-29
+Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
+- Released Alida 2.7.4
+
+### Added
+- New data I/O provider for Java data type EnumSet
+
+### Changed
+- Updated to JGraphX 3.4.1.3
 
 ### Fixed
 - ALDNativeArrayXXDataIOSwing: loading table data for 1D/2D arrays from file now displays errors if data format does not fit instead of just failing silently
