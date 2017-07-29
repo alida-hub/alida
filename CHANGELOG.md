@@ -8,14 +8,15 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 - New data I/O provider for Java data type EnumSet
 
 ### Changed
+- Updated to JGraphX 3.4.1.3
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
-- Loading table data for 1D/2D arrays from file now displays errors if data format does not fit instead of just failing silently
-
+- ALDNativeArrayXXDataIOSwing: loading table data for 1D/2D arrays from file now displays errors if data format does not fit instead of just failing silently
+- ALDVersionProviderGit: properly initializing provider even if environment variable is not set (issue #1)
 
 ## [2.7.3] - 2016-12-14
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
