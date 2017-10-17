@@ -26,6 +26,7 @@
 package de.unihalle.informatik.Alida.dataio.provider.swing;
 
 import de.unihalle.informatik.Alida.annotations.ALDDataIOProvider;
+import de.unihalle.informatik.Alida.dataio.ALDDataIOManagerSwing;
 import de.unihalle.informatik.Alida.dataio.provider.ALDDataIOSwing;
 import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponent;
 import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponentTextField;
@@ -111,11 +112,19 @@ public class ALDFileDirectoryDataIOSwing implements ALDDataIOSwing {
   		ALDSwingComponent guiElement, Object value) 
   	throws ALDDataIOProviderException {
 
-		if (!(guiElement instanceof FileDirectoryDataIOPanel))
+		// set value is only called from the inside of the Alida framework,
+		// so make sure that no additional value change events are triggered
+		// during setting a new value in the GUI elements
+		ALDDataIOManagerSwing.getInstance().setTriggerValueChangeEvents(false);
+
+		if (!(guiElement instanceof FileDirectoryDataIOPanel)) {
+			// reactivate value change events and throw exception
+			ALDDataIOManagerSwing.getInstance().setTriggerValueChangeEvents(true);
 			throw new ALDDataIOProviderException(
 					ALDDataIOProviderExceptionType.INVALID_GUI_ELEMENT, 
 						"ALDFileDirDataIOSwing: setValue() received invalid " 
 								+ "GUI element!");
+		}
 
 		Object lvalue = value;
 		if (value == null) {
@@ -125,12 +134,18 @@ public class ALDFileDirectoryDataIOSwing implements ALDDataIOSwing {
 				lvalue = new ALDFileString("");
 		}
 		else if (   !(value instanceof ALDDirectoryString)
-				      && !(value instanceof ALDFileString))
+ 			       && !(value instanceof ALDFileString)) {
+			// reactivate value change events and throw exception
+			ALDDataIOManagerSwing.getInstance().setTriggerValueChangeEvents(true);
 			throw new ALDDataIOProviderException(
 					ALDDataIOProviderExceptionType.INVALID_GUI_ELEMENT, 
 						"ALDFileDirDataIOSwing: setValue() received wrong " 
 								+	"object type!");
+		}
 		((FileDirectoryDataIOPanel)guiElement).setValue(field,cl,lvalue);
+		
+		// reactivate value change events
+		ALDDataIOManagerSwing.getInstance().setTriggerValueChangeEvents(true);
   }
 
 	/* (non-Javadoc)
@@ -289,7 +304,7 @@ public class ALDFileDirectoryDataIOSwing implements ALDDataIOSwing {
 				Class<?> cl, Object value) {
 			if (cl.equals(ALDFileString.class)) {
 				this.textField.setText(((ALDFileString)value).getFileName());
-				this.lastDirectory = 
+				this.lastFile = 
 					new File(((ALDFileString)value).getFileName());
 			}
 			else {
