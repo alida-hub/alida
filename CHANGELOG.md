@@ -5,6 +5,7 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 
 ## [Unreleased]
 ### Added
+- XML provider for Java data type EnumSet
 
 ### Changed
 
@@ -13,6 +14,7 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 ### Removed
 
 ### Fixed
+- fixed some data I/O providers to suppress value events during internal updates of GUI elements
 
 ## [2.7.4] - 2017-07-29
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
