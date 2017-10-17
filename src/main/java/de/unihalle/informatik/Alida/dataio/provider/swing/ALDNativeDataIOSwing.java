@@ -26,6 +26,7 @@
 package de.unihalle.informatik.Alida.dataio.provider.swing;
 
 import de.unihalle.informatik.Alida.annotations.ALDDataIOProvider;
+import de.unihalle.informatik.Alida.dataio.ALDDataIOManagerSwing;
 import de.unihalle.informatik.Alida.dataio.provider.ALDDataIOSwing;
 import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponent;
 import de.unihalle.informatik.Alida.dataio.provider.swing.components.ALDSwingComponentCheckBox;
@@ -178,23 +179,37 @@ public class ALDNativeDataIOSwing implements ALDDataIOSwing {
 			ALDSwingComponent guiElement,	Object value) 
 		throws ALDDataIOProviderException {
 		
+		// set value is only called from the inside of the Alida framework,
+		// so make sure that no additional value change events are triggered
+		// during setting a new value in the GUI elements
+		ALDDataIOManagerSwing.getInstance().setTriggerValueChangeEvents(false);
+		
 		// info strings
 		if (guiElement instanceof ALDSwingComponentLabel) {
 			String newString = this.reformatInfoString(value.toString());
 			((ALDSwingComponentLabel)guiElement).getJComponent().setText(
 					newString);
+			// reactivate value change events and return from function call
+			ALDDataIOManagerSwing.getInstance().setTriggerValueChangeEvents(true);
 			return;
 		}
 			
 		// all other classes except boolean
 		if ( cl != boolean.class && cl != Boolean.class ) {
-			if (!(guiElement instanceof ALDSwingComponentTextField))
+			if (!(guiElement instanceof ALDSwingComponentTextField)) {
+				// reactivate value change events
+				ALDDataIOManagerSwing.getInstance().setTriggerValueChangeEvents(true);
+				// throw exception
 				throw new ALDDataIOProviderException(
 						ALDDataIOProviderExceptionType.INVALID_GUI_ELEMENT, 
 						"NativeDataIO: readData received invalid GUI element!");
+			}
 
 			// 2D-arrays
 			if (cl.getName().startsWith("[[")) {
+				// reactivate value change events
+				ALDDataIOManagerSwing.getInstance().setTriggerValueChangeEvents(true);
+				// throw exception
 				throw new ALDDataIOProviderException(
 						ALDDataIOProviderExceptionType.UNSPECIFIED_ERROR, 
 						"ALDNativeDataIO: 2D array reading not available!");
@@ -219,6 +234,9 @@ public class ALDNativeDataIOSwing implements ALDDataIOSwing {
 				((ALDSwingComponentCheckBox)guiElement).getJComponent().
 				setSelected(((Boolean)value).booleanValue());
 		}
+		
+		// reactivate value change events
+		ALDDataIOManagerSwing.getInstance().setTriggerValueChangeEvents(true);
 	}
 
 	@Override
