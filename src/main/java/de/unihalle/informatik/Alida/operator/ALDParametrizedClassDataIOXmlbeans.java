@@ -34,29 +34,32 @@
 
 package de.unihalle.informatik.Alida.operator;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
+import de.unihalle.informatik.Alida.annotations.ALDDataIOProvider;
+import de.unihalle.informatik.Alida.annotations.Parameter.Direction;
 import de.unihalle.informatik.Alida.dataio.ALDDataIOManagerXmlbeans;
-import de.unihalle.informatik.Alida.dataio.provider.xmlbeans.ALDStandardizedDataIOXmlbeans;
 import de.unihalle.informatik.Alida.dataio.provider.helpers.ALDInstantiationHelper;
 import de.unihalle.informatik.Alida.dataio.provider.helpers.ALDParametrizedClassDataIOHelper;
 import de.unihalle.informatik.Alida.dataio.provider.helpers.ALDParametrizedClassDummy;
+import de.unihalle.informatik.Alida.dataio.provider.xmlbeans.ALDStandardizedDataIOXmlbeans;
 import de.unihalle.informatik.Alida.exceptions.ALDDataIOManagerException;
 import de.unihalle.informatik.Alida.exceptions.ALDDataIOProviderException;
 import de.unihalle.informatik.Alida.exceptions.ALDDataIOProviderException.ALDDataIOProviderExceptionType;
 import de.unihalle.informatik.Alida.exceptions.ALDOperatorException;
-import de.unihalle.informatik.Alida.exceptions.ALDWorkflowException;
-import de.unihalle.informatik.Alida.annotations.ALDDataIOProvider;
-import de.unihalle.informatik.Alida.annotations.Parameter.Direction;
 import de.unihalle.informatik.Alida_xml.ALDXMLKeyValuePairType;
 import de.unihalle.informatik.Alida_xml.ALDXMLObjectType;
 import de.unihalle.informatik.Alida_xml.ALDXMLOperatorType;
+import de.unihalle.informatik.Alida_xml.ALDXMLOperatorVersion3Type;
 import de.unihalle.informatik.Alida_xml.ALDXMLOperatorWithDescriptorType;
 import de.unihalle.informatik.Alida_xml.ALDXMLParametrizedType;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.HashMap;
 
 /**
  * DataIO provider for parametrized classes and operators from command line.
@@ -170,9 +173,12 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 					"ALDParametrizedClassDataIOXmlbeans::readData cannot cast xmlObject to ALDXMLParametrizedType");
 		}
 		
-		// for an operator read and set the active parameters and all associated descriptors form the xml configuration
+		// for an operator read and set the active parameters and all associated descriptors from the xml configuration
+		// unless an (old) version 1 xml representation is to be read
 		if ( isOperator ) {
 			if ( ALDXMLOperatorWithDescriptorType.class.isAssignableFrom( aldXmlObject.getClass())) {
+				// we have a version 2 xml representation of the operators configuration
+				
 				// first deactivate all parameter
 				LinkedList<String> copyOfPnames = new LinkedList<String>();
 				for ( String pName : op.getParameterNames()) {
@@ -218,35 +224,111 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 					}
 
 				}
+			} else if ( ALDXMLOperatorVersion3Type.class.isAssignableFrom( aldXmlObject.getClass())) {
+				// we have a version 3 xml representation of the operators configuration
+				// add parameters from configuration with associated descriptors
+				ALDXMLOperatorVersion3Type xmlOperator = (ALDXMLOperatorVersion3Type)aldXmlObject;
+				
+				List<String> allXmlParameternames = new LinkedList<String>();
+				
+				Set<String> activeXmlParameternames = new HashSet<String>();
+				for ( int i = 0 ; i < xmlOperator.getActiveParameterNamesArray().length ; i++ ) {
+					String pName = xmlOperator.getActiveParameterNamesArray()[i];
+					allXmlParameternames.add(pName);
+					activeXmlParameternames.add(pName);
+				}
+				
+				Set<String> inactiveXmlParameternames = new HashSet<String>();
+				for ( int i = 0 ; i < xmlOperator.getInactiveParameterNamesArray().length ; i++ ) {
+					String pName = xmlOperator.getInactiveParameterNamesArray()[i];
+					allXmlParameternames.add(pName);
+					inactiveXmlParameternames.add(pName);
+				}
+				
+				for ( String pName : allXmlParameternames) {
+					if ( wasAnnotated( pName, xmlOperator.getParameterDescriptorsArray())) {
+						if ( op.isAnnotatedParameter( pName) ) {
+							restoreParameterStatus( pName, op, inactiveXmlParameternames, activeXmlParameternames);
+						} else {
+							// ignore a parameter which was annotated when writing the operator to xml
+							// but is not existing or existing but not annotated in the operator object to restore
+							if ( debug ) {
+								System.out.println(" ALDParametrizedClassDataIOXmlbeans::readData ignore parameter <" +
+										pName + "> which is annotated in xml but not annotated in the current operator object");
+							}
+
+						}
+					} else {
+						if ( op.isAnnotatedParameter( pName) ) {
+							// ignore a parameter which was not annotated when writing the operator to xml
+							// but is existing and annotated in the operator object to restore
+							if ( debug ) {
+								System.out.println(" ALDParametrizedClassDataIOXmlbeans::readData ignore parameter <" +
+										pName + "> which is not  annotated in xml but annotated in the current operator object");
+							}
+
+
+						} else {
+							if ( (! op.getParameterNames().contains(pName)) &&
+							     (! op.getInactiveParameterNames().contains(pName)) ) {
+								// there is no parameter description for this parameter, 
+								// restore the parameter description from the xml representation
+								for ( int i = 0 ; i < xmlOperator.getParameterDescriptorsArray().length ; i++ ) {
+									if ( xmlOperator.getParameterDescriptorsArray(i).getKey().equals(pName) ) {
+										ALDXMLObjectType elementXmlObject = xmlOperator.getParameterDescriptorsArray(i).getValue();
+										ALDOpParameterDescriptor descr = 
+												(ALDOpParameterDescriptor) ALDDataIOManagerXmlbeans.getInstance().readData( null, ALDOpParameterDescriptor.class,elementXmlObject);
+										try {
+											op.addParameter(descr);
+										} catch (ALDOperatorException e) {
+											throw new ALDDataIOProviderException( ALDDataIOProviderExceptionType.UNSPECIFIED_ERROR,
+													"ALDParametrizedClassDataIOXmlbeans::readData internal error, cannot add parameter from descriptor <" +
+															descr.name +">");
+										}
+									}
+								}
+								restoreParameterStatus(pName, op, inactiveXmlParameternames, activeXmlParameternames);
+							}	
+						}
+					}
+				}
+			} else {
+				// otherwise  we have a version 1 xml representation of the operators configuration  
+				// nothing to do here (as the values are handled next
 			}
 		}
 		
 		// convert all name value pairs in the xml object
 		if ( xmlParametrized.getPairsArray().length != 0) {
-			// this map contains all parameters of the operator and associated fields (maybe null)
-			// or all annotated member variables for a parametrized class
+			// this map contains 
+			// for an operator all parameters for which values have to be restored from xml and associated fields (maybe null)
+			// all for a parametrized class all annotated member variables 
 			HashMap<String,Field> fieldMap = null;
 
 			// initialize fieldmap
 			if ( isOperator) {
 				fieldMap = new HashMap<String, Field>();
 				for ( int i = 0 ; i < xmlParametrized.getPairsArray().length ; i++ )  {
-					String name = xmlParametrized.getPairsArray(i).getKey();
 
-					ALDOpParameterDescriptor descr = null;
-					String pName = null;
 					try {
+						String name = xmlParametrized.getPairsArray(i).getKey();
 						LinkedList<String> pNames = lookupParameternames( op, name);
-						pName = pNames.getFirst();
-						if ( debug ) {
-							System.out.println( "Use parameter <" + pName + ">" +
-									" for <" + name + ">");
+						if ( pNames.size() > 0 ) {
+							String pName = pNames.getFirst();
+							if ( debug ) {
+								System.out.println( "Use parameter <" + pName + ">" +
+										" for <" + name + ">");
+							}
+							
+							fieldMap.put( name, op.getParameterDescriptorUnconditioned( pName).getField());
+						} else {
+							// ignore parameter which do not exist in the operator instance to configure from xml
+							if ( debug ) {
+								System.out.println(" ALDParametrizedClassDataIOXmlbeans::readData ignore value of parameter <" +
+										name + "> which does not exist in the current operator object");
+							}
 						}
-						descr = op.getParameterDescriptor( pName);
-						//if ( descr.getDirection() == Direction.IN ||
-						//		descr.getDirection() == Direction.INOUT ) {
-							fieldMap.put( name, descr.getField());
-						//}
+						
 					} catch (Exception e) {
 						// handle this later consistently with parametrized class
 					}
@@ -267,7 +349,7 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 					if ( elementXmlObject != null) {
 						try {
 							if ( isOperator ) {
-								ALDOpParameterDescriptor descr = op.getParameterDescriptor(name);
+								ALDOpParameterDescriptor descr = op.getParameterDescriptorUnconditioned(name);
 								value = ALDDataIOManagerXmlbeans.getInstance().readData( f, descr.getMyclass(), elementXmlObject);
 							} else {
 								value = ALDDataIOManagerXmlbeans.getInstance().readData( f, null, elementXmlObject);
@@ -303,11 +385,18 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 					
 					if ( isOperator) {
 						try {
-							op.setParameter( name, value);
+							op.setParameterUnconditioned( name, value);
 						} catch (ALDOperatorException e) {
-							throw new ALDDataIOProviderException( ALDDataIOProviderExceptionType.UNSPECIFIED_ERROR,
-									"ALDParametrizedClassDataIOXmlbeans::readData internal error, cannot set value of member variable <" +
-											name +">");
+							// ignore this error, maybe the type of the parameter has changed ....
+							// TODO maybe we should log this error
+							if ( debug ) {
+								System.out.println(" ALDParametrizedClassDataIOXmlbeans::readData value for parameter <" +
+										name + "> could not be set in the current operator object");
+							}
+
+//							throw new ALDDataIOProviderException( ALDDataIOProviderExceptionType.UNSPECIFIED_ERROR,
+//									"ALDParametrizedClassDataIOXmlbeans::readData internal error, cannot set value of member variable <" +
+//											name +">");
 						}
 
 					} else {
@@ -315,23 +404,24 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 							ALDParametrizedClassDataIOHelper.setValue( fieldMap.get( name), obj, value);
 
 						} catch (IllegalAccessException e) {
-							throw new ALDDataIOProviderException( ALDDataIOProviderExceptionType.UNSPECIFIED_ERROR,
-									"ALDParametrizedClassDataIOXmlbeans::readData internal error, cannot set value of member variable <" +
-											name +">");
+							// ignore this error, maybe the type of the parameter has changed ....
+							// TODO maybe we should log this error
+							if ( debug ) {
+								System.out.println(" ALDParametrizedClassDataIOXmlbeans::readData value for parameter <" +
+										name + "> could not be set in tue current parametrized object");
+							}
+
+//							throw new ALDDataIOProviderException( ALDDataIOProviderExceptionType.UNSPECIFIED_ERROR,
+//									"ALDParametrizedClassDataIOXmlbeans::readData internal error, cannot set value of member variable <" +
+//											name +">");
 						}
 					}
 
-				} else { // unknown parameter name
-					if ( ! ALDDataIOManagerXmlbeans.getInstance().isAllowAdditionalFields()) {
-						StringBuffer msg = new StringBuffer("   existing parameters:");
-						for ( String key : fieldMap.keySet() ) 
-							msg.append( "         " + key);
-
-						throw new ALDDataIOProviderException( ALDDataIOProviderExceptionType.SYNTAX_ERROR,
-								"ALDParametrizedClassDataIOXmlbeans::readData " + 
-										(isOperator ? op : obj).getClass().getName() +
-										" does not contain a parameter " + name +
-										new String( msg));
+				} else { 
+					
+					if ( debug ) {
+						System.out.println(" ALDParametrizedClassDataIOXmlbeans::readData value for parameter <" +
+								name + "> exists in xml but no parameter with this name exists in the current object");
 					}
 				}
 			}
@@ -350,9 +440,11 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 	 * <p>
      * For parametrized classes annotated members are written.
      * <p>
-     * For operators all IN and INOUT parameters are written.
-     * In addition for all parameters the names written and the corresponding
+     * Names of all active and inactive parameters are written, as well as
      * parameter descriptors for not annotated parameters
+     * 
+     * For operators all IN and INOUT parameters the values are written for both active and inactive parameters
+     * 
      * 
 	 * @throws ALDDataIOProviderException 
 	 * @throws ALDDataIOManagerException 
@@ -361,8 +453,9 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 	public ALDXMLObjectType writeData(Object obj) 
 			throws ALDDataIOProviderException, ALDDataIOManagerException {
 		
-		ALDXMLParametrizedType xmlParametrized;
+		ALDXMLParametrizedType xmlParametrized = null;
 
+		// map of parametername,field for all parameter for which the values have to be written to the xml representation
 		HashMap<String,Field> fieldMap;
 		if ( obj instanceof ALDOperator)  {
 			ALDOperator op = ((ALDOperator)obj);
@@ -371,57 +464,112 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 				System.out.println("ALDParametrizedClassDataIOXmlbeans::writeData write an ALDOperator");
 			}
 
-			ALDXMLOperatorWithDescriptorType xmlOperator = ALDXMLOperatorWithDescriptorType.Factory.newInstance();
-			xmlOperator.setOpName(((ALDOperator)obj).getName());
-			
-			// write all (current/active) parameter names into the xml object
-			// as well as the associated descriptors for non annotated parameters
-			for ( String pName : op.getParameterNames() ) {
-				xmlOperator.addParameterNames(pName);
-				
-				if ( ! op.isAnnotatedParameter( pName) ) {
-					
-					ALDXMLObjectType xmlValue =null;
-					try {
-						xmlValue = ALDDataIOManagerXmlbeans.getInstance().writeData(
-								op.getParameterDescriptor(pName));
-					} catch (ALDOperatorException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					ALDXMLKeyValuePairType keyValuePair = 
-							xmlOperator.addNewParameterDescriptors();
-					keyValuePair.setKey(pName);
-					keyValuePair.setValue(xmlValue);
+			ALDXMLOperatorVersion3Type xmlOperator = ALDXMLOperatorVersion3Type.Factory.newInstance();
+			xmlParametrized = xmlOperator;
 
-				}
-					
+			xmlOperator.setOpName(((ALDOperator)obj).getName());
+
+			// write all active parameter names into the xml object
+			for ( String pName : op.getParameterNames() ) {
+				xmlOperator.addActiveParameterNames(pName);
 			}
+
+			// write all active parameter names into the xml object
+			for ( String pName : op.getInactiveParameterNames() ) {
+				xmlOperator.addInactiveParameterNames(pName);
+			}
+
+			// as well as the associated descriptors for non annotated parameters
+			List<String> allParameternames = new LinkedList<String>(op.getParameterNames());
+			allParameternames.addAll(op.getInactiveParameterNames());
+
+			for ( String pName : allParameternames) {
+				if ( ! op.isAnnotatedParameter( pName) ) {
+
+					ALDXMLObjectType xmlDescritptorValue =null;
+					try {
+						xmlDescritptorValue = ALDDataIOManagerXmlbeans.getInstance().writeData(
+								op.getParameterDescriptorUnconditioned(pName));
+					} catch (ALDOperatorException e) {
+						throw new ALDDataIOProviderException( ALDDataIOProviderExceptionType.UNSPECIFIED_ERROR,
+								"ALDParametrizedClassDataIOXmlbeans::writeData internal error: can not create xml parameter descriptor for <" + 
+										pName + ">");
+					}
+					ALDXMLKeyValuePairType keyValuePair = xmlOperator.addNewParameterDescriptors();
+					keyValuePair.setKey(pName);
+					keyValuePair.setValue(xmlDescritptorValue);
+				}
+			}
+
+
+//			 Version 2
+//				ALDXMLOperatorWithDescriptorType xmlOperator = ALDXMLOperatorWithDescriptorType.Factory.newInstance();
+//				xmlParametrized = xmlOperator;
+//
+//				xmlOperator.setOpName(((ALDOperator)obj).getName());
+//
+//				// write all (current/active) parameter names into the xml object
+//				// as well as the associated descriptors for non annotated parameters
+//				for ( String pName : op.getParameterNames() ) {
+//					xmlOperator.addParameterNames(pName);
+//
+//					if ( ! op.isAnnotatedParameter( pName) ) {
+//
+//						ALDXMLObjectType xmlValue =null;
+//						try {
+//							xmlValue = ALDDataIOManagerXmlbeans.getInstance().writeData(
+//									op.getParameterDescriptor(pName));
+//						} catch (ALDOperatorException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//						ALDXMLKeyValuePairType keyValuePair = 
+//								xmlOperator.addNewParameterDescriptors();
+//						keyValuePair.setKey(pName);
+//						keyValuePair.setValue(xmlValue);
+//
+//					}
+//				}
+			
+			
+//			 collect name of all parameters for which values have to be written
+
+//			 Version2
+//			// all non-supplemental in and inout parameters
+//			Collection<String> pNames = op.getInInoutNames();
+//			
+//			// add supplemental in and inout parameters
+//			for ( String pName :  op.getSupplementalNames() ) {
+//				try {
+//					if ( op.getParameterDescriptor(pName).getDirection() == Direction.IN ||
+//							op.getParameterDescriptor(pName).getDirection() == Direction.INOUT)
+//						pNames.add( pName);
+//				} catch (ALDOperatorException e) {
+//					throw new ALDDataIOProviderException( ALDDataIOProviderExceptionType.UNSPECIFIED_ERROR,
+//							"ALDParametrizedClassDataIOXmlbeans::writeData internal error: can not get descriptor for <" + 
+//							pName + ">");
+//				}
+//			}
 			
 			// collect name of all parameters for which values have to be written
-			xmlParametrized = xmlOperator;
-			
-			// all non-supplemental in and inout parameters
-			Collection<String> pNames = op.getInInoutNames();
-			
-			// add supplemental in and inout parameters
-			for ( String pName :  op.getSupplementalNames() ) {
+
+			List<String> parameternamesToWrite = new LinkedList<String>();
+			for ( String pName : allParameternames) {
 				try {
-					if ( op.getParameterDescriptor(pName).getDirection() == Direction.IN ||
-							op.getParameterDescriptor(pName).getDirection() == Direction.INOUT)
-						pNames.add( pName);
+					if ( op.getParameterDescriptorUnconditioned(pName).getDirection() != Direction.OUT ) {
+						parameternamesToWrite.add( pName);
+					}
 				} catch (ALDOperatorException e) {
 					throw new ALDDataIOProviderException( ALDDataIOProviderExceptionType.UNSPECIFIED_ERROR,
-							"ALDParametrizedClassDataIOXmlbeans::writeData internal error: can not get descriptor for <" + 
-							pName + ">");
+							"ALDParametrizedClassDataIOXmlbeans::writeData internal error: can not get descriptor and direction for <" + 
+									pName + ">");
 				}
 			}
-			
-			fieldMap = new HashMap<String, Field>();
 
-			for ( String pName : pNames ) {
+			fieldMap = new HashMap<String, Field>();
+			for ( String pName : parameternamesToWrite ) {
 				try {
-					fieldMap.put( pName, ((ALDOperator)obj).getParameterDescriptor(pName).getField());
+					fieldMap.put( pName, ((ALDOperator)obj).getParameterDescriptorUnconditioned(pName).getField());
 				} catch (ALDOperatorException e) {
 					throw new ALDDataIOProviderException( ALDDataIOProviderExceptionType.UNSPECIFIED_ERROR,
 							"ALDParametrizedClassDataIOXmlbeans::writeData internal error: can not get descriptor for <" + 
@@ -430,6 +578,7 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 			}
 			
 		} else {
+			// parametrized class
 			if ( debug ) {
 				System.out.println("ALDParametrizedClassDataIOXmlbeans::writeData write a parametrized class");
 			}
@@ -445,7 +594,8 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 			if ( debug ) 
 				System.out.println("ALDParametrizedClassDataIOXmlbeans::writeData field <" + name + ">");
 			Field f = fieldMap.get( name);
-			if ( f == null || (f.getModifiers() & Modifier.TRANSIENT) == 0) {
+			
+			if ( f == null || ((f.getModifiers() & Modifier.TRANSIENT) == 0) ) {
 				this.addParameter( name, obj, f, "-", xmlParametrized);
 			}
 		}
@@ -457,6 +607,8 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 
 	/** Format the parameter <code>name</code> of the object <code>obj</code> into the buffer <code>bufstr</code>
 	 * using <code>formatString</code> to determine formating.
+	 * 
+	 * Version 2
 	 *
 	 * @param	name	parameter to be formated
 	 * @param	obj	object for which to format parameter
@@ -476,7 +628,7 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 		Object value = null;
 		try {
 			if ( ALDOperator.class.isAssignableFrom( obj.getClass()) ) {
-				value = ((ALDOperator)obj).getParameter(name);
+				value = ((ALDOperator)obj).getParameterUnconditioned(name);
 			} else {
 				value = ALDParametrizedClassDataIOHelper.getValue( field, obj);
 			}
@@ -487,11 +639,47 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 		}
 
 		ALDXMLObjectType xmlValue = ALDDataIOManagerXmlbeans.getInstance().writeData(value);
-		ALDXMLKeyValuePairType keyValuePair = 
-				xmlParametrized.addNewPairs();
+		ALDXMLKeyValuePairType keyValuePair = xmlParametrized.addNewPairs();
 		keyValuePair.setKey(name);
 		keyValuePair.setValue(xmlValue);
 	}
+	
+	/**
+	 * Restore the status of a parameter to the state as specified in the xml representation
+	 * Prerequisite: pName is a parameter of the operator <code>op</code> and exiting in the xml representation
+	 * 
+	 * @param pName
+	 * @param op
+	 * @param inactiveParameternames
+	 * @param activeParameternames
+	 * @throws ALDDataIOProviderException
+	 */
+	private void restoreParameterStatus(String pName, ALDOperator op, Set<String> inactiveParameternames, Set<String> activeParameternames) 
+			throws ALDDataIOProviderException {
+		if ( op.getParameterNames().contains(pName) ) {
+			if ( ! activeParameternames.contains(pName))
+				try {
+					op.removeParameter(pName);
+				} catch (ALDOperatorException e) {
+					throw new ALDDataIOProviderException( ALDDataIOProviderExceptionType.UNSPECIFIED_ERROR,
+							"ALDParametrizedClassDataIOXmlbeans::restoreParameterVersion3 internal error, cannot remove parameter <" +
+									pName +">");
+				}
+		} else if ( op.getInactiveParameterNames().contains(pName) ) {
+			
+			if ( ! inactiveParameternames.contains(pName)) 
+				try {
+					op.addParameter(pName);
+				} catch (ALDOperatorException e) {
+					throw new ALDDataIOProviderException( ALDDataIOProviderExceptionType.UNSPECIFIED_ERROR,
+							"ALDParametrizedClassDataIOXmlbeans::restoreParameterVersion3 internal error, cannot add parameter <" +
+									pName +">");
+				}
+		}
+	}
+
+
+	
 	
 	/** Lookup all parameter names of the operator with prefix <code>pre</code>.
      * If one of the parameters exactly matches <code>pre</code> only this single 
@@ -499,10 +687,13 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
      * @return All parameter names with prefix <code>pre</code> or the single parameter 
      *		exactly matching <code>pre</code> 
      */
-	public static LinkedList<String> lookupParameternames( ALDOperator op, String pre ) {
+	private static LinkedList<String> lookupParameternames( ALDOperator op, String pre ) {
 		LinkedList<String> names = new LinkedList<String>();
 
-		for ( String pName : op.getParameterNames() ) {
+		List<String> allParameters = new LinkedList<String>(op.getParameterNames());
+		allParameters.addAll(op.getInactiveParameterNames());
+
+		for ( String pName : allParameters ) {
 			if ( pName.startsWith( pre) ) {
 				names.add( pName);
 			}
@@ -510,7 +701,7 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 
 		if ( names.size() > 1 ) {
 		// try to find one exact match
-			for ( String pName : op.getParameterNames() ) {
+			for ( String pName : allParameters ) {
 				if ( pName.equals( pre) ) {
 					names.clear();
 					names.add( pName);
@@ -520,6 +711,16 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 		}
 
 		return names;
+	}
+
+	private static boolean wasAnnotated(String pName, ALDXMLKeyValuePairType[] parameterDescriptorsArray) {
+		for ( int i = 0 ; i < parameterDescriptorsArray.length ; i++ ) {
+			String pNameInXml = parameterDescriptorsArray[i].getKey();
+			if ( pName.equals(pNameInXml) )
+				return false;
+		}
+			
+		return true;
 	}
 
 }

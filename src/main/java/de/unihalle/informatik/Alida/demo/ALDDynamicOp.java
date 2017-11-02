@@ -34,6 +34,7 @@
 package de.unihalle.informatik.Alida.demo;
 
 import de.unihalle.informatik.Alida.exceptions.ALDOperatorException;
+import de.unihalle.informatik.Alida.operator.ALDOpParameterDescriptor;
 import de.unihalle.informatik.Alida.operator.ALDOperator;
 import de.unihalle.informatik.Alida.annotations.Parameter;
 import de.unihalle.informatik.Alida.annotations.ALDAOperator;
@@ -52,6 +53,9 @@ import de.unihalle.informatik.Alida.annotations.Parameter.ParameterModificationM
 public class ALDDynamicOp extends ALDOperator {
 	private final static String intParameterName = "intIn";
 	private final static String floatParameterName = "floatIn";
+	@SuppressWarnings("unused")
+	private final static String nameNotAnnotatedParameter = "notAnnotatedString";
+
 	
 	@Parameter( label="infoText", info=true, required=true, direction=Direction.IN, dataIOOrder=0)
 	private String infoText= "<html>This might be an explanation,<br> I think!</html>";
@@ -119,6 +123,14 @@ public class ALDDynamicOp extends ALDOperator {
  			}
 		}
 
+		// add not annotated string parameter
+		if ( !hasParameter( nameNotAnnotatedParameter) ) {
+			ALDOpParameterDescriptor descr = new ALDOpParameterDescriptor(nameNotAnnotatedParameter, Direction.IN, false, String.class, "not annotated String parameter", 
+					nameNotAnnotatedParameter, false, null, 10, Parameter.ExpertMode.STANDARD, false, "", 
+					ParameterModificationMode.MODIFIES_NOTHING, false);
+			this.addParameter(descr);
+		}
+		
 		if ( verbose ) this.printInterface();
 	}
 	//SNIPPETCODE:End

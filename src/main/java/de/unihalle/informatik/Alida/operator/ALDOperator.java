@@ -558,7 +558,8 @@ public abstract class ALDOperator
 	 * Add a parameter with the given descriptor to the operator. 
 	 * 
 	 * @param descr
-	 * @throws ALDOperatorException of type <code>INVALID_PARAMETERNAME</code>if parameter already exists
+	 * @throws ALDOperatorException of type <code>INVALID_PARAMETERNAME</code>if parameter already 
+	 * visible or is inactive but exists as an annotated parameter
 	 */
 	protected void addParameter( ALDOpParameterDescriptor descr) throws ALDOperatorException {
 		if ( hasParameter( descr.name) ) {
@@ -572,7 +573,7 @@ public abstract class ALDOperator
 			// operator has an annotated parameter with this name
 			throw new ALDOperatorException(
 					ALDOperatorException.OperatorExceptionType.INVALID_PARAMETERNAME,
-					name + " was an annotated parameter");
+					name + " is an inactive annotated parameter");
 		}
 		this.addParameterUnconditioned( descr);
 	}
@@ -785,6 +786,15 @@ public abstract class ALDOperator
 	}
 
 	/**
+	 * Get the names of all parameters
+	 * 
+	 * @return collection of all parameter names
+	 */
+	protected final Collection<String> getInactiveParameterNames() {
+		return this.parameterDescriptorsInactive.keySet();
+	}
+
+	/**
 	 * Returns true if the operator has a currently active parameter of the given <code>name</code>,
 	 * otherwise false.
 	 * 
@@ -811,15 +821,36 @@ public abstract class ALDOperator
 	 * @param name
 	 *            Name of the parameter to get the new value for
 	 * @return descriptor value
-	 * @throws ALDOperatorException of type <code>INVALID_PARAMETERNAME</code>if the parameter does not exist
+	 * @throws ALDOperatorException of type <code>INVALID_PARAMETERNAME</code>if the parameter is not active (or does not exists)
 	 */
 	public final ALDOpParameterDescriptor getParameterDescriptor(String name)
 			throws ALDOperatorException {
 		if (!this.parameterDescriptorsActive.containsKey(name))
 			throw new ALDOperatorException(
 					ALDOperatorException.OperatorExceptionType.INVALID_PARAMETERNAME,
-					name + " is an unkown parameter");
+					name + " is not an a an active parameter");
 		return this.parameterDescriptorsActive.get(name);
+	}
+
+	/**
+	 * Get the parameter descriptor for given name.
+	 * 
+	 * @param name
+	 *            Name of the parameter to get the new value for
+	 * @return descriptor value
+	 * @throws ALDOperatorException of type <code>INVALID_PARAMETERNAME</code>if the parameter does not exist
+	 */
+	protected final ALDOpParameterDescriptor getParameterDescriptorUnconditioned(String name)
+			throws ALDOperatorException {
+		if (this.parameterDescriptorsActive.containsKey(name))
+			return this.parameterDescriptorsActive.get(name);
+		if (this.parameterDescriptorsInactive.containsKey(name))
+			return this.parameterDescriptorsInactive.get(name);
+
+		throw new ALDOperatorException(
+				ALDOperatorException.OperatorExceptionType.INVALID_PARAMETERNAME,
+				name + " is an unkown parameter");
+
 	}
 
 	/**
@@ -828,7 +859,7 @@ public abstract class ALDOperator
 	 * @param name
 	 *            Name of the parameter to get the new value for
 	 * @return value of the parameter
-	 * @throws ALDOperatorException of type <code>INVALID_PARAMETERNAME</code>if the parameter does not exist
+	 * @throws ALDOperatorException of type <code>INVALID_PARAMETERNAME</code>if the parameter is not active or does not exist
 	 */
 	public Object getParameter(String name) throws ALDOperatorException {
 		if (!this.parameterDescriptorsActive.containsKey(name))
@@ -837,6 +868,28 @@ public abstract class ALDOperator
 					name + " is an unkown parameter");
 
 		return getParameterDescriptor(name).getValue( genuineInstance);
+	}
+
+	/**
+	 * Get the value of a parameter specified by name.
+	 * 
+	 * @param name
+	 *            Name of the parameter to get the new value for
+	 * @return value of the parameter
+	 * @throws ALDOperatorException of type <code>INVALID_PARAMETERNAME</code>if the parameter is not active or does not exist
+	 */
+	protected Object getParameterUnconditioned(String name) throws ALDOperatorException {
+		if ( this.parameterDescriptorsActive.containsKey(name) ||
+		     this.parameterDescriptorsInactive.containsKey(name) ) {
+			return getParameterDescriptorUnconditioned(name).getValue( genuineInstance);
+
+		} else {
+
+			throw new ALDOperatorException(
+					ALDOperatorException.OperatorExceptionType.INVALID_PARAMETERNAME,
+					name + " is an unkown parameter");
+		}
+
 	}
 
 	/**
@@ -856,12 +909,35 @@ public abstract class ALDOperator
 		if (!this.parameterDescriptorsActive.containsKey(name))
 			throw new ALDOperatorException(
 					ALDOperatorException.OperatorExceptionType.INVALID_PARAMETERNAME,
-					name + " is an unkown parameter");
+					name + " is not an active parameter");
+		setParameterUnconditioned( name,  value);
+	}
+
+	/**
+	 * Set the value of a parameter specified by name.
+	 * 
+	 * @param name
+	 *            Name of the parameter to set a new value for
+	 * @param value
+	 *            new value
+	 * @throws ALDOperatorException of type <code><INVALID_PARAMETERNAME/code> if the
+	 *          parameter does not exist and of type <code>CALLBACK_ERROR</code>
+	 *          if the callback function may not be invoked or its invocations
+	 *          results in an exception
+	 */
+	protected void setParameterUnconditioned(String name, Object value)
+			throws ALDOperatorException {
+		if ( (!this.parameterDescriptorsActive.containsKey(name))  &&
+			 (!this.parameterDescriptorsInactive.containsKey(name))     )
+			throw new ALDOperatorException(
+					ALDOperatorException.OperatorExceptionType.INVALID_PARAMETERNAME,
+					name + " is an unkonwn parameter");
+
 		try {
-			getParameterDescriptor(name).setValue(value, genuineInstance);
+			getParameterDescriptorUnconditioned(name).setValue(value, genuineInstance);
 			
 			// invoke callback function
-			String callback = getParameterDescriptor(name).getCallback();
+			String callback = getParameterDescriptorUnconditioned(name).getCallback();
 			if ( callback != null && ! callback.isEmpty()) {
 				java.lang.reflect.Method method;
 				method = genuineInstance.getClass().getDeclaredMethod( callback);
