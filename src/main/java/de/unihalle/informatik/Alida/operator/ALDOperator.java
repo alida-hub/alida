@@ -23,8 +23,6 @@
  *
  */
 
-//TODO: do we need unset..... if we  wompletely switch to annotations??
-
 package de.unihalle.informatik.Alida.operator;
 
 import de.unihalle.informatik.Alida.operator.events.ALDOperatorExecutionProgressEvent;
@@ -169,7 +167,7 @@ public abstract class ALDOperator
 	 * Hash contains parameter descriptors
 	 * for all currently active parameters.
 	 */
-	private Hashtable<String, ALDOpParameterDescriptor> parameterDescriptorsAll;
+	private Hashtable<String, ALDOpParameterDescriptor> parameterDescriptorsActive;
 
 	/**
 	 * Hash contains parameter descriptors which has previous be active but currently inactive, i.e. removed,
@@ -312,7 +310,7 @@ public abstract class ALDOperator
 		this.name = this.getClass().getSimpleName();
 		this.genuineInstance = this;
 
-		this.parameterDescriptorsAll = new Hashtable<String, ALDOpParameterDescriptor>();
+		this.parameterDescriptorsActive = new Hashtable<String, ALDOpParameterDescriptor>();
 		this.parameterDescriptorsInactive = new Hashtable<String, ALDOpParameterDescriptor>();
 		this.parameterDescriptorsAnnotated = new Hashtable<String, ALDOpParameterDescriptor>();
 		
@@ -326,7 +324,7 @@ public abstract class ALDOperator
 				
 				// if we already found a parameter with this name keep the former one
 				// as it is lower in the class hierarchy
-				if ( this.parameterDescriptorsAll.containsKey(name)) {
+				if ( this.parameterDescriptorsActive.containsKey(name)) {
 					//System.out.println("discard " + name + " in " + myclass.getName());
 					break;
 				}
@@ -612,7 +610,7 @@ public abstract class ALDOperator
 	 * @param descr
 	 */
 	protected void addParameterUnconditioned( ALDOpParameterDescriptor descr) {
-		this.parameterDescriptorsAll.put(descr.getName(), descr);
+		this.parameterDescriptorsActive.put(descr.getName(), descr);
 	}
 
 	
@@ -632,7 +630,7 @@ public abstract class ALDOperator
 		
 		ALDOpParameterDescriptor descr = this.getParameterDescriptor( name);
 		parameterDescriptorsInactive.put(name, descr);
-		parameterDescriptorsAll.remove(name);
+		parameterDescriptorsActive.remove(name);
 	}
 	
 	/**
@@ -641,7 +639,7 @@ public abstract class ALDOperator
 	 * @return number of parameters
 	 */
 	public final int getNumParameters() {
-		return this.parameterDescriptorsAll.size();
+		return this.parameterDescriptorsActive.size();
 	}
 
 	/**
@@ -664,7 +662,7 @@ public abstract class ALDOperator
 	 */
 	public final Collection<String> getInInoutNames(Boolean useRequired) {
 		LinkedList<String> names = new LinkedList<String>();
-		for (ALDOpParameterDescriptor descr : parameterDescriptorsAll.values()) {
+		for (ALDOpParameterDescriptor descr : parameterDescriptorsActive.values()) {
 			if ((useRequired == null || useRequired == descr.required)
 					&& (!descr.supplemental)
 					&& (descr.direction == Parameter.Direction.IN || descr.direction == Parameter.Direction.INOUT)) {
@@ -682,7 +680,7 @@ public abstract class ALDOperator
 	 */
 	public final Collection<String> getOutInoutNames() {
 		LinkedList<String> names = new LinkedList<String>();
-		for (ALDOpParameterDescriptor descr : parameterDescriptorsAll.values()) {
+		for (ALDOpParameterDescriptor descr : parameterDescriptorsActive.values()) {
 			if ((descr.direction == Parameter.Direction.OUT || descr.direction == Parameter.Direction.INOUT)) {
 				names.add(descr.name);
 			}
@@ -703,38 +701,13 @@ public abstract class ALDOperator
 	 */
 	public final Collection<String> getInNames(Boolean useRequired) {
 		LinkedList<String> names = new LinkedList<String>();
-		for (ALDOpParameterDescriptor descr : parameterDescriptorsAll.values()) {
+		for (ALDOpParameterDescriptor descr : parameterDescriptorsActive.values()) {
 			if ((useRequired == null || useRequired == descr.required)
 					&& (descr.direction == Parameter.Direction.IN)) {
 				names.add(descr.name);
 			}
 		}
 
-//		Collections.sort(names, new Comparator<String>() {
-//			public int compare(String one, String two) {
-//				ALDOpParameterDescriptor descr1 = parameterDescriptorsAll
-//						.get(one);
-//				ALDOpParameterDescriptor descr2 = parameterDescriptorsAll
-//						.get(two);
-//
-//				if (descr1.required && descr2.required)
-//					return one.compareTo(two);
-//				if (!descr1.required && !descr1.supplemental
-//						&& !descr2.required && !descr2.supplemental)
-//					return one.compareTo(two);
-//				if (!descr1.required && descr1.supplemental && !descr2.required
-//						&& descr2.supplemental)
-//					return one.compareTo(two);
-//				if (descr1.required && !descr2.required && !descr2.supplemental)
-//					return -1;
-//				if (!descr1.required && !descr1.supplemental
-//						&& !descr2.required && descr2.supplemental)
-//					return -1;
-//				if (descr1.required && !descr2.required && descr2.supplemental)
-//					return -1;
-//				return 1;
-//			}
-//		});
 		return names;
 	}
 
@@ -745,7 +718,7 @@ public abstract class ALDOperator
 	 */
 	public final Collection<String> getOutNames() {
 		LinkedList<String> names = new LinkedList<String>();
-		for (ALDOpParameterDescriptor descr : parameterDescriptorsAll.values()) {
+		for (ALDOpParameterDescriptor descr : parameterDescriptorsActive.values()) {
 			if ((descr.direction == Parameter.Direction.OUT)) {
 				names.add(descr.name);
 			}
@@ -766,7 +739,7 @@ public abstract class ALDOperator
 	 */
 	public final Collection<String> getInOutNames(Boolean useRequired) {
 		LinkedList<String> names = new LinkedList<String>();
-		for (ALDOpParameterDescriptor descr : parameterDescriptorsAll.values()) {
+		for (ALDOpParameterDescriptor descr : parameterDescriptorsActive.values()) {
 			if ((useRequired == null || useRequired == descr.required)
 					&& (descr.direction == Parameter.Direction.INOUT)) {
 				names.add(descr.name);
@@ -793,7 +766,7 @@ public abstract class ALDOperator
 	 */
 	public final Collection<String> getSupplementalNames() {
 		LinkedList<String> names = new LinkedList<String>();
-		for (ALDOpParameterDescriptor descr : parameterDescriptorsAll.values()) {
+		for (ALDOpParameterDescriptor descr : parameterDescriptorsActive.values()) {
 			if (descr.supplemental) {
 				names.add(descr.name);
 			}
@@ -808,7 +781,7 @@ public abstract class ALDOperator
 	 * @return collection of all parameter names
 	 */
 	public final Collection<String> getParameterNames() {
-		return this.parameterDescriptorsAll.keySet();
+		return this.parameterDescriptorsActive.keySet();
 	}
 
 	/**
@@ -819,7 +792,7 @@ public abstract class ALDOperator
 	 * @return true if parameter with name <code>name</code> exists
 	 */
 	public boolean hasParameter( String name) {
-		return this.parameterDescriptorsAll.containsKey(name);
+		return this.parameterDescriptorsActive.containsKey(name);
 	}
 
 	/**
@@ -842,11 +815,11 @@ public abstract class ALDOperator
 	 */
 	public final ALDOpParameterDescriptor getParameterDescriptor(String name)
 			throws ALDOperatorException {
-		if (!this.parameterDescriptorsAll.containsKey(name))
+		if (!this.parameterDescriptorsActive.containsKey(name))
 			throw new ALDOperatorException(
 					ALDOperatorException.OperatorExceptionType.INVALID_PARAMETERNAME,
 					name + " is an unkown parameter");
-		return this.parameterDescriptorsAll.get(name);
+		return this.parameterDescriptorsActive.get(name);
 	}
 
 	/**
@@ -858,21 +831,12 @@ public abstract class ALDOperator
 	 * @throws ALDOperatorException of type <code>INVALID_PARAMETERNAME</code>if the parameter does not exist
 	 */
 	public Object getParameter(String name) throws ALDOperatorException {
-		if (!this.parameterDescriptorsAll.containsKey(name))
+		if (!this.parameterDescriptorsActive.containsKey(name))
 			throw new ALDOperatorException(
 					ALDOperatorException.OperatorExceptionType.INVALID_PARAMETERNAME,
 					name + " is an unkown parameter");
 
 		return getParameterDescriptor(name).getValue( genuineInstance);
-//		try {
-//			Field field = getParameterDescriptor(name).field;
-//			field.setAccessible(true);
-//			return field.get(genuineInstance);
-//		} catch (IllegalAccessException e) {
-//			throw new ALDOperatorException(
-//					ALDOperatorException.OperatorExceptionType.UNSPECIFIED_ERROR,
-//					"cannot get value for parameter <" + name + ">");
-//		}
 	}
 
 	/**
@@ -889,7 +853,7 @@ public abstract class ALDOperator
 	 */
 	public void setParameter(String name, Object value)
 			throws ALDOperatorException {
-		if (!this.parameterDescriptorsAll.containsKey(name))
+		if (!this.parameterDescriptorsActive.containsKey(name))
 			throw new ALDOperatorException(
 					ALDOperatorException.OperatorExceptionType.INVALID_PARAMETERNAME,
 					name + " is an unkown parameter");
@@ -947,8 +911,8 @@ public abstract class ALDOperator
 				// inheritance hierarchy
 				if (pAnnotation != null && ! pList.contains(name) ) {
 					pList.add( name);
-					ALDOpParameterDescriptor descr = parameterDescriptorsAll.get(name);
-					parameterDescriptorsAll.put( descr.name, descr.copy( field));
+					ALDOpParameterDescriptor descr = parameterDescriptorsActive.get(name);
+					parameterDescriptorsActive.put( descr.name, descr.copy( field));
 				}
 			}
 
@@ -1340,9 +1304,8 @@ public abstract class ALDOperator
 		StringBuffer errString = new StringBuffer();
 		Collection<String> inInoutNames = getInInoutNames();
 		for (String inputName : inInoutNames) {
-			if (this.parameterDescriptorsAll.get(inputName).required
+			if (this.parameterDescriptorsActive.get(inputName).required
 					&& getParameter(inputName) == null) {
-//					&& getParameterDescriptor(inputName).defaultValue == null) {
 				gotError = true;
 				errString.append ("\tRequired input parameter\" "
 								+ inputName + "\"" + " is null\n");
@@ -1401,7 +1364,6 @@ public abstract class ALDOperator
 	public
 	boolean isConfigured() {
 		return (unconfiguredItems().size() == 0);
-//		return unconfiguredItems() == null;
 	}
 
 	// ===================================================================
@@ -1510,165 +1472,6 @@ public abstract class ALDOperator
 	 * @param filename
 	 *            filename of the xml file to write to
 	 */
-
-//	public void writeParametersToXml(String filename) {
-//		try {
-//			PrintStream out = new PrintStream(filename);
-//
-//			XStream xstream = new XStream(new DomDriver());
-//			String xml = xstream.toXML(new ALDParameterWrapper(this));
-//
-//			out.println(xml);
-//		} catch (Exception e) {
-//			System.err.println(e);
-//			e.printStackTrace();
-//		}
-//
-//	}
-
-	/**
-	 * Parse the parameter values to an XmlObject. Uses xstream for
-	 * serialization.
-	 * 
-	 * @return serialization of the paraeter of this operator
-	 */
-
-//	public XmlObject parametersToXmlObject() throws XmlException {
-//
-//		XStream xstream = new XStream(new DomDriver());
-//		String xml = xstream.toXML(new ALDParameterWrapper(this));
-//		XmlObject res = XmlObject.Factory.parse(xml);
-//
-//		return res;
-//	}
-
-	/**
-	 * Set the parameter values as read from an Xml file. The class and package
-	 * name found in the Xml are compared to the operator to set the parameters
-	 * to and are required to match.
-	 * 
-	 * @param filename
-	 *            filename of the xml file to read from
-	 * @return version string found in Xml file or null if Xml file could not be
-	 *         properly read or class or package name check failed
-	 * @see ALDOperator#setParametersFromXml(String,String,String)
-	 */
-
-//	public String setParametersFromXml(String filename) {
-//		return setParametersFromXml(filename, getClass().getSimpleName(),
-//				getClass().getPackage().getName());
-//	}
-
-	/**
-	 * Set the parameter values as read from an Xml file. The class and package
-	 * name found in the Xml are compared to the <code>className</code> and
-	 * <code>packageName</code> respectively. If one of these names is
-	 * <code>null</code> any name in the Xml file is accepted.
-	 * 
-	 * @param filename
-	 *            filename of the xml file to read from
-	 * @param className
-	 *            class name expected in the Xml file or null
-	 * @param packageName
-	 *            package name expected in the Xml file or null
-	 * @return version string found in Xml file of null if Xml file could not be
-	 *         properly read or class or package name check failed
-	 */
-
-//	public String setParametersFromXml(String filename, String className,
-//			String packageName) {
-//
-//		try {
-//			FileInputStream in = new FileInputStream(filename);
-//
-//			XStream xstream = new XStream(new DomDriver());
-//
-//			ALDParameterWrapper pw = (ALDParameterWrapper) (xstream.fromXML(in));
-//
-//			if (className != null && !className.equals(pw.getClassName())) {
-//				System.err
-//						.println("ALDOperator::setParametersFromXml class name does not match, got "
-//								+ pw.getClassName()
-//								+ " but expected "
-//								+ className);
-//				return null;
-//			}
-//
-//			if (packageName != null && !packageName.equals(pw.getPackageName())) {
-//				System.err
-//						.println("ALDOperator::setParametersFromXml package name does not match, got "
-//								+ pw.getPackageName()
-//								+ " but expected "
-//								+ packageName);
-//				return null;
-//			}
-//
-//			// we have to set the values directly
-//			for (String pName : this.getParameterNames()) {
-//				try {
-//					setParameter(pName, pw.getParameteres().get(pName));
-//				} catch (ALDOperatorException e) {
-//					System.err
-//							.println("ALDOperator::setParametersFromXml Error: cannot get value for parameter "
-//									+ pName);
-//					e.printStackTrace();
-//				}
-//			}
-//
-//			return pw.getVersion();
-//
-//		} catch (FileNotFoundException e) {
-//			System.err.println("ALDOperator::setParametersFromXml cannot open "
-//					+ filename);
-//			return null;
-//		}
-//
-//	}
-
-	/*
-	 * Object serialization.
-	 */
-
-	/**
-	 * Serializes the operator to an XML file.
-	 * <p>
-	 * Note that all member variables, i.e. the complete state of the object at
-	 * the time of serialization is saved. Only transient members are ignored.
-	 * 
-	 * @param filename
-	 *            File where to save the data.
-	 */
-//	public void serializeToXmlFile(String filename) {
-//		try {
-//			PrintStream out = new PrintStream(filename);
-//			XStream xstream = new XStream(new DomDriver());
-//			String xml = xstream.toXML(this);
-//			out.println(xml);
-//		} catch (Exception e) {
-//			System.err.println(e);
-//			e.printStackTrace();
-//		}
-//	}
-
-	/**
-	 * Deserializes an operator state from the given file.
-	 * <p>
-	 * Only transient members are ignored.
-	 * 
-	 * @param filename
-	 *            File from where to read the data.
-	 */
-//	public ALDOperator deserializeFromXmlFile(String filename) {
-//		try {
-//			FileInputStream in = new FileInputStream(filename);
-//			XStream xstream = new XStream(new DomDriver());
-//			return (ALDOperator) (xstream.fromXML(in));
-//		} catch (FileNotFoundException e) {
-//			System.err.println("ALDOperator::setParametersFromXml cannot open "
-//					+ filename);
-//		}
-//		return null;
-//	}
 
 	// ===================================================================
 	// support for ALDOperators to act as event listeners
@@ -1834,7 +1637,7 @@ public abstract class ALDOperator
 	 * Does any hash table contain the key, i.e. this field?
 	 */
 	protected boolean fieldContained(String key) {
-		return this.parameterDescriptorsAll.containsKey(key);
+		return this.parameterDescriptorsActive.containsKey(key);
 	}
 	
 	/** Return a collection of descriptors for the given parameter named
@@ -1846,7 +1649,7 @@ public abstract class ALDOperator
 	private Collection<ALDOpParameterDescriptor> sortedDescriptors( Collection<String> parameterNames) {
 		LinkedList<ALDOpParameterDescriptor> descriptors = new LinkedList<ALDOpParameterDescriptor>();
 		for ( String pName : parameterNames) {
-			ALDOpParameterDescriptor descr = parameterDescriptorsAll.get(pName);
+			ALDOpParameterDescriptor descr = parameterDescriptorsActive.get(pName);
 			if ( descr != null) {
 				descriptors.add( descr);
 			}
