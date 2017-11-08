@@ -262,6 +262,7 @@ public class ALDDataIOManagerXmlbeans extends ALDDataIOManager {
 			throws XmlException, ALDDataIOManagerException, ALDDataIOProviderException {
 		return ALDDataIOManagerXmlbeans.readXml(new File( filename), clazz);
 	}
+	
 	/**
 	 * Read Object from a file using xmlbeans providers
 	 *
@@ -276,9 +277,34 @@ public class ALDDataIOManagerXmlbeans extends ALDDataIOManager {
 	public static Object readXml( File file, Class<?> clazz) 
 			throws XmlException, ALDDataIOManagerException, ALDDataIOProviderException {
 		ALDDataIOXmlbeans provider;
+		Object obj;
+
+		ALDXMLObjectType xmlObj = parseXml( file, clazz);
+
+		provider = (ALDDataIOXmlbeans)(ALDDataIOManagerXmlbeans.getInstance().
+				getProvider( clazz, ALDDataIOXmlbeans.class));
+		obj = provider.readData( null, clazz, xmlObj);
+
+
+		return obj;
+
+	}
+
+	/**
+	 * Parse a <code>ALDXMLObjectType</code> from a file using xmlbeans 
+	 *
+	 * @param file
+	 * @param clazz
+	 * @return <code>ALDXMLObjectType</code> read from XML file.
+	 * @throws XmlException
+	 * @throws IOException
+	 * @throws ALDDataIOManagerException
+	 * @throws ALDDataIOProviderException
+	 */
+	public static ALDXMLObjectType parseXml( File file, Class<?> clazz) 
+			throws XmlException, ALDDataIOProviderException {
 		BufferedReader reader;
 		ALDXMLDocument document;
-		Object obj;
 
 		try {
 			reader = new BufferedReader( new FileReader(file));
@@ -288,7 +314,7 @@ public class ALDDataIOManagerXmlbeans extends ALDDataIOManager {
 							file.getAbsolutePath() + ">");
 		}
 		
-		// we need to get the class loader of the class to read to find the .xsb files in the jar
+		// we need to get the class loader of the class to read to find the .xsd files in the jar
 		ClassLoader mainLoader = Thread.currentThread().getContextClassLoader();
 		ClassLoader objLoader = clazz.getClassLoader();
 		if (objLoader != null ) {
@@ -300,8 +326,8 @@ public class ALDDataIOManagerXmlbeans extends ALDDataIOManager {
 					", old: " + mainLoader);
 		}
 		
+		ALDXMLObjectType xmlObj;
 		try {
-
 			try {
 
 				document = ALDXMLDocument.Factory.parse(reader);
@@ -311,17 +337,11 @@ public class ALDDataIOManagerXmlbeans extends ALDDataIOManager {
 								file.getAbsolutePath() + ">");
 			}
 
-			ALDXMLObjectType xmlObj = document.getALDXML();
-
-			provider = (ALDDataIOXmlbeans)(ALDDataIOManagerXmlbeans.getInstance().
-					getProvider( clazz, ALDDataIOXmlbeans.class));
-			obj = provider.readData( null, clazz, xmlObj);
-
+			xmlObj = document.getALDXML();
 		} finally {
 			Thread.currentThread().setContextClassLoader(mainLoader);
 		}
-		return obj;
+		return xmlObj;
 	}
-
 
 }

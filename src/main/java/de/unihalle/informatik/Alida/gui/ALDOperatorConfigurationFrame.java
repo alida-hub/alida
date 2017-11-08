@@ -733,8 +733,12 @@ public class ALDOperatorConfigurationFrame extends JFrame
 				this.lastDirectory = file.getAbsolutePath();
 				this.lastFile = file;
 				try {
-					this.op = (ALDOperator)ALDDataIOManagerXmlbeans.readXml(
-						file.getAbsolutePath(), ALDOperator.class);
+//					this.op = (ALDOperator)ALDDataIOManagerXmlbeans.readXml(
+//						file.getAbsolutePath(), ALDOperator.class);
+					
+					ALDParametrizedClassDataIOXmlbeans provider = new ALDParametrizedClassDataIOXmlbeans();
+					provider.readData(null, ALDOperator.class, file.getAbsolutePath(),this.op);
+					
 					// notify proxies and other listeners of parameter update
 					this.fireALDOpParameterUpdateEvent(new ALDOpParameterUpdateEvent(
 						this,	ALDOpParameterUpdateEvent.EventType.LOADED));

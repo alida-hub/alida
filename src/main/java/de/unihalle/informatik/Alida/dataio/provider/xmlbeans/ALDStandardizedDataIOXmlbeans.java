@@ -36,14 +36,13 @@ package de.unihalle.informatik.Alida.dataio.provider.xmlbeans;
 
 import de.unihalle.informatik.Alida.dataio.ALDDataIOManagerXmlbeans;
 import de.unihalle.informatik.Alida.dataio.provider.ALDDataIOXmlbeans;
-import de.unihalle.informatik.Alida.dataio.provider.helpers.ALDInstantiationHelper;
 import de.unihalle.informatik.Alida.exceptions.ALDDataIOManagerException;
 import de.unihalle.informatik.Alida.exceptions.ALDDataIOProviderException;
-import de.unihalle.informatik.Alida.exceptions.ALDDataIOProviderException.ALDDataIOProviderExceptionType;
 import de.unihalle.informatik.Alida_xml.ALDXMLObjectType;
 
+import java.io.File;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
+import org.apache.xmlbeans.XmlException;
 
 /**
  * Abstract class providing basic methods for xml DataIO using xmlbeans
@@ -82,7 +81,8 @@ public abstract class ALDStandardizedDataIOXmlbeans implements ALDDataIOXmlbeans
 	 * @param	field Field of object to be returned
 	 * @param   cl Class of object to be returned.
 	 * @param   aldXmlObject   Source from where to read data.
-	 * @param   object Object instantiated from <code>xmlObject</code> with the default constructor
+	 * @param   object if non null the xml representation is to be parse in this  instance. Otherwise a new instance is created. 
+
 	 * 
 	 * @return Object with member fields set from <code>xmlObject</code>
 	 * 
@@ -92,11 +92,47 @@ public abstract class ALDStandardizedDataIOXmlbeans implements ALDDataIOXmlbeans
 	abstract public Object readData(Field field, Class<?> cl, ALDXMLObjectType aldXmlObject, Object object)
 			throws ALDDataIOProviderException, ALDDataIOManagerException;
 
+	 /** Returns an object instantiated from an <code>ALDXMLObjectType</code> read from a file with name <code>filename</code>.
+	  * See {@link #readData(Field, Class, ALDXMLObjectType, Object)} for details
+	 * @param field
+	 * @param cl
+	 * @param filename
+	 * @param object
+	 * @return
+	 * @throws ALDDataIOProviderException
+	 * @throws ALDDataIOManagerException
+	 * @throws XmlException
+	 */
+	public Object readData(Field field, Class<?> cl, String filename, Object object)
+			throws ALDDataIOProviderException, ALDDataIOManagerException, XmlException {
+	 
+			return readData(field, cl, new File( filename), object);
+		}
 
-	/** Check if the class of the opject represented in <code>aldXmlObject</code> is
-	 * compatible with the requested <code>field</code> or <code>cl</code>.
-	 * If so it just invokes the <code>readData</code> method {@link ALDStandardizedDataIOXmlbeans#readData(Field,Class,ALDXMLObjectType,Object)}
-	 * which is defined abstract in this class.
+	 /** Returns an object instantiated from an <code>ALDXMLObjectType</code> read from  <code>file</code>.
+	  * See {@link #readData(Field, Class, ALDXMLObjectType, Object)} for details
+	  * 
+	 * @param field
+	 * @param cl
+	 * @param file
+	 * @param object
+	 * @return
+	 * @throws ALDDataIOProviderException
+	 * @throws XmlException
+	 * @throws ALDDataIOManagerException
+	 */
+	public Object readData(Field field, Class<?> cl, File file, Object object) 
+			throws ALDDataIOProviderException, XmlException, ALDDataIOManagerException {
+		ALDXMLObjectType aldXmlObject = ALDDataIOManagerXmlbeans.parseXml( file, cl);
+		return readData(field, cl, aldXmlObject, object);
+	}
+
+	/** Try to read an object from  <code>aldXmlObject</code> with the class stored in the
+	 * xml representation using {@link #readData(Field,Class,ALDXMLObjectType,Object)}  from <code>aldXmlObject</code>.
+	 * <p>
+	 * If this fails try to read an object of class <code>cl</code>  or the class retrieved from
+	 * <code>field</code> if this is non null from <code>aldXmlObject</code>
+	 * again using  {@link #readData(Field,Class,ALDXMLObjectType,Object)}.
 	 * 
 	 */
 	@Override
@@ -118,14 +154,6 @@ public abstract class ALDStandardizedDataIOXmlbeans implements ALDDataIOXmlbeans
 		try {
 			Class<?> clazz =Class.forName(aldXmlObject.getClassName()); 
 
-//			if ( ! ( cl.isAssignableFrom( clazz) || compatible(cl, clazz) ) ) {
-//				throw new ALDDataIOProviderException( ALDDataIOProviderExceptionType.OBJECT_TYPE_ERROR,
-//						"ALDStandardizedDataIOXmlbeans::readData found object of type <" +
-//								aldXmlObject.getClassName() + "> found in xmlObject" +
-//								"\nwhich is not assignable to <" +
-//								cl.getName() +">");
-//			}
-//
 			return readData(field, clazz, aldXmlObject, null);
 
 		} catch (ClassNotFoundException e) {
