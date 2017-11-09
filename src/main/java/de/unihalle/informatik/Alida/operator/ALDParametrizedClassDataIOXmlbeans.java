@@ -62,16 +62,17 @@ import de.unihalle.informatik.Alida_xml.ALDXMLOperatorWithDescriptorType;
 import de.unihalle.informatik.Alida_xml.ALDXMLParametrizedType;
 
 /**
- * DataIO provider for parametrized classes and operators from command line.
+ * DataIO provider for parametrized classes and operators for xml representation.
  * <p>
  * For parametrized classes reading is done only for parameters annotated 
  * with {@link de.unihalle.informatik.Alida.annotations.ALDClassParameter}.
  * Either all annotated parameters are written/formated or a
  * subset as specified by a format string.
  * <p>
- * For operators reading is done only for IN and INOUT parameters.
+ * For operators reading and writing is done only for IN and INOUT parameters.
  * In addition the set of active parameters and descriptors is set as represented in the
- * xml representation.
+ * xml representation. For more details see the methods {@link #readData(Field, Class, ALDXMLObjectType, Object)}
+ * and {@link #writeData(Object)
  * 
  * @author posch
  *
@@ -105,18 +106,47 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 
 	/** Xmlbeans provider for parametrized classes and ALDOperators.
      * <p>
-     * For parametrized classes each name has to be an annotated parameter.
+     * For parametrized classes values for all parameters which exist in the class object to restore and
+     * are also present in the xml object are restored to the value in the xml representation.
      * <p>
-     * For operators each name has to be an IN or INOUT parameter name of the operator and receives its value from
-     * the <code>valueString</code>. Additionally the set of active parameters and descriptors is set.
+     * For operators first the state of active and inactive parameters is restored as close as possible
+     * to the state in the xml representation, where changes in the class definition are taken
+     * into account.
+     * <br>
+     * For all parameters in the xml representation the following cases are distinguished.
      * 
+     * <ul>
+     * <li> If the parameter has been annotated when writing to xml </li>
+     * <ul>
+     * <li> If the parameter is annotated in the current operator object 
+     *       it is restored to its xml state  </li>
+     * <li>If the parameter is not annotated or not existing in the current operator object
+     * it is ignored</li>
+     * </ul>
+     * <li> If the parameter has not been annotated when writing to xml </li>
+     * <ul>
+     * <li> If the parameter is annotated in the current operator object 
+     *       it is ignored </li>
+     * <li>If the parameter is not annotated or not existing in the current operator object:
+     * First, if it is not existing (as an non annotated parameter), its descriptores is restored
+     * from xml. In all cases it is subsequently  restored to its xml state</li>
+     * </ul>
+     * </ul>
+     * Restoring refers to restoring the active vs inactive status of a parameter stored in 
+     * xml representation.
+     * <p>
+     * Then the values of all parameters stored in the xml representation are set to
+     * parameters of the current operator object. If a parameter does not exist in
+     * this object it is ignore.
+     * <p> If the value in the xml representation can not be assigned to the member variable
+     * this error is ignore for both parametrized classes and operators.
 	 * 
 	 * @param field
 	 * @param cl
-	 * @param obj if non null the xml representation is to be parse in this  instance. 
+	 * @param obj if non null the xml representation is to be parse into this  instance,
 	 *        otherwise a new instance is created. 
 	 *        
-	 * @return the object
+	 * @return the object restore with the state in the xml representation
 	 * 
 	 * @throws ALDDataIOProviderException
 	 * @throws ALDDataIOManagerException
@@ -393,10 +423,6 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 								System.out.println(" ALDParametrizedClassDataIOXmlbeans::readData value for parameter <" +
 										name + "> could not be set in the current operator object");
 							}
-
-//							throw new ALDDataIOProviderException( ALDDataIOProviderExceptionType.UNSPECIFIED_ERROR,
-//									"ALDParametrizedClassDataIOXmlbeans::readData internal error, cannot set value of member variable <" +
-//											name +">");
 						}
 
 					} else {
@@ -410,10 +436,6 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 								System.out.println(" ALDParametrizedClassDataIOXmlbeans::readData value for parameter <" +
 										name + "> could not be set in tue current parametrized object");
 							}
-
-//							throw new ALDDataIOProviderException( ALDDataIOProviderExceptionType.UNSPECIFIED_ERROR,
-//									"ALDParametrizedClassDataIOXmlbeans::readData internal error, cannot set value of member variable <" +
-//											name +">");
 						}
 					}
 
@@ -436,16 +458,18 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 
 
 	/**
-	 * Transient members are not written.
-	 * <p>
-     * For parametrized classes annotated members are written.
+	 *  Xmlbeans provider for parametrized classes and ALDOperators.
+	 *  <p>
+     * For parametrized classes values for all member variables are written
+     * which are annotated with {@link de.unihalle.informatik.Alida.annotations.ALDClassParameter}.
+     * 
      * <p>
+     * For operators all IN and INOUT parameters the values are written for both active and inactive parameters
      * Names of all active and inactive parameters are written, as well as
      * parameter descriptors for not annotated parameters
-     * 
-     * For operators all IN and INOUT parameters the values are written for both active and inactive parameters
-     * 
-     * 
+	 * <p>
+     * For both parametrized classes and operators transient members are not written.
+
 	 * @throws ALDDataIOProviderException 
 	 * @throws ALDDataIOManagerException 
 	 */
@@ -500,56 +524,6 @@ public class ALDParametrizedClassDataIOXmlbeans extends ALDStandardizedDataIOXml
 					keyValuePair.setValue(xmlDescritptorValue);
 				}
 			}
-
-
-//			 Version 2
-//				ALDXMLOperatorWithDescriptorType xmlOperator = ALDXMLOperatorWithDescriptorType.Factory.newInstance();
-//				xmlParametrized = xmlOperator;
-//
-//				xmlOperator.setOpName(((ALDOperator)obj).getName());
-//
-//				// write all (current/active) parameter names into the xml object
-//				// as well as the associated descriptors for non annotated parameters
-//				for ( String pName : op.getParameterNames() ) {
-//					xmlOperator.addParameterNames(pName);
-//
-//					if ( ! op.isAnnotatedParameter( pName) ) {
-//
-//						ALDXMLObjectType xmlValue =null;
-//						try {
-//							xmlValue = ALDDataIOManagerXmlbeans.getInstance().writeData(
-//									op.getParameterDescriptor(pName));
-//						} catch (ALDOperatorException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//						ALDXMLKeyValuePairType keyValuePair = 
-//								xmlOperator.addNewParameterDescriptors();
-//						keyValuePair.setKey(pName);
-//						keyValuePair.setValue(xmlValue);
-//
-//					}
-//				}
-			
-			
-//			 collect name of all parameters for which values have to be written
-
-//			 Version2
-//			// all non-supplemental in and inout parameters
-//			Collection<String> pNames = op.getInInoutNames();
-//			
-//			// add supplemental in and inout parameters
-//			for ( String pName :  op.getSupplementalNames() ) {
-//				try {
-//					if ( op.getParameterDescriptor(pName).getDirection() == Direction.IN ||
-//							op.getParameterDescriptor(pName).getDirection() == Direction.INOUT)
-//						pNames.add( pName);
-//				} catch (ALDOperatorException e) {
-//					throw new ALDDataIOProviderException( ALDDataIOProviderExceptionType.UNSPECIFIED_ERROR,
-//							"ALDParametrizedClassDataIOXmlbeans::writeData internal error: can not get descriptor for <" + 
-//							pName + ">");
-//				}
-//			}
 			
 			// collect name of all parameters for which values have to be written
 
