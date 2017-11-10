@@ -5,6 +5,20 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+## [2.7.5] - 2017-11-10
+Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
+- Released Alida 2.7.5
+
+### Added
 - XML provider for Java data type EnumSet
 
 ### Changed
@@ -15,6 +29,7 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 
 ### Fixed
 - fixed some data I/O providers to suppress value events during internal updates of GUI elements
+- updated XML schemes for storing operator parameters, visibility is now correctly considered
 
 ## [2.7.4] - 2017-07-29
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
