@@ -2591,7 +2591,7 @@ implements ALDWorkflowEventReporter {
 			throw( new NullPointerException( "ALDWorkflow::fireALDWorkflowEvent event is null"));
 		if ( debug >= 1) {
 			System.out.println( "ALDWorkflow::fireALDWorkflowEvent fire " + event.getEventType() +
-					" " + event.getEventMessage() + " info: " + event.getId());
+					" " + event.getEventMessage() + " info: " + event.getInfo());
 		}
 		for ( ALDWorkflowEventManager manager : this.workflowEventMangerList.values()) {
 			if ( debug >= 2) {

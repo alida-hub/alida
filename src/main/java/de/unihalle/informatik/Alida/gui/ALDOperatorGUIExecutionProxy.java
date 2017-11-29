@@ -478,7 +478,7 @@ public class ALDOperatorGUIExecutionProxy
 
 		// extract event data
 		ALDWorkflowEventType type = event.getEventType();
-		Object eventInfo = event.getId();
+		Object eventInfo = event.getInfo();
 
 		// handle the event
 		switch(type) 
@@ -654,7 +654,7 @@ public class ALDOperatorGUIExecutionProxy
 	 */
 	protected void displayFailureMessageWindow(ALDWorkflowEvent event) {
 		// extract event data
-		Object eventInfo = event.getId();
+		Object eventInfo = event.getInfo();
 
 		// eventInfo object is of type ALDWorkflowRunFailureInfo...
 		if (eventInfo instanceof ALDWorkflowRunFailureInfo) {

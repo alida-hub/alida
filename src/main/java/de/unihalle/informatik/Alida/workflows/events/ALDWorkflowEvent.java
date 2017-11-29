@@ -23,19 +23,9 @@
  *
  */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev$
- * $Date$
- * $Author$
- * 
- */
-
 package de.unihalle.informatik.Alida.workflows.events;
 
 import de.unihalle.informatik.Alida.operator.events.ALDEvent;
-import de.unihalle.informatik.Alida.workflows.ALDWorkflowNodeID;
 
 /**
  * Event type related to Alida work flows.
@@ -218,12 +208,16 @@ public class ALDWorkflowEvent extends ALDEvent {
 	}
 
 	/**
-	 * Returns the index of the even
+	 * Get the info object of this workflow event.
+	 * <p>
+	 * The info object may contain additional information about the event, 
+	 * e.g., in case of failures it informs about which exceptions were thrown
+	 * that caused the workflow to fail.
 	 * 
-	 * @return the index
+	 * @return Info object linked to the event with additional information.
 	 */
-	public Object getId() {
-		return info;
+	public Object getInfo() {
+		return this.info;
 	}
 
 	/**
@@ -232,7 +226,7 @@ public class ALDWorkflowEvent extends ALDEvent {
 	 * @return the timeStamp
 	 */
 	public Integer getTimeStamp() {
-		return timeStamp;
+		return this.timeStamp;
 	}
 
 

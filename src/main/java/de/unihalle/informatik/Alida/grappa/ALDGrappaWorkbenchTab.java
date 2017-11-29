@@ -1110,7 +1110,7 @@ public class ALDGrappaWorkbenchTab extends mxGraphComponent
 
 		// extract event data
 		ALDWorkflowEventType type = event.getEventType();
-		Object eventInfo = event.getId();
+		Object eventInfo = event.getInfo();
 
 		// get action file related to this action if available
 		WorkflowModifyAction actionReference=this.actionsOnWorkflow.get(eventInfo);
