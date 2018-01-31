@@ -7,6 +7,7 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 ### Added
 
 ### Changed
+- ALDWorkflowEvent: renamed method to access info object
 
 ### Deprecated
 
@@ -14,18 +15,19 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 
 ### Fixed
 
+## [2.7.5.1] - 2018-01-31
+Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
+- Released Alida 2.7.5.1
+
+### Changed
+- ALDWorkflowEvent: renamed method to access info object
+
 ## [2.7.5] - 2017-11-10
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
 - Released Alida 2.7.5
 
 ### Added
 - XML provider for Java data type EnumSet
-
-### Changed
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - fixed some data I/O providers to suppress value events during internal updates of GUI elements
