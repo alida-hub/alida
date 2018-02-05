@@ -92,10 +92,16 @@ public class ALDFileDirectoryDataIOSwing implements ALDDataIOSwing {
 			Class<?> cl, Object obj, ALDParameterDescriptor descr) { 
 		if (obj != null)
 			return obj;
-		if (cl.equals(ALDDirectoryString.class)) 
-			return new ALDDirectoryString(
+		if (cl.equals(ALDDirectoryString.class)) {
+			if (descr.isRequired())
+				return new ALDDirectoryString(
 					ALDFileDirectoryDataIOSwing.directoryDefault);
-		return new ALDFileString(ALDFileDirectoryDataIOSwing.fileDefault);				
+			return new ALDDirectoryString("");
+		}
+		if (descr.isRequired()) {
+			return new ALDFileString(ALDFileDirectoryDataIOSwing.fileDefault);
+		}
+		return new ALDFileString("");
 	}
 
 	/* (non-Javadoc)
@@ -247,11 +253,17 @@ public class ALDFileDirectoryDataIOSwing implements ALDDataIOSwing {
 			String defValue = null;
 			if (cl.equals(ALDDirectoryString.class)) {
 				this.isDirectory = true;
-				defValue = ALDFileDirectoryDataIOSwing.directoryDefault;
+				if (descr.isRequired())
+					defValue = ALDFileDirectoryDataIOSwing.directoryDefault;
+				else
+					defValue = new String();
 			}
 			else if (cl.equals(ALDFileString.class)) {
 				this.isDirectory = false;
-				defValue = ALDFileDirectoryDataIOSwing.fileDefault;				
+				if (descr.isRequired())
+					defValue = ALDFileDirectoryDataIOSwing.fileDefault;
+				else
+					defValue = new String();
 			}
 			
 			// init the panel

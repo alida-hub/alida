@@ -23,15 +23,6 @@
  *
  */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev$
- * $Date$
- * $Author$
- * 
- */
-
 package de.unihalle.informatik.Alida.datatypes;
 
 
@@ -63,6 +54,7 @@ public class ALDDirectoryString {
 	
 	/**
 	 * Returns current name of directory.
+	 * @return Name of directory.
 	 */
 	public String getDirectoryName() {
 		return this.dirPath;
