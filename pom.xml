@@ -12,10 +12,36 @@
   <inceptionYear>2010</inceptionYear>
 
   <properties>
+    <!-- general settings -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <YEAR>2018</YEAR>
+    <java.source.version>1.8</java.source.version>
+    <!-- Alida settings -->
     <alida.xml.version>1.5-SNAPSHOT</alida.xml.version>
     <alida.mitobo.help.version>1.8-SNAPSHOT</alida.mitobo.help.version>
+    <latexlet.version>1.2f8-SNAPSHOT</latexlet.version>
+    <!-- versions of dependencies -->
+    <jargs.version>1.0</jargs.version>
+    <javahelp.version>2.0.05</javahelp.version>
+    <jgit.version>4.8.0.201706111038-r</jgit.version>
+    <jgraphx.version>3.4.1.3</jgraphx.version>
+    <junit.version>4.12</junit.version>
+    <sezpoz.version>1.12</sezpoz.version>
+    <slf4j.version>1.7.25</slf4j.version>
+    <!-- versions of Maven plugins -->
+    <maven.plugin.local.commentparser.version>1.6</maven.plugin.local.commentparser.version>
+    <maven.plugin.local.helpset.version>1.4</maven.plugin.local.helpset.version>
+    <maven.plugin.assembly.version>3.1.0</maven.plugin.assembly.version>
+    <maven.plugin.compiler.version>3.7.0</maven.plugin.compiler.version>
+    <maven.plugin.dependency.version>3.0.1</maven.plugin.dependency.version>
+    <maven.plugin.exec.version>1.6.0</maven.plugin.exec.version>
+    <maven.plugin.filtering.version>3.1.1</maven.plugin.filtering.version>
+    <maven.plugin.jar.version>3.0.2</maven.plugin.jar.version>
+    <maven.plugin.javadoc.version>2.10.4</maven.plugin.javadoc.version>
+    <maven.plugin.processor.version>3.3.1</maven.plugin.processor.version>
+    <maven.plugin.resources.version>3.0.2</maven.plugin.resources.version>
+    <maven.plugin.site.version>3.6</maven.plugin.site.version>
+    <maven.plugin.surefire.version>2.20</maven.plugin.surefire.version>
   </properties>
 
   <licenses>
@@ -61,12 +87,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.0.2</version>
+        <version>${maven.plugin.resources.version}</version>
 	<dependencies>
 	  <dependency>
 	    <groupId>org.apache.maven.shared</groupId>
 	    <artifactId>maven-filtering</artifactId>
-	    <version>3.1.1</version>
+	    <version>${maven.plugin.filtering.version}</version>
 	  </dependency>
 	</dependencies>
         <executions>
@@ -134,7 +160,7 @@
       <plugin>
         <groupId>de.unihalle.informatik.AlidaMiToBo.maven.plugins.help</groupId>
         <artifactId>comment-parser-maven-plugin</artifactId>
-        <version>1.6</version>
+        <version>${maven.plugin.local.commentparser.version}</version>
 	<executions>
           <execution>
             <phase>process-resources</phase>
@@ -148,7 +174,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-	<version>3.0.1</version>
+	<version>${maven.plugin.dependency.version}</version>
         <configuration>
           <outputDirectory>
             ${project.build.directory}/dependency-jars
@@ -168,7 +194,7 @@
       <plugin>
         <groupId>de.unihalle.informatik.AlidaMiToBo.maven.plugins.help</groupId>
         <artifactId>helpset-file-injector-maven-plugin</artifactId>
-        <version>1.4</version>
+        <version>${maven.plugin.local.helpset.version}</version>
 	<executions>
           <execution>
             <phase>process-resources</phase>
@@ -183,10 +209,10 @@
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-compiler-plugin</artifactId>
-	<version>3.7.0</version>
+	<version>${maven.plugin.compiler.version}</version>
 	<configuration>
-	  <source>1.8</source>
-	  <target>1.8</target>
+	  <source>${java.source.version}</source>
+	  <target>${java.source.version}</target>
 	  <executable>${env.JAVA_HOME}/bin/javac</executable>
 	  <fork>true</fork>
 	  <encoding>${project.build.sourceEncoding}</encoding>
@@ -198,7 +224,7 @@
 	<!-- run annotation processing -->
 	<groupId>org.bsc.maven</groupId>
 	<artifactId>maven-processor-plugin</artifactId>
-	<version>3.3.1</version>
+	<version>${maven.plugin.processor.version}</version>
 	<executions>
 	  <execution>
 	    <id>process</id>
@@ -226,7 +252,7 @@
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-surefire-plugin</artifactId>
-	<version>2.20</version>
+	<version>${maven.plugin.surefire.version}</version>
 	<configuration>
 	  <jvm>${env.JAVA_HOME}/bin/java</jvm>
 	  <forkMode>once</forkMode>
@@ -235,18 +261,18 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.0.2</version>
+        <version>${maven.plugin.jar.version}</version>
       </plugin>
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-site-plugin</artifactId>
-	<version>3.6</version>
+	<version>${maven.plugin.site.version}</version>
       </plugin>
       <plugin>
 	<!-- package binaries and sources into zip files;
 	     Attention: here we use our own assembly descriptors! -->
 	<artifactId>maven-assembly-plugin</artifactId>
-	<version>3.1.0</version>
+	<version>${maven.plugin.assembly.version}</version>
 	<configuration>
 	  <descriptors>
 	    <descriptor>src/main/assembly/alida-bin.xml</descriptor>
@@ -267,10 +293,10 @@
 	<!-- package javadocs -->
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-javadoc-plugin</artifactId>
-	<version>2.10.4</version>
+	<version>${maven.plugin.javadoc.version}</version>
         <configuration>
 	  <stylesheet>java</stylesheet>
-	  <javadocVersion>1.8</javadocVersion>
+	  <javadocVersion>${java.source.version}</javadocVersion>
 	  <stylesheet>java</stylesheet>
           <show>private</show>
 	  <additionalparam>-Xdoclint:none</additionalparam>
@@ -281,7 +307,7 @@
               <tagletArtifact>
                 <groupId>latexlet</groupId>
                 <artifactId>latexlet</artifactId>
-                <version>1.2f8-SNAPSHOT</version>
+                <version>${latexlet.version}</version>
               </tagletArtifact>
             </taglet>
             <taglet>
@@ -289,7 +315,7 @@
               <tagletArtifact>
                 <groupId>latexlet</groupId>
                 <artifactId>latexlet</artifactId>
-                <version>1.2f8-SNAPSHOT</version>
+                <version>${latexlet.version}</version>
               </tagletArtifact>
             </taglet>
             <taglet>
@@ -297,7 +323,7 @@
               <tagletArtifact>
                 <groupId>latexlet</groupId>
                 <artifactId>latexlet</artifactId>
-                <version>1.2f8-SNAPSHOT</version>
+                <version>${latexlet.version}</version>
               </tagletArtifact>
             </taglet>
           </taglets>
@@ -315,7 +341,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
+        <version>${maven.plugin.exec.version}</version>
         <executions>
           <execution>
             <goals>
@@ -411,29 +437,29 @@
     <dependency>
       <groupId>javax.help</groupId>
       <artifactId>javahelp</artifactId>
-      <version>2.0.05</version>
+      <version>${javahelp.version}</version>
     </dependency>
     <dependency>
       <groupId>net.java.sezpoz</groupId>
       <artifactId>sezpoz</artifactId>
-      <version>1.12</version>
+      <version>${sezpoz.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>net.sf</groupId>
       <artifactId>jargs</artifactId>
-      <version>1.0</version>
+      <version>${jargs.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.tinyjee.jgraphx</groupId>
       <artifactId>jgraphx</artifactId>
-      <version>3.4.1.3</version> 
+      <version>${jgraphx.version}</version> 
     </dependency>
     <dependency>
       <groupId>org.eclipse.jgit</groupId>
       <artifactId>org.eclipse.jgit</artifactId>
-      <version>4.8.0.201706111038-r</version>
+      <version>${jgit.version}</version>
     </dependency>
     <dependency>
       <groupId>de.unihalle.informatik.Alida</groupId>
@@ -448,13 +474,13 @@
     <dependency> 
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>1.7.25</version>
+      <version>${slf4j.version}</version>
     </dependency>
     <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
