@@ -7,7 +7,8 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 ### Added
 
 ### Changed
-- ALDWorkflowEvent: renamed method to access info object
+- introduced Alida parent POM file in Maven project configuration
+- ALDFileDirectoryDataIOSwing: leaving non-required parameters blank upon update now
 
 ### Deprecated
 

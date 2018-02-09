@@ -11,75 +11,16 @@
   <url>http://www.informatik.uni-halle.de/alida</url>
   <inceptionYear>2010</inceptionYear>
 
+  <parent>
+    <groupId>de.unihalle.informatik.Alida</groupId>
+    <artifactId>alida-pom</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  
   <properties>
-    <!-- general settings -->
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <YEAR>2018</YEAR>
-    <java.source.version>1.8</java.source.version>
-    <!-- Alida settings -->
-    <alida.xml.version>1.5-SNAPSHOT</alida.xml.version>
     <alida.mitobo.help.version>1.8-SNAPSHOT</alida.mitobo.help.version>
-    <latexlet.version>1.2f8-SNAPSHOT</latexlet.version>
-    <!-- versions of dependencies -->
-    <jargs.version>1.0</jargs.version>
-    <javahelp.version>2.0.05</javahelp.version>
-    <jgit.version>4.8.0.201706111038-r</jgit.version>
-    <jgraphx.version>3.4.1.3</jgraphx.version>
-    <junit.version>4.12</junit.version>
-    <sezpoz.version>1.12</sezpoz.version>
-    <slf4j.version>1.7.25</slf4j.version>
-    <!-- versions of Maven plugins -->
-    <maven.plugin.local.commentparser.version>1.6</maven.plugin.local.commentparser.version>
-    <maven.plugin.local.helpset.version>1.4</maven.plugin.local.helpset.version>
-    <maven.plugin.assembly.version>3.1.0</maven.plugin.assembly.version>
-    <maven.plugin.compiler.version>3.7.0</maven.plugin.compiler.version>
-    <maven.plugin.dependency.version>3.0.1</maven.plugin.dependency.version>
-    <maven.plugin.exec.version>1.6.0</maven.plugin.exec.version>
-    <maven.plugin.filtering.version>3.1.1</maven.plugin.filtering.version>
-    <maven.plugin.jar.version>3.0.2</maven.plugin.jar.version>
-    <maven.plugin.javadoc.version>2.10.4</maven.plugin.javadoc.version>
-    <maven.plugin.processor.version>3.3.1</maven.plugin.processor.version>
-    <maven.plugin.resources.version>3.0.2</maven.plugin.resources.version>
-    <maven.plugin.site.version>3.6</maven.plugin.site.version>
-    <maven.plugin.surefire.version>2.20</maven.plugin.surefire.version>
+    <alida.xml.version>1.5-SNAPSHOT</alida.xml.version>
   </properties>
-
-  <licenses>
-    <license>
-      <name>GNU General Public License version 3.0</name>
-      <url>http://www.gnu.org/licenses/gpl-3.0.html</url>
-    </license>
-  </licenses>
-
-  <organization>
-    <name>Martin Luther University Halle-Wittenberg, Institute of Computer Science, Pattern Recognition and Bioinformatics</name>
-    <url>http://www.informatik.uni-halle.de/arbeitsgruppen/mustererkennung/</url>
-  </organization>
-
-  <developers>
-    <developer>
-      <id>moeller</id>
-      <email>birgit.moeller@informatik.uni-halle.de</email>
-      <name>Birgit Moeller</name>
-      <organization>Martin Luther University Halle-Wittenberg</organization>
-      <organizationUrl>http://www.informatik.uni-halle.de/moeller</organizationUrl>
-      <roles>
-	<role>Developer</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>posch</id>
-      <email>stefan.posch@informatik.uni-halle.de</email>
-      <name>Stefan Posch</name>
-      <organization>Martin Luther University Halle-Wittenberg</organization>
-      <organizationUrl>http://www.informatik.uni-halle.de/posch</organizationUrl>
-      <roles>
-	<role>Developer</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-  </developers>
 
   <build>
     <plugins>
@@ -87,7 +28,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>${maven.plugin.resources.version}</version>
 	<dependencies>
 	  <dependency>
 	    <groupId>org.apache.maven.shared</groupId>
@@ -155,119 +95,53 @@
         </executions>
       </plugin>
 
-
       <!-- prepare packaging, extract online help comments -->
       <plugin>
         <groupId>de.unihalle.informatik.AlidaMiToBo.maven.plugins.help</groupId>
         <artifactId>comment-parser-maven-plugin</artifactId>
-        <version>${maven.plugin.local.commentparser.version}</version>
-	<executions>
-          <execution>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>parse-comments</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
+
       <!-- copy dependencies incl. help jar to local folder -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-	<version>${maven.plugin.dependency.version}</version>
-        <configuration>
-          <outputDirectory>
-            ${project.build.directory}/dependency-jars
-          </outputDirectory>
-        </configuration>
-        <executions>
-          <execution>
-            <id>Copy dependency jars</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-          </execution>
-        </executions>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-dependency-plugin</artifactId>
       </plugin>
+
       <!-- update helpset archive and copy files to target/classes -->
       <plugin>
         <groupId>de.unihalle.informatik.AlidaMiToBo.maven.plugins.help</groupId>
         <artifactId>helpset-file-injector-maven-plugin</artifactId>
-        <version>${maven.plugin.local.helpset.version}</version>
-	<executions>
-          <execution>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>update-helpset</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
-
 
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-compiler-plugin</artifactId>
-	<version>${maven.plugin.compiler.version}</version>
-	<configuration>
-	  <source>${java.source.version}</source>
-	  <target>${java.source.version}</target>
-	  <executable>${env.JAVA_HOME}/bin/javac</executable>
-	  <fork>true</fork>
-	  <encoding>${project.build.sourceEncoding}</encoding>
-	  <!-- Disable annotation processors during normal compilation! -->
-	  <compilerArgument>-proc:none</compilerArgument>
-	</configuration>
       </plugin>
+
       <plugin>
 	<!-- run annotation processing -->
 	<groupId>org.bsc.maven</groupId>
 	<artifactId>maven-processor-plugin</artifactId>
-	<version>${maven.plugin.processor.version}</version>
-	<executions>
-	  <execution>
-	    <id>process</id>
-	    <goals>
-	      <goal>process</goal>
-	    </goals>
-	    <phase>generate-sources</phase>
-	    <configuration>
-	      <compilerArguments>-encoding ${project.build.sourceEncoding}</compilerArguments>
-	    </configuration>
-	  </execution>
-	  <execution>
-	    <id>process-test</id>
-	    <goals>
-	      <goal>process-test</goal>
-	    </goals>
-	    <phase>generate-test-sources</phase>
-	    <configuration>
-	      <compilerArguments>-encoding ${project.build.sourceEncoding}</compilerArguments>
-	    </configuration>
-	  </execution>
-	</executions>
       </plugin>
-      <!-- configure native resources for unit testing -->
+
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-surefire-plugin</artifactId>
 	<version>${maven.plugin.surefire.version}</version>
-	<configuration>
-	  <jvm>${env.JAVA_HOME}/bin/java</jvm>
-	  <forkMode>once</forkMode>
-	</configuration>
       </plugin>
+
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>${maven.plugin.jar.version}</version>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-jar-plugin</artifactId>
+	<version>${maven.plugin.jar.version}</version>
       </plugin>
+      
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-site-plugin</artifactId>
 	<version>${maven.plugin.site.version}</version>
       </plugin>
+
       <plugin>
 	<!-- package binaries and sources into zip files;
 	     Attention: here we use our own assembly descriptors! -->
@@ -289,59 +163,16 @@
 	  </execution>
 	</executions>
       </plugin>
+
       <plugin>
-	<!-- package javadocs -->
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-javadoc-plugin</artifactId>
-	<version>${maven.plugin.javadoc.version}</version>
-        <configuration>
-	  <stylesheet>java</stylesheet>
-	  <javadocVersion>${java.source.version}</javadocVersion>
-	  <stylesheet>java</stylesheet>
-          <show>private</show>
-	  <additionalparam>-Xdoclint:none</additionalparam>
-
-          <taglets>
-            <taglet>
-              <tagletClass>latexlet.InlineLaTeXlet</tagletClass>
-              <tagletArtifact>
-                <groupId>latexlet</groupId>
-                <artifactId>latexlet</artifactId>
-                <version>${latexlet.version}</version>
-              </tagletArtifact>
-            </taglet>
-            <taglet>
-              <tagletClass>latexlet.InlineBlockLaTeXlet</tagletClass>
-              <tagletArtifact>
-                <groupId>latexlet</groupId>
-                <artifactId>latexlet</artifactId>
-                <version>${latexlet.version}</version>
-              </tagletArtifact>
-            </taglet>
-            <taglet>
-              <tagletClass>latexlet.BlockLaTeXlet</tagletClass>
-              <tagletArtifact>
-                <groupId>latexlet</groupId>
-                <artifactId>latexlet</artifactId>
-                <version>${latexlet.version}</version>
-              </tagletArtifact>
-            </taglet>
-          </taglets>
-        </configuration>
-	<executions>
-	  <execution>
-	    <id>attach-javadocs</id>
-	    <goals>
-	      <goal>jar</goal>
-	    </goals>
-	  </execution>
-	</executions>
       </plugin>
+
       <!-- allow GUI operator runner for execution with Maven -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>${maven.plugin.exec.version}</version>
         <executions>
           <execution>
             <goals>
@@ -355,132 +186,48 @@
       </plugin>
     </plugins>
 
-    <pluginManagement>
-      <plugins>
-	<!--This plugin's configuration is used to store Eclipse m2e settings only. 
-	    It has no influence on the Maven build itself.-->
-	<plugin>
-	  <groupId>org.eclipse.m2e</groupId>
-	  <artifactId>lifecycle-mapping</artifactId>
-	  <version>1.0.0</version>
-	  <configuration>
-	    <lifecycleMappingMetadata>
-	      <pluginExecutions>
-		<pluginExecution>
-		  <pluginExecutionFilter>
-		    <groupId>
-		      org.apache.maven.plugins
-		    </groupId>
-		    <artifactId>
-		      maven-dependency-plugin
-		    </artifactId>
-		    <versionRange>[2.1,)</versionRange>
-		    <goals>
-		      <goal>copy-dependencies</goal>
-		    </goals>
-		  </pluginExecutionFilter>
-		  <action>
-		    <execute></execute>
-		  </action>
-		</pluginExecution>
-	      </pluginExecutions>
-	    </lifecycleMappingMetadata>
-	  </configuration>
-	</plugin>
-      </plugins>
-    </pluginManagement>
   </build>
-
-  <repositories>
-    <repository>
-      <id>jboss</id>
-      <name>JBoss Thirdparty Releases</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
-      <layout>default</layout>
-    </repository>
-    <repository>
-      <id>jgit-repository</id>
-      <url>https://repo.eclipse.org/content/groups/releases/</url>
-      <layout>default</layout>
-    </repository>
-    <repository>
-      <id>snapshots</id>
-      <name>Archiva Public Snapshot Repository on 'moon'</name>
-      <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots-pub/</url>
-      <layout>default</layout>
-    </repository>
-    <repository>
-      <id>releases</id>
-      <name>Archiva Release Repository on 'moon'</name>
-      <url>https://moon.informatik.uni-halle.de/archiva/repository/releases/</url>
-      <layout>default</layout>
-    </repository>
-  </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>snapshots</id>
-      <name>Archiva Public Snapshot Repository on 'moon'</name>
-      <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots-pub/</url>
-      <layout>default</layout>
-    </pluginRepository>
-    <pluginRepository>
-      <id>releases</id>
-      <name>Archiva Release Repository on 'moon'</name>
-      <url>https://moon.informatik.uni-halle.de/archiva/repository/releases/</url>
-      <layout>default</layout>
-    </pluginRepository>
-  </pluginRepositories>
 
   <dependencies>
     <!-- Compile dependencies -->
     <dependency>
       <groupId>javax.help</groupId>
       <artifactId>javahelp</artifactId>
-      <version>${javahelp.version}</version>
     </dependency>
     <dependency>
       <groupId>net.java.sezpoz</groupId>
       <artifactId>sezpoz</artifactId>
-      <version>${sezpoz.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>net.sf</groupId>
       <artifactId>jargs</artifactId>
-      <version>${jargs.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.tinyjee.jgraphx</groupId>
       <artifactId>jgraphx</artifactId>
-      <version>${jgraphx.version}</version> 
     </dependency>
     <dependency>
       <groupId>org.eclipse.jgit</groupId>
       <artifactId>org.eclipse.jgit</artifactId>
-      <version>${jgit.version}</version>
     </dependency>
     <dependency>
       <groupId>de.unihalle.informatik.Alida</groupId>
       <artifactId>alida-xml</artifactId>
-      <version>${alida.xml.version}</version>
     </dependency>
     <dependency>
       <groupId>de.unihalle.informatik.AlidaMiToBo</groupId>
       <artifactId>help-resources</artifactId>
-      <version>${alida.mitobo.help.version}</version>
     </dependency>
     <dependency> 
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>${slf4j.version}</version>
     </dependency>
     <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -489,27 +236,6 @@
     <connection>scm:git:https://github.com/alida-hub/alida.git</connection>
     <developerConnection>scm:git:https://github.com/alida-hub/alida.git</developerConnection>
   </scm>
-
-  <profiles>
-    <profile>
-      <id>deploy-all</id>
-      <activation>
-	<activeByDefault>true</activeByDefault>
-      </activation>
-      <distributionManagement>
-	<snapshotRepository>
-	  <id>snapshots-pub</id>
-	  <name>Archiva Public Snapshot Repository on 'moon'</name>
-	  <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots-pub/</url>
-	</snapshotRepository>
-	<repository>
-	  <id>releases</id>
-	  <name>Archiva Release Repository on 'moon'</name>
-	  <url>https://moon.informatik.uni-halle.de/archiva/repository/releases/</url>
-	</repository>
-      </distributionManagement>
-    </profile>
-  </profiles> 
 
   <issueManagement>
     <system>Github Issue Tracking</system>
