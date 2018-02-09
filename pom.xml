@@ -18,7 +18,6 @@
   </parent>
   
   <properties>
-    <alida.mitobo.help.version>1.8-SNAPSHOT</alida.mitobo.help.version>
     <alida.xml.version>1.5-SNAPSHOT</alida.xml.version>
   </properties>
 
@@ -215,6 +214,7 @@
     <dependency>
       <groupId>de.unihalle.informatik.Alida</groupId>
       <artifactId>alida-xml</artifactId>
+      <version>${alida.xml.version}</version>
     </dependency>
     <dependency>
       <groupId>de.unihalle.informatik.AlidaMiToBo</groupId>
