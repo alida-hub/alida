@@ -7,14 +7,20 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 ### Added
 
 ### Changed
-- introduced Alida parent POM file in Maven project configuration
-- ALDFileDirectoryDataIOSwing: leaving non-required parameters blank upon update now
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
+
+## [2.7.6] - 2018-03-23]
+Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
+- Released Alida 2.7.6
+
+### Changed
+- introduced Alida parent POM file in Maven project configuration
+- ALDFileDirectoryDataIOSwing: leaving non-required parameters blank upon update now
 
 ## [2.7.5.1] - 2018-01-31
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
