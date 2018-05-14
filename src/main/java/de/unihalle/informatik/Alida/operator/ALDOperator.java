@@ -204,7 +204,7 @@ public abstract class ALDOperator
 	 * Mode of implicit construction of the processing graph. Still experimental
 	 * at this point!! 
      */
-	public enum ConstructioMode {
+	public enum HistoryConstructionMode {
 		/** obey hiding mode, i.e. construct no history for hidden nodes
 		 */
 		CONSIDER_HIDINGMODE,
@@ -226,7 +226,7 @@ public abstract class ALDOperator
 	 * <li> 2 = prevent implicit construction completely (= NO_HISTORY) </li>
 	 * </dl>
 	 */
-	private static ConstructioMode constructionMode = ConstructioMode.CONSIDER_HIDINGMODE;
+	private static HistoryConstructionMode constructionMode = HistoryConstructionMode.CONSIDER_HIDINGMODE;
 
 	// END of This is currently experimental for debugging purposes
 	// ----------------------------------------------------
@@ -238,13 +238,13 @@ public abstract class ALDOperator
 	/**
 	 * @param constructionMode the constructionMode to set
 	 */
-	public static void setConstructionMode(ConstructioMode constructionMode) {
+	public static void setConstructionMode(HistoryConstructionMode constructionMode) {
 		ALDOperator.constructionMode = constructionMode;
 	}
 	/**
 	 * @param constructionMode the constructionMode to set
 	 */
-	public static ConstructioMode setConstructionMode() {
+	public static HistoryConstructionMode setConstructionMode() {
 		return ALDOperator.constructionMode;
 	}
 
@@ -286,13 +286,13 @@ public abstract class ALDOperator
 	public static void setConstructionMode(int cMode)  {
 		switch ( cMode) {
 		case 1:
-			ALDOperator.constructionMode = ConstructioMode.CONSIDER_HIDINGMODE;
+			ALDOperator.constructionMode = HistoryConstructionMode.CONSIDER_HIDINGMODE;
 			break;
 		case 2:
-			ALDOperator.constructionMode =  ConstructioMode.NO_HISTORY;
+			ALDOperator.constructionMode =  HistoryConstructionMode.NO_HISTORY;
 			break;
 		case 0:
-			ALDOperator.constructionMode =  ConstructioMode.COMPLETE_HISTORY;
+			ALDOperator.constructionMode =  HistoryConstructionMode.COMPLETE_HISTORY;
 			break;
 //		default:
 //			throw new ALDOperatorException(
@@ -1102,7 +1102,7 @@ public abstract class ALDOperator
 					opNode.setHidden(HidingMode.HIDDEN);
 			}
 
-			if ( constructionMode != ConstructioMode.NO_HISTORY ) {
+			if ( constructionMode != HistoryConstructionMode.NO_HISTORY ) {
 
 				// documentation in the processing history
 				if ( includeInHistory(  hidingMode, parentViaThread.getHidingMode()) ) {
@@ -1216,7 +1216,7 @@ public abstract class ALDOperator
 			if (this.debug)
 				System.out.println("Running operate...done.");
 
-			if ( constructionMode != ConstructioMode.NO_HISTORY ) {
+			if ( constructionMode != HistoryConstructionMode.NO_HISTORY ) {
 				// documentation in the processing history
 				if ( includeInHistory(  hidingMode, parentViaThread.getHidingMode() )) {
 
@@ -1317,8 +1317,8 @@ public abstract class ALDOperator
 	 * 
 	 */
 	private boolean includeInHistory( HidingMode hidingMode, HidingMode parentHidingMode) {
-		return 	(constructionMode == ConstructioMode.COMPLETE_HISTORY) || 
-				((constructionMode == ConstructioMode.CONSIDER_HIDINGMODE) && 
+		return 	(constructionMode == HistoryConstructionMode.COMPLETE_HISTORY) || 
+				((constructionMode == HistoryConstructionMode.CONSIDER_HIDINGMODE) && 
 			     (hidingMode != HidingMode.HIDDEN) && 
 			     (parentHidingMode != HidingMode.HIDDEN) &&
 			     (parentHidingMode != HidingMode.HIDE_CHILDREN));
