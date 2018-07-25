@@ -32,25 +32,25 @@ import de.unihalle.informatik.Alida.annotations.ALDAOperator.ExecutionMode;
 import de.unihalle.informatik.Alida.annotations.ALDAOperator.Level;
 
 /**
- * Controllable demo operator for testing interaction.
+ * Controllable demo operator for testing interaction using the status handle.
  * 
  * @author moeller
  */
 @ALDAOperator(genericExecutionMode=ExecutionMode.ALL,
 	level=Level.STANDARD)
-public class ALDDemoOpControllable extends ALDOperatorControllable {
+public class ALDDemoOpControllableHandle extends ALDOperatorControllable {
 
 	/**
 	 * Operator identifier.
 	 */
-	protected	final static String operatorID = "[ALDDemoOpControllable]";
+	protected	final static String operatorID = "[ALDDemoOpControllableHandle]";
 
 	/**
 	 * Default constructor.
 	 * 
 	 * @throws ALDOperatorException Thrown in case of failure.
 	 */
-	public ALDDemoOpControllable() throws ALDOperatorException {
+	public ALDDemoOpControllableHandle() throws ALDOperatorException {
 		// nothing to do here
 	}
 	
@@ -66,11 +66,13 @@ public class ALDDemoOpControllable extends ALDOperatorControllable {
     int steps = 0;
     this.setControlStatus(OperatorControlStatus.OP_RUN);
     
+    OperatorControlStatusHandle statusHandle = this.getControlStatusHandle();
+    
     // main optimization loop
     int loopCounter = 0;
     while (loopCounter < 15) {
 
-    	if (this.getControlStatus() == OperatorControlStatus.OP_STOP) {
+    	if (statusHandle.getStatus() == OperatorControlStatus.OP_STOP) {
     		
     		this.fireOperatorExecutionProgressEvent(
     				new ALDOperatorExecutionProgressEvent(this, 
@@ -84,7 +86,7 @@ public class ALDDemoOpControllable extends ALDOperatorControllable {
         }
     		break;
     	}
-    	else if (this.getControlStatus() == OperatorControlStatus.OP_PAUSE) {
+    	else if (statusHandle.getStatus() == OperatorControlStatus.OP_PAUSE) {
     		this.fireOperatorExecutionProgressEvent(
     				new ALDOperatorExecutionProgressEvent(this, 
    						operatorID + " operator paused, sleeping now..."));
@@ -94,22 +96,22 @@ public class ALDDemoOpControllable extends ALDOperatorControllable {
           } catch (InterruptedException e) {
           	// just ignore the exception
           }
-    		} while (this.getControlStatus() != OperatorControlStatus.OP_RESUME);
+    		} while (statusHandle.getStatus() != OperatorControlStatus.OP_RESUME);
     		this.fireOperatorExecutionProgressEvent(
     				new ALDOperatorExecutionProgressEvent(this, 
    						operatorID + " waking up and running again..."));
     	}
 
-      switch (this.getControlStatus()) {
+      switch (statusHandle.getStatus()) {
         case OP_RUN:
           if (this.stepWiseExecution) {
             if (steps == this.stepSize) {
               this.setControlStatus(OperatorControlStatus.OP_PAUSE);
-              while (!(this.getControlStatus()==OperatorControlStatus.OP_STEP)
-              		&&  !(this.getControlStatus()==OperatorControlStatus.OP_STOP)) { 
+              while (!(statusHandle.getStatus()==OperatorControlStatus.OP_STEP)
+              		&& !(statusHandle.getStatus()==OperatorControlStatus.OP_STOP)) { 
               	// just wait to continue
               }
-              if (this.getControlStatus()==OperatorControlStatus.OP_STOP) {
+              if (statusHandle.getStatus()==OperatorControlStatus.OP_STOP) {
             		System.err.println("Demo operator cancelled!");
             		return;
               }
@@ -121,7 +123,7 @@ public class ALDDemoOpControllable extends ALDOperatorControllable {
           }
           break;
         case OP_PAUSE:
-        	while (!(this.getControlStatus()==OperatorControlStatus.OP_RESUME)) { 
+        	while (!(statusHandle.getStatus()==OperatorControlStatus.OP_RESUME)) { 
         		// just wait to continue
           }
           break;

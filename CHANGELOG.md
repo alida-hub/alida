@@ -5,6 +5,7 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 
 ## [Unreleased]
 ### Added
+- ALDOperatorControllable: new wrapper class for control status to ease propagation of status to sub-routines
 
 ### Changed
 

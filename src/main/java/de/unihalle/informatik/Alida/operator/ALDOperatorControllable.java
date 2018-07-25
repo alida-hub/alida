@@ -133,8 +133,14 @@ public abstract class ALDOperatorControllable extends ALDOperator
   /**
    * Control status of operator, used to stop/pause/resume calculations.
    */
-  protected volatile OperatorControlStatus operatorStatus = 
+  private volatile OperatorControlStatus operatorStatus = 
   	OperatorControlStatus.OP_INIT;
+  
+  /**
+   * Wrapper object for operator control status.
+   */
+  private volatile OperatorControlStatusHandle operatorStatusHandle =
+  	new OperatorControlStatusHandle();
   
   /**
    * Actual execution state of operator.
@@ -158,6 +164,31 @@ public abstract class ALDOperatorControllable extends ALDOperator
   }
 
   /**
+   * Get operator control status.
+   * @return	Operator control status.
+   */
+  public OperatorControlStatus getControlStatus() {
+  	return this.operatorStatus;
+  }
+  
+  /**
+   * Set operator control status.
+   * @param s	New operator control status.
+   */
+  public void setControlStatus(OperatorControlStatus s) {
+  	this.operatorStatus = s;
+  	this.operatorStatusHandle.opStatus = s;
+  }
+
+  /**
+   * Get wrapper object for control status.
+   * @return	Wrapper object for operator control status.
+   */
+  public OperatorControlStatusHandle getControlStatusHandle() {
+  	return this.operatorStatusHandle;
+  }
+  
+  /**
    * Get the current execution status of the operator.
    * @return	Current execution status.
    */
@@ -178,15 +209,19 @@ public abstract class ALDOperatorControllable extends ALDOperator
 		{
 		case RUN_EVENT:
 			this.operatorStatus = OperatorControlStatus.OP_RUN;
+			this.operatorStatusHandle.opStatus = OperatorControlStatus.OP_RUN;
 			break;
 		case PAUSE_EVENT:
 			this.operatorStatus = OperatorControlStatus.OP_PAUSE;
+			this.operatorStatusHandle.opStatus = OperatorControlStatus.OP_PAUSE;
 			break;
 		case STOP_EVENT:
 			this.operatorStatus = OperatorControlStatus.OP_STOP;
+			this.operatorStatusHandle.opStatus = OperatorControlStatus.OP_STOP;
 			break;
 		case STEP_EVENT:
 			this.operatorStatus = OperatorControlStatus.OP_STEP;
+			this.operatorStatusHandle.opStatus = OperatorControlStatus.OP_STEP;
 			break;
 		case KILL_EVENT:
 			// kills the thread immediately
@@ -194,6 +229,7 @@ public abstract class ALDOperatorControllable extends ALDOperator
 			break;
 		case RESUME_EVENT:
 			this.operatorStatus = OperatorControlStatus.OP_RESUME;
+			this.operatorStatusHandle.opStatus = OperatorControlStatus.OP_RESUME;
 			break;
 		}
 		// send event to all sub-operators and their listeners
@@ -275,5 +311,37 @@ public abstract class ALDOperatorControllable extends ALDOperator
 		if (this.notifyListenersRecursively)
 			this.fireALDConfigurationEvent(event);
 //					new ALDConfigurationEvent(this,event.getEventMessage()));
+	}
+	
+	/**
+	 * Wrapper class for control status information.
+	 * <p>
+	 * Objects of this class are supposed to ease handing over control status 
+	 * information to sub-routines of controllable operators.
+	 */
+	public class OperatorControlStatusHandle {
+		
+		/**
+		 * Status of the operator.
+		 */
+		private volatile OperatorControlStatus opStatus;
+		
+		/**
+		 * Get the current status
+		 * @return	Current operator status.
+		 */
+		public OperatorControlStatus getStatus() {
+			return this.opStatus;
+		}
+		
+		/**
+		 * Set the current status.
+		 * @param s	New status.
+		 */
+		public void setStatus(OperatorControlStatus s) {
+			this.opStatus = s;
+			// synchronize status with operator main status
+			ALDOperatorControllable.this.setControlStatus(s);
+		}
 	}
 }

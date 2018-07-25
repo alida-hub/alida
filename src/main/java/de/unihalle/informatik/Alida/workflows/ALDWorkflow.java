@@ -1485,7 +1485,7 @@ implements ALDWorkflowEventReporter {
 		
 		this.workflowEventMangerList = new HashMap<ALDWorkflowEventListener, ALDWorkflowEventManager>();
 		//workflowEventMangerThreadList = new HashMap<ALDWorkflowEventListener, Thread>();
-		this.operatorStatus = OperatorControlStatus.OP_INIT;
+		this.setControlStatus(OperatorControlStatus.OP_INIT);
 		controlEventlistenerList = new EventListenerList();
 		configurationEventlistenerList = new EventListenerList();
 
@@ -1939,7 +1939,7 @@ implements ALDWorkflowEventReporter {
 
 					// check status from controllable
 					// TODO complete for other states
-					switch (workflow.operatorStatus) {
+					switch (workflow.getControlStatus()) {
 					case OP_STOP:
 						workflow.fireALDWorkflowEvent(
 								new ALDWorkflowEvent(workflow, ALDWorkflowEventType.USER_INTERRUPT, 
@@ -2004,7 +2004,7 @@ implements ALDWorkflowEventReporter {
 			}
 			
 			//TODO are this all possible states we have?
-			if (workflow.operatorStatus == OperatorControlStatus.OP_STOP) {
+			if (workflow.getControlStatus() == OperatorControlStatus.OP_STOP) {
 				workflow.fireALDWorkflowEvent(
 						new ALDWorkflowEvent(workflow, ALDWorkflowEventType.USER_INTERRUPT, 
 								ALDWorkflow.mapNodeToNodeId( runningNode)));
