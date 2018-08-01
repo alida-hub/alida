@@ -23,34 +23,22 @@
  *
  */
 
-package de.unihalle.informatik.Alida.operator;
+package de.unihalle.informatik.Alida.operator.events;
 
-import de.unihalle.informatik.Alida.exceptions.ALDOperatorException;
+import java.util.EventListener;
 
 /**
- * Operator class to be managed by {@link ALDOperatorCollection} instances. 
+ * Listener interface for `Alida` operator collection events.
  * 
  * @author moeller
  */
-public abstract class ALDOperatorCollectionElement extends ALDOperator {
-
-	/**
-	 * Default constructor.
-	 * @throws ALDOperatorException	Thrown in case of failure.
-	 */
-	public ALDOperatorCollectionElement() throws ALDOperatorException {
-		super();
-	}
+public interface ALDOperatorCollectionEventListener extends EventListener {
 	
 	/**
-	 * Request a unique identifier string for this operator class.
-	 * <p>
-	 * This string is used by {@link ALDOperatorCollection} to manage available
-	 * operators and link them to additional information. If the string is not
-	 * unique for your set of operators {@link ALDOperatorCollection} might not 
-	 * work properly.
-	 *
-	 * @return	Unique identifier string.
+	 * Method which is called on event occurrence.
+	 * 
+	 * @param event		Event to be handled.
 	 */
-	public abstract String getUniqueClassID();
+	public void handleALDOperatorCollectionEvent(ALDOperatorCollectionEvent event);
+	
 }
