@@ -55,7 +55,11 @@ public class ALDOperatorCollectionEvent extends ALDEvent {
 		 * Running an operator failed, event.info gives either a 
 		 * <code>ALDRunFailureInfo</code> object or exception comment.
 		 */
-		RUN_FAILURE
+		RUN_FAILURE,
+		/**
+		 * Event of unknown type.
+		 */
+		UNKNOWN
 	}
 
 	/**
