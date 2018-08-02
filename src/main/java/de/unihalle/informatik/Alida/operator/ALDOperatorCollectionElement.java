@@ -28,17 +28,17 @@ package de.unihalle.informatik.Alida.operator;
 import de.unihalle.informatik.Alida.exceptions.ALDOperatorException;
 
 /**
- * Operator class to be managed by {@link ALDOperatorCollection} instances. 
+ * Base class for operator classes managed by {@link ALDOperatorCollection}.
  * 
  * @author moeller
  */
 public abstract class ALDOperatorCollectionElement extends ALDOperator {
 
 	/**
-	 * Default constructor.
+	 * Default constructor, should never be called.
 	 * @throws ALDOperatorException	Thrown in case of failure.
 	 */
-	public ALDOperatorCollectionElement() throws ALDOperatorException {
+	private ALDOperatorCollectionElement() throws ALDOperatorException {
 		super();
 	}
 	
@@ -52,5 +52,5 @@ public abstract class ALDOperatorCollectionElement extends ALDOperator {
 	 *
 	 * @return	Unique identifier string.
 	 */
-	public abstract String getUniqueClassID();
+	public abstract String getUniqueClassIdentifier();
 }

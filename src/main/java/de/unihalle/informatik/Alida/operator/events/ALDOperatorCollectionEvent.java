@@ -40,12 +40,20 @@ public class ALDOperatorCollectionEvent extends ALDEvent {
 	 */
 	public enum ALDOperatorCollectionEventType {
 		/**
+		 * Something went wrong during initialization.
+		 */
+		INIT_FAILURE,
+		/**
+		 * Operator is not properly configured, event.info gives UID of operator.
+		 */
+		OP_NOT_CONFIGURED,
+		/**
 		 * Results are available, event.info gives id of corresponding node.
 		 */
 		RESULTS_AVAILABLE,
 		/**
-		 * Running an operator failed, event.info gives a 
-		 * <code>ALDRunFailureInfo</code> object.
+		 * Running an operator failed, event.info gives either a 
+		 * <code>ALDRunFailureInfo</code> object or exception comment.
 		 */
 		RUN_FAILURE
 	}
@@ -161,7 +169,7 @@ public class ALDOperatorCollectionEvent extends ALDEvent {
 	/**
 	 * Create a clone of this event with the same time stamp
 	 * 
-	 * @return
+	 * @return	New operator collection event clone.
 	 */
 	public ALDOperatorCollectionEvent createCopy() {
 		return new ALDOperatorCollectionEvent(this);
