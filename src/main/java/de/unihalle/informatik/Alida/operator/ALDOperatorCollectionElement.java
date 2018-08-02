@@ -35,10 +35,10 @@ import de.unihalle.informatik.Alida.exceptions.ALDOperatorException;
 public abstract class ALDOperatorCollectionElement extends ALDOperator {
 
 	/**
-	 * Default constructor, should never be called.
+	 * Default constructor.
 	 * @throws ALDOperatorException	Thrown in case of failure.
 	 */
-	private ALDOperatorCollectionElement() throws ALDOperatorException {
+	public ALDOperatorCollectionElement() throws ALDOperatorException {
 		super();
 	}
 	
