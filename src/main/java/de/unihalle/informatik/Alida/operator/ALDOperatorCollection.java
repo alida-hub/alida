@@ -83,11 +83,16 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 	protected HashMap<String, ALDOperatorConfigurationFrame> configFrames = null;
 
 	/**
+	 * Collection of parameter change listeners.
+	 */
+	protected HashMap<String, ParameterUpdateListener> paramListener = null;
+
+	/**
 	 * Proxy object to run operators in threaded mode.
 	 * <p>
 	 * For execution of operators {@ALDWorkflow} environments are used.
 	 */
-	private OperatorExecutionProxy opProxy;
+	protected OperatorExecutionProxy opProxy;
 	
 	/**
 	 * Default constructor.
@@ -105,7 +110,7 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 		// instantiate arrays
 		this.configFrames = new HashMap<>();
 		this.idsToOperatorObjects = new HashMap<>();
-		this.opProxy = new OperatorExecutionProxy();
+		this.paramListener = new HashMap<>();
 
 		// search for available classes of requested type
 		this.availableClasses = 
@@ -124,6 +129,8 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 				e.printStackTrace();
 			} 
 		}
+		// needs to be run after arrays have been filled!
+		this.opProxy = new OperatorExecutionProxy();
 	}
 	
 	/**
@@ -193,23 +200,9 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 	/**
 	 * Method to configure an operator, i.e., open its configuration window.
 	 * @param classUID	Unique class identifier of operator.
-	 * @throws ALDOperatorException	Thrown in case of failure.
 	 */
-	public void configureOperator(String classUID) throws ALDOperatorException {
-		
-		T op = this.idsToOperatorObjects.get(classUID);
-		
-		ALDOperatorConfigurationFrame confWin;
-		// check if a frame has already been initialized, if not, do it now
-		if (this.configFrames.get(classUID) == null) {
-			// TODO: event listener == null!
-			confWin =	new ALDOperatorConfigurationFrame(op, null);
-			this.configFrames.put(classUID, confWin);
-		}
-		else {
-			confWin = this.configFrames.get(classUID);
-		}
-		confWin.setVisible(true);
+	public void configureOperator(String classUID) {
+		this.configFrames.get(classUID).setVisible(true);
 	}
 
 	/**
@@ -231,6 +224,16 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 	}
 	
 	/**
+	 * Close all configuration windows.
+	 */
+	public void closeConfigWindows() {
+		Set<String> uids = this.configFrames.keySet();
+		for (String uid : uids) {
+			this.configFrames.get(uid).setVisible(false);
+		}
+	}
+	
+	/**
 	 * Manager class for (threaded) execution of operators of a collection.
 	 */
 	protected class OperatorExecutionProxy implements ALDWorkflowEventListener {
@@ -245,16 +248,21 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 		 */
 		protected volatile EventListenerList listenerList;
 		
-		/**
-		 * Listener object attached to the operator configuration object.
-		 */
+//		/**
+//		 * Listener object attached to the operator configuration object.
+//		 */
 //		protected ValueChangeListener valueChangeListener;
-
+//
 		/**
 		 * Mapping of workflow node IDs of active operators to operator objects.
 		 */
 		protected HashMap<ALDWorkflowNodeID, T> opNodeIDs;
 		
+		/**
+		 * Mapping of operators UIDs to workflow node IDs.
+		 */
+		protected HashMap<String, ALDWorkflowNodeID> workflowNodeIDs;
+
 		/**
 		 * Default constructor.
 		 * @throws ALDOperatorException Thrown in case of initialization failure.
@@ -271,6 +279,39 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 			
 			// init the operator and its workflow, i.e. add all operator nodes
 			this.opNodeIDs = new HashMap<>();
+			this.workflowNodeIDs = new HashMap<>();
+			
+			// collect available operators
+			Collection<String> opUIDs = 
+				ALDOperatorCollection.this.getUniqueClassIDs();
+
+			// create new operator nodes in workflow
+			ALDWorkflowNodeID nid;
+			ALDOperatorConfigurationFrame confWin;
+			for (String uid: opUIDs) {
+				T op = ALDOperatorCollection.this.idsToOperatorObjects.get(uid);
+				try {
+					nid = this.alidaWorkflow.createNode(op); 
+					// register nodes
+					this.opNodeIDs.put(nid, op);
+//					this.valueChangeListener = new ValueChangeListener(nid);
+//					op.addValueChangeEventListener(this.valueChangeListener);
+					// init parameter listener
+					ParameterUpdateListener pListen = new ParameterUpdateListener(nid);
+					confWin =	new ALDOperatorConfigurationFrame(op, pListen);
+					confWin.updateParamConfigurationStatus(
+							this.alidaWorkflow.getMissingRequiredInputs(nid));
+					ALDOperatorCollection.this.configFrames.put(uid, confWin);
+					ALDOperatorCollection.this.paramListener.put(uid, pListen);
+					this.workflowNodeIDs.put(uid, nid);
+				} catch (ALDWorkflowException ex) {
+					ALDOperatorCollectionEvent opce = 
+						new ALDOperatorCollectionEvent(this,
+							ALDOperatorCollectionEventType.INIT_FAILURE,
+								"Instantiation of operator \"" + uid + "\" failed!");
+					this.fireALDOperatorCollectionEvent(opce);
+				}
+			}
 
 			// process workflow events
 			this.processWorkflowEventQueue();
@@ -304,58 +345,35 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 		 * @param opUIDs 	List of unique class identifiers for operators to run.
 		 */
 		protected void runWorkflow(Collection<String> opUIDs) {
+			
+			ALDOperatorCollectionElement op;
+			ALDWorkflowNodeID nid;
+			for (String uid: opUIDs) {
+				op = ALDOperatorCollection.this.idsToOperatorObjects.get(uid);
 
-			try {
-				// remove formerly active nodes
-				for (ALDWorkflowNodeID nid: this.opNodeIDs.keySet())
-					this.alidaWorkflow.removeNode(nid);
-				
-				this.opNodeIDs.clear();
-				
-				// create new operator nodes in workflow
-				ALDWorkflowNodeID nid;
-				for (String uid: opUIDs) {
-					T op = ALDOperatorCollection.this.idsToOperatorObjects.get(uid);
-					// check if operator can be executed
-					if (!op.isConfigured()) {
-						ALDOperatorCollectionEvent opce = 
+				// check if operator can be executed
+				if (!op.isConfigured()) {
+					ALDOperatorCollectionEvent opce = 
 							new ALDOperatorCollectionEvent(this,
-								ALDOperatorCollectionEventType.OP_NOT_CONFIGURED,
+									ALDOperatorCollectionEventType.OP_NOT_CONFIGURED,
 									"Operator \"" + uid + "\" is not ready to run!", uid);
-							this.fireALDOperatorCollectionEvent(opce);
-					}
-					try {
-						nid = this.alidaWorkflow.createNode(op); 
-						// register nodes
-						this.opNodeIDs.put(nid, op);
-						//						this.valueChangeListener = new ValueChangeListener(nid);
-						//						op.addValueChangeEventListener(this.valueChangeListener);
-					} catch (ALDWorkflowException ex) {
-//						JOptionPane.showMessageDialog(null, "Instantiation of operator \""
-//								+ op.getName() + "\" failed!\n", 
-//								"Error", JOptionPane.ERROR_MESSAGE);
-						ALDOperatorCollectionEvent opce = 
-							new ALDOperatorCollectionEvent(this,
-								ALDOperatorCollectionEventType.INIT_FAILURE,
-									"Instantiation of operator \"" + uid + "\" failed!");
-						this.fireALDOperatorCollectionEvent(opce);
-					}
+					this.fireALDOperatorCollectionEvent(opce);
 				}
-				// execute the node/workflow
-				this.alidaWorkflow.handleALDControlEvent(
-					new ALDControlEvent(this, ALDControlEventType.RUN_EVENT));
-				this.alidaWorkflow.runWorkflow();
-			} catch (ALDWorkflowException e) {
-				e.printStackTrace();
-				ALDOperatorCollectionEvent opce = new ALDOperatorCollectionEvent(this,
-					ALDOperatorCollectionEventType.RUN_FAILURE,
-						"Operator execution failed!", e.getCommentString());
-				this.fireALDOperatorCollectionEvent(opce);
-//				JOptionPane.showMessageDialog(null, "Executing operator failed!\n",
-//						"Error", JOptionPane.ERROR_MESSAGE);
-			} 
-			// post-process workflow events that might have occured so far
-			this.processWorkflowEventQueue();
+				nid = this.workflowNodeIDs.get(uid);
+				try {
+					// execute the node/workflow
+					this.alidaWorkflow.handleALDControlEvent(
+							new ALDControlEvent(this, ALDControlEventType.RUN_EVENT));
+					this.alidaWorkflow.runNode(nid);
+					// post-process workflow events that might have occured so far
+					this.processWorkflowEventQueue();
+				} catch (ALDWorkflowException e) {
+					ALDOperatorCollectionEvent opce = new ALDOperatorCollectionEvent(
+						this, ALDOperatorCollectionEventType.RUN_FAILURE,
+							"Operator execution failed! OpID = " + uid, e.getCommentString());
+					this.fireALDOperatorCollectionEvent(opce);
+				}
+			}
 		}
 		
 		/**
@@ -398,6 +416,9 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 						"Operator finished, results available!", event.getInfo());
 				break;
 			default:
+				opce = new ALDOperatorCollectionEvent(this,
+					ALDOperatorCollectionEventType.UNKNOWN,
+						"An unknown error occured!", event.getInfo());
 				break;
 			}				
 			this.fireALDOperatorCollectionEvent(opce);
@@ -418,48 +439,68 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 	    			handleALDOperatorCollectionEvent(ev);
 	    	}
 	    }
-	  }
-
-//		/**
-//		 * Listener class to react on parameter value changes in operator.
-//		 * @author moeller
-//		 */
-//		class ValueChangeListener implements ALDSwingValueChangeListener {
-//
-//			/**
-//			 * Corresponding node ID.
-//			 */
-//			private ALDWorkflowNodeID id;
-//
-//			/**
-//			 * Default constructor.
-//			 * @param nodeID	Alida workflow node ID of associated operator node.
-//			 */
-//			public ValueChangeListener(ALDWorkflowNodeID nodeID) {
-//				this.id = nodeID;
-//			}
-//
-//			/**
-//			 * Updates the ID of the workflow node associated with this listener.
-//			 * @param nodeID	New node ID.
-//			 */
-//			public void updateNodeID(ALDWorkflowNodeID nodeID) {
-//				this.id = nodeID;
-//			}
-//
-//			@Override
-//      public void handleValueChangeEvent(ALDSwingValueChangeEvent event) {
-//				try {
-//					// notify workflow of change in node parameters
-//					OperatorExecutionProxy.this.alidaWorkflow.nodeParameterChanged(
-//							this.id);
-//					// process event queue
-//					OperatorExecutionProxy.this.processWorkflowEventQueue();
-//				} catch (ALDWorkflowException ex) {
-//					System.err.println("[ValueChangeListener] Warning! " 
-//							+ "could not propagate parameter change event, node not found!");
-//				}	  
-//      }
-//		}
+	  }		
 	}
+	
+	/**
+	 * Listener class to react on parameter value updates in config window.
+	 * @author moeller
+	 */
+	protected class ParameterUpdateListener 
+		implements ALDOpParameterUpdateEventListener {
+
+		/**
+		 * Workflow node ID.
+		 */
+		private ALDWorkflowNodeID nID = null;
+		
+		/**
+		 * Default constructor.
+		 * @param nid	Workflow node ID.
+		 */
+		public ParameterUpdateListener(ALDWorkflowNodeID nid) {
+			this.nID = nid;
+		}
+		
+		/* (non-Javadoc)
+		 * @see de.unihalle.informatik.Alida.operator.events.ALDOpParameterUpdateEventListener#handleALDParameterUpdateEvent(de.unihalle.informatik.Alida.operator.events.ALDOpParameterUpdateEvent)
+		 */
+		@Override
+    public void handleALDParameterUpdateEvent(ALDOpParameterUpdateEvent e) {
+			
+			// make sure that parameter updater is properly initialized,
+			// if not, just ignore the event
+			if (this.nID == null)
+				return;
+
+			ALDOperatorCollectionElement op = 
+					ALDOperatorCollection.this.opProxy.opNodeIDs.get(this.nID);
+
+			try {
+				switch(e.getType())
+				{
+				case CHANGED:
+					// notify workflow of change in node parameters
+		      ALDOperatorCollection.this.opProxy.nodeParameterChanged();
+					ALDOperatorCollection.this.configFrames.get(op.getUniqueClassIdentifier()).updateOperator(op);
+					ALDOperatorCollection.this.configFrames.get(op.getUniqueClassIdentifier()).updateParamConfigurationStatus(ALDOperatorCollection.this.opProxy.alidaWorkflow.getMissingRequiredInputs(nID));
+					break;
+				case LOADED:
+					ALDOperator newOp =	ALDOperatorCollection.this.configFrames.get(
+							op.getUniqueClassIdentifier()).getOperator();
+					ALDOperatorCollection.this.opProxy.alidaWorkflow.setOperator(
+							this.nID, newOp);
+					ALDOperatorCollection.this.configFrames.get(op.getUniqueClassIdentifier()).updateOperator(op);
+					ALDOperatorCollection.this.configFrames.get(op.getUniqueClassIdentifier()).updateParamConfigurationStatus(ALDOperatorCollection.this.opProxy.alidaWorkflow.getMissingRequiredInputs(nID));
+					break;
+				}
+	      // process event queue
+				ALDOperatorCollection.this.opProxy.processWorkflowEventQueue();
+      } catch (ALDWorkflowException ex) {
+      	System.err.println("[ParameterUpdateListener] Warning! " 
+     			+ "could not propagate parameter update event, node not found!");
+      }	  
+    }
+	}
+
 }
