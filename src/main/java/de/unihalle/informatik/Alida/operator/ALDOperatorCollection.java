@@ -56,8 +56,8 @@ import de.unihalle.informatik.Alida.workflows.events.ALDWorkflowEventListener;
  * in an {@link ALDWorkflow} environment, messages are handed over from the
  * operator collection to interactors outside via events. 
  * 
- * @author moeller
  * @param <T> Class parameter, indicating which type of operators is managed.
+ * @author moeller
  */
 public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 	
@@ -234,6 +234,21 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 	}
 	
 	/**
+	 * Generate configuration window for given operator.
+	 * <p>
+	 * To be overwritten by sub-classes using specialized operators.
+	 * 
+	 * @param op				Operator object.
+	 * @param pListen		Parameter update listener.
+	 * @return	New configuration frame.
+	 * @throws ALDOperatorException Thrown in case of failure.
+	 */
+	protected ALDOperatorConfigurationFrame getConfigWin(ALDOperator op, 
+		ALDOpParameterUpdateEventListener pListen) throws ALDOperatorException {
+		 return new ALDOperatorConfigurationFrame(op, pListen);
+	}
+	
+	/**
 	 * Manager class for (threaded) execution of operators of a collection.
 	 */
 	protected class OperatorExecutionProxy implements ALDWorkflowEventListener {
@@ -298,7 +313,7 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 //					op.addValueChangeEventListener(this.valueChangeListener);
 					// init parameter listener
 					ParameterUpdateListener pListen = new ParameterUpdateListener(nid);
-					confWin =	new ALDOperatorConfigurationFrame(op, pListen);
+					confWin =	ALDOperatorCollection.this.getConfigWin(op, pListen);
 					confWin.updateParamConfigurationStatus(
 							this.alidaWorkflow.getMissingRequiredInputs(nid));
 					ALDOperatorCollection.this.configFrames.put(uid, confWin);
