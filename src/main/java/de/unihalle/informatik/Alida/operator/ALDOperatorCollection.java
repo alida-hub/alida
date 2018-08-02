@@ -263,11 +263,6 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 		 */
 		protected volatile EventListenerList listenerList;
 		
-//		/**
-//		 * Listener object attached to the operator configuration object.
-//		 */
-//		protected ValueChangeListener valueChangeListener;
-//
 		/**
 		 * Mapping of workflow node IDs of active operators to operator objects.
 		 */
@@ -497,16 +492,24 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 				case CHANGED:
 					// notify workflow of change in node parameters
 		      ALDOperatorCollection.this.opProxy.nodeParameterChanged();
-					ALDOperatorCollection.this.configFrames.get(op.getUniqueClassIdentifier()).updateOperator(op);
-					ALDOperatorCollection.this.configFrames.get(op.getUniqueClassIdentifier()).updateParamConfigurationStatus(ALDOperatorCollection.this.opProxy.alidaWorkflow.getMissingRequiredInputs(nID));
+					ALDOperatorCollection.this.configFrames.
+						get(op.getUniqueClassIdentifier()).updateOperator(op);
+					ALDOperatorCollection.this.configFrames.
+						get(op.getUniqueClassIdentifier()).updateParamConfigurationStatus(
+								ALDOperatorCollection.this.opProxy.alidaWorkflow.
+									getMissingRequiredInputs(this.nID));
 					break;
 				case LOADED:
 					ALDOperator newOp =	ALDOperatorCollection.this.configFrames.get(
 							op.getUniqueClassIdentifier()).getOperator();
 					ALDOperatorCollection.this.opProxy.alidaWorkflow.setOperator(
 							this.nID, newOp);
-					ALDOperatorCollection.this.configFrames.get(op.getUniqueClassIdentifier()).updateOperator(op);
-					ALDOperatorCollection.this.configFrames.get(op.getUniqueClassIdentifier()).updateParamConfigurationStatus(ALDOperatorCollection.this.opProxy.alidaWorkflow.getMissingRequiredInputs(nID));
+					ALDOperatorCollection.this.configFrames.
+						get(op.getUniqueClassIdentifier()).updateOperator(op);
+					ALDOperatorCollection.this.configFrames.
+						get(op.getUniqueClassIdentifier()).updateParamConfigurationStatus(
+								ALDOperatorCollection.this.opProxy.alidaWorkflow.
+									getMissingRequiredInputs(this.nID));
 					break;
 				}
 	      // process event queue
