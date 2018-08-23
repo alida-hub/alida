@@ -201,7 +201,7 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 	 * Method to configure an operator, i.e., open its configuration window.
 	 * @param classUID	Unique class identifier of operator.
 	 */
-	public void configureOperator(String classUID) {
+	public void openOperatorConfigWindow(String classUID) {
 		this.configFrames.get(classUID).setVisible(true);
 	}
 
