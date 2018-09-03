@@ -5,8 +5,6 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 
 ## [Unreleased]
 ### Added
-- ALDOperatorCollection: new framework to easily manage, i.e. configure and run, groups of operators
-- ALDOperatorControllable: new wrapper class for control status to ease propagation of status to sub-routines
 
 ### Changed
 
@@ -16,11 +14,19 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 
 ### Fixed
 
-## [2.7.7] - 2018-05-18]
+## [2.7.8] - 2018-09-03
+Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
+- Released Alida 2.7.8
+
+### Added
+- ALDOperatorCollection: new framework to easily manage, i.e. configure and run, groups of operators
+- ALDOperatorControllable: new wrapper class for control status to ease propagation of status to sub-routines
+
+## [2.7.7] - 2018-05-18
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
 - Released Alida 2.7.7
 
-## [2.7.6] - 2018-03-23]
+## [2.7.6] - 2018-03-23
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
 - Released Alida 2.7.6
 
