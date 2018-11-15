@@ -78,6 +78,12 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 	protected HashMap<String, T> idsToOperatorObjects = null;
 	
 	/**
+	 * Configuration map storing if operators are allowed to re-run with 
+	 * identical parameter settings.
+	 */
+	protected HashMap<String, Boolean> idsToRerunFlags = null;
+
+	/**
 	 * Collection of configuration frames for the available operators.
 	 */
 	protected HashMap<String, ALDOperatorConfigurationFrame> configFrames = null;
@@ -110,6 +116,7 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 		// instantiate arrays
 		this.configFrames = new HashMap<>();
 		this.idsToOperatorObjects = new HashMap<>();
+		this.idsToRerunFlags = new HashMap<>();
 		this.paramListener = new HashMap<>();
 
 		// search for available classes of requested type
@@ -125,6 +132,7 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 				op = (T)c.newInstance();
 				classUID = op.getUniqueClassIdentifier();
 				this.idsToOperatorObjects.put(classUID, (T)op);
+				this.idsToRerunFlags.put(classUID, new Boolean(false));
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			} 
@@ -214,6 +222,29 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 		this.opProxy.nodeParameterChanged();
 	}
 	
+	/**
+	 * Sets re-run flags of all operators to given boolean value. 
+	 * @param flag	If true, all operators are allowed to run again.
+	 */
+	public void setRerunFlags(boolean flag) {
+		for (String k : this.idsToRerunFlags.keySet()) {
+			this.idsToRerunFlags.put(k, new Boolean(flag));
+		}
+	}
+	
+	/**
+	 * Sets re-run flags of all operators in the list to given boolean value. 
+	 * @param opIDs	Re-run flags of all operators in the list are set.
+	 * @param flag	If true, all operators in the list are allowed to rerun.
+	 */
+	public void setRerunFlags(Collection<String> opIDs, boolean flag) {
+		for (String k : opIDs) {
+			if (!this.idsToRerunFlags.containsKey(k))
+				continue;
+			this.idsToRerunFlags.put(k, new Boolean(flag));
+		}
+	}
+
 	/**
 	 * Run a collection of operators.
 	 * 
@@ -374,9 +405,35 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 					// execute the node/workflow
 					this.alidaWorkflow.handleALDControlEvent(
 							new ALDControlEvent(this, ALDControlEventType.RUN_EVENT));
-					this.alidaWorkflow.runNode(nid);
-					// post-process workflow events that might have occured so far
-					this.processWorkflowEventQueue();
+					// make sure that if an operator is allowed to run multiple times
+					// the workflow really executes it (... it's a hack, but currently
+					// the only way to achieve the desired behaviour...)
+					if (ALDOperatorCollection.this.idsToRerunFlags.get(uid)
+								.booleanValue()) {
+						this.alidaWorkflow.nodeParameterChanged(nid);
+						this.alidaWorkflow.runNode(nid);
+						// post-process workflow events that might have occured so far
+						this.processWorkflowEventQueue();
+					}
+					else {
+						// operator is not allowed to run again with same parameters
+						if (   this.alidaWorkflow.getState(nid) 
+								== ALDWorkflowNodeState.READY) {
+							ALDOperatorCollectionEvent opce = 
+									new ALDOperatorCollectionEvent(this,
+											ALDOperatorCollectionEventType.RUN_FAILURE,
+											"Operator \"" + uid + "\" has already been executed " 
+												+ "with this configuration!", uid);
+							this.fireALDOperatorCollectionEvent(opce);
+						}
+						else {
+							// operator parameters changed, everything is fine
+							this.alidaWorkflow.nodeParameterChanged(nid);
+							this.alidaWorkflow.runNode(nid);
+							// post-process workflow events that might have occured so far
+							this.processWorkflowEventQueue();
+						}
+					}
 				} catch (ALDWorkflowException e) {
 					ALDOperatorCollectionEvent opce = new ALDOperatorCollectionEvent(
 						this, ALDOperatorCollectionEventType.RUN_FAILURE,
