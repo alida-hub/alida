@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.BlockingDeque;
 
@@ -463,9 +464,16 @@ public class ALDOperatorGUIExecutionProxy
 		BlockingDeque<ALDWorkflowEvent> queue = 
 				this.alidaWorkflow.getEventQueue(this);
 		ALDWorkflowEvent event = null; 	
-		while (!queue.isEmpty()) {
-			event = queue.pop();
-			this.handleALDWorkflowEvent(event);
+		// process workflow events: don't use pop(), but make sure that blocking
+		// properties of queue are exploited to ensure thread-safety
+		boolean eventsAvailable = true;
+		while (eventsAvailable) {
+			try {
+				event = queue.removeFirst();
+				this.handleALDWorkflowEvent(event);
+			} catch(NoSuchElementException ex) {
+				eventsAvailable = false;
+			}
 		}
 	}
 	
