@@ -14,6 +14,16 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 
 ### Fixed
 
+## [2.7.9] - 2018-12-07
+Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
+- Released Alida 2.7.9
+
+### Added
+- extended ALDOperatorCollection to allow for re-running operators with unchanged configuration
+
+### Fixed
+- fixed handling of event queue in workflow event handling towards larger thread-safety
+
 ## [2.7.8] - 2018-09-03
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
 - Released Alida 2.7.8
