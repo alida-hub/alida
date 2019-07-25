@@ -23,15 +23,6 @@
  *
  */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev$
- * $Date$
- * $Author$
- * 
- */
-
 package de.unihalle.informatik.Alida.dataio.provider.cmdline;
 
 import de.unihalle.informatik.Alida.dataio.ALDDataIOManagerCmdline;
@@ -133,6 +124,21 @@ public abstract class ALDStandardizedDataIOCmdline implements ALDDataIOCmdline {
 	 */
 	public String formatAsString( Object obj, String formatString) throws ALDDataIOManagerException, ALDDataIOProviderException {
 		return formatAsString( obj);
+	}
+	
+	/**
+	 * Method to indicate if provider relies on newlines in format string.
+	 * <p>
+	 * This method is called by {@link #getValueStringFromFile(String)} upon 
+	 * reading an input file to figure out if a derived provider requires 
+	 * newlines in the file to be preserved in the returned format string. 
+	 * If a provider requires newlines this methods needs to be overwritten and 
+	 * 'true' be returned.
+	 * 
+	 * @return If true newlines are preserved when reading input files.
+	 */
+	protected boolean requiresNewlines() {
+		return false;
 	}
 
 	/** Read an object using <code>valueString</code>.
@@ -337,20 +343,26 @@ public abstract class ALDStandardizedDataIOCmdline implements ALDDataIOCmdline {
 		}
 	}
 
-	/** The complete content of the file is return as one string.
+	/** 
+	 * The complete content of the given file is returned as one string.
 	 *
-	 * @param formatString
-	 * @return argument or string read from file
-	 * @throws ALDDataIOProviderException 
+	 * @param filename	Input file to be read.
+	 * @return Contents of the file as a single string.
+	 * @throws ALDDataIOProviderException Thrown in case of failure.
 	 */
-	private static String getValueStringFromFile( String filename) throws ALDDataIOProviderException {
+	private String getValueStringFromFile( String filename) 
+			throws ALDDataIOProviderException {
 		try {
 			BufferedReader reader = new BufferedReader( new FileReader(filename));
 			StringBuffer buf = new StringBuffer();
 			String line;
 			while ( (line = reader.readLine()) != null ) {
-				buf.append( line);
+				buf.append( line );
+				// if provider relies on newlines, add a newline at end of each line
+				if (this.requiresNewlines())
+					buf.append( "\n" );
 			}
+			reader.close();
 			return( new String( buf));
 		} catch (FileNotFoundException e) {
 			throw new ALDDataIOProviderException( ALDDataIOProviderExceptionType.FILE_IO_ERROR,
