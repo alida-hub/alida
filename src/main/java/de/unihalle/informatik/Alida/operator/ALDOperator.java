@@ -934,20 +934,46 @@ public abstract class ALDOperator
 					name + " is an unkonwn parameter");
 
 		try {
-			getParameterDescriptorUnconditioned(name).setValue(value, genuineInstance);
+			getParameterDescriptorUnconditioned(name).setValue(value, this.genuineInstance);
 			
 			// invoke callback function
 			String callback = getParameterDescriptorUnconditioned(name).getCallback();
 			if ( callback != null && ! callback.isEmpty()) {
-				java.lang.reflect.Method method;
-				method = genuineInstance.getClass().getDeclaredMethod( callback);
-				method.setAccessible(true);
-				method.invoke(genuineInstance);
+				java.lang.reflect.Method method = 
+					this.findCallbackMethod(this.genuineInstance.getClass(), callback);
+				if (method != null) {
+					method.setAccessible(true);
+					method.invoke(this.genuineInstance);
+				}
+				else
+					throw new ALDOperatorException(
+						ALDOperatorException.OperatorExceptionType.CALLBACK_ERROR, 
+							"Callback method \"" + callback + "\" not found!");
 			}
 		} catch (Exception e) {
 			throw new ALDOperatorException(
 					ALDOperatorException.OperatorExceptionType.CALLBACK_ERROR,
 					name + "\n(" + e.getMessage() + ")");
+		}
+	}
+
+	/**
+	 * Find callback method of parameter in class or any of its super classes.
+	 * @param c					Class of parameter object in question.
+	 * @param callback	Callback function to be searched for.
+	 * @return	Callback method or null if not found.
+	 */
+	private java.lang.reflect.Method findCallbackMethod(Class<?> c, String callback) {
+		Class<?> currentClass = c;
+		while (true) {
+			try {
+				java.lang.reflect.Method method = currentClass.getDeclaredMethod(callback);
+				return method;
+			} catch(NoSuchMethodException e) {
+				currentClass = currentClass.getSuperclass();
+				if (currentClass == null)
+					return null;
+			}
 		}
 	}
 

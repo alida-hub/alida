@@ -127,25 +127,30 @@ public class ALDParametrizedClassDataIOHelper {
 			String hookFunction = pAnnotation.changeValueHook();
 			if (hookFunction != null && !hookFunction.isEmpty()) {
 				try {
-	        Method method = obj.getClass().getDeclaredMethod(hookFunction);
-	        // change accessibility, if method is protected or private
-	        method.setAccessible(true);
-	        method.invoke(obj);
+					Method method = findHookMethod(obj.getClass(), hookFunction);
+					if (method != null) {
+		        // change accessibility, if method is protected or private
+		        method.setAccessible(true);
+						method.invoke(obj);
+					}
+					else {
+						throw new NoSuchMethodException();
+					}
         } catch (SecurityException e) {
         	e.printStackTrace();
-        	new IllegalAccessException("[ALDParametrizedClassDataIOHelper] " +
+        	throw new IllegalAccessException("[ALDParametrizedClassDataIOHelper] " +
         		" couldn't call hook, object state maybe inconsistent...!");
         } catch (NoSuchMethodException e) {
         	e.printStackTrace();
-        	new IllegalAccessException("[ALDParametrizedClassDataIOHelper] " +
+        	throw new IllegalAccessException("[ALDParametrizedClassDataIOHelper] " +
           		" couldn't call hook, object state maybe inconsistent...!");
         } catch (IllegalArgumentException e) {
         	e.printStackTrace();
-        	new IllegalAccessException("[ALDParametrizedClassDataIOHelper] " +
+        	throw new IllegalAccessException("[ALDParametrizedClassDataIOHelper] " +
           		" couldn't call hook, object state maybe inconsistent...!");
         } catch (InvocationTargetException e) {
         	e.printStackTrace();
-        	new IllegalAccessException("[ALDParametrizedClassDataIOHelper] " +
+        	throw new IllegalAccessException("[ALDParametrizedClassDataIOHelper] " +
           		" couldn't call hook, object state maybe inconsistent...!");
         }
 			}
@@ -153,6 +158,26 @@ public class ALDParametrizedClassDataIOHelper {
 			System.err.println("[ALDParametrizedClassDataIOHelper] setValue(): " +
 				"class of field = " + cl.getName() + " , value is null or native " +
 				" - skipping...!");
+		}
+	}
+
+	/**
+	 * Find hook method of parameter in class or any of its super classes.
+	 * @param c			Class of parameter object in question.
+	 * @param hook	Hook function to be searched for.
+	 * @return	Hook method or null if not found.
+	 */
+	private static java.lang.reflect.Method findHookMethod(Class<?> c, String hook) {
+		Class<?> currentClass = c;
+		while (true) {
+			try {
+				java.lang.reflect.Method method = currentClass.getDeclaredMethod(hook);
+				return method;
+			} catch(NoSuchMethodException e) {
+				currentClass = currentClass.getSuperclass();
+				if (currentClass == null)
+					return null;
+			}
 		}
 	}
 
