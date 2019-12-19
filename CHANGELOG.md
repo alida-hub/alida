@@ -13,6 +13,12 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 ### Removed
 
 ### Fixed
+
+## [2.7.12] - 2019-12-19
+Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
+- Released Alida 2.7.12
+
+### Fixed
 - extended callback/hook function handling to support class hierarchies
 
 ## [2.7.11] - 2019-07-25
