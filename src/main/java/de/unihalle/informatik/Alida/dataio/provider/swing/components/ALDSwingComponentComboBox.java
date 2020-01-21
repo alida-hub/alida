@@ -56,7 +56,7 @@ public class ALDSwingComponentComboBox extends ALDSwingComponent
 	/**
 	 * Associated Swing component.
 	 */
-	protected JComboBox compComboBox = null;
+	protected JComboBox<ALDSwingComponentItem> compComboBox = null;
 
 	/**
 	 * Flag to ensure that no events are triggered if item change is triggered
@@ -72,7 +72,7 @@ public class ALDSwingComponentComboBox extends ALDSwingComponent
 	public ALDSwingComponentComboBox(ALDParameterDescriptor descr,
 			Vector<ALDSwingComponentItem> its){
 		this.paramDescriptor = descr;
-		this.compComboBox = new JComboBox(its);
+		this.compComboBox = new JComboBox<ALDSwingComponentItem>(its);
 		this.compComboBox.addItemListener(this);
 		// add our own tooltip renderer
 		this.compComboBox.setRenderer(new ComboBoxTooltipRenderer(its));
@@ -94,6 +94,24 @@ public class ALDSwingComponentComboBox extends ALDSwingComponent
 		}
 	}
 	
+	/**
+	 * Updates the set of items managed by the combo box.
+	 * @param its	List of new items.
+	 */
+	public void updateItems(Vector<ALDSwingComponentItem> its) {
+		this.compComboBox.removeAllItems();
+		for (ALDSwingComponentItem si: its)
+			this.compComboBox.addItem(si);
+		this.compComboBox.setRenderer(new ComboBoxTooltipRenderer(its));
+	}
+
+	/**
+	 * Clears the combo box, i.e. removes the current set of items.
+	 */
+	public void clearItems() {
+		this.compComboBox.removeAllItems();
+	}
+
 	/**
 	 * Selects the item associated with the given object.
 	 * @param obj		Object which should be selected.
@@ -142,7 +160,7 @@ public class ALDSwingComponentComboBox extends ALDSwingComponent
 	 * 
 	 * @author moeller
 	 */
-	protected class ComboBoxTooltipRenderer extends BasicComboBoxRenderer {
+	protected class ComboBoxTooltipRenderer	extends BasicComboBoxRenderer {
 		
 		/**
 		 * List of items represented by combobox.
@@ -153,8 +171,7 @@ public class ALDSwingComponentComboBox extends ALDSwingComponent
 		 * Default constructor.
 		 * @param itms	Set of combobox item objects.
 		 */
-		public ComboBoxTooltipRenderer(
-														Vector<ALDSwingComponentItem> itms){
+		public ComboBoxTooltipRenderer(Vector<ALDSwingComponentItem> itms){
 			this.items = itms;
 		}
 		
