@@ -57,6 +57,11 @@ public class ALDSwingComponentList extends ALDSwingComponent
 	protected JList<ALDSwingComponentItem> compList = null;
 
 	/**
+	 * List model underlying the JList component.
+	 */
+	DefaultListModel<ALDSwingComponentItem> compListModel;
+
+	/**
 	 * Items represented in list.
 	 */
 	protected Vector<ALDSwingComponentItem> items;
@@ -75,7 +80,10 @@ public class ALDSwingComponentList extends ALDSwingComponent
 	public ALDSwingComponentList(ALDParameterDescriptor descr,
 			Vector<ALDSwingComponentItem> its) {
 		this.paramDescriptor = descr;
-		this.compList = new JList<ALDSwingComponentItem>(its);
+		this.compListModel = new DefaultListModel<ALDSwingComponentItem>();
+		this.compList = new JList<ALDSwingComponentItem>(this.compListModel);
+		for (ALDSwingComponentItem it: its)
+			this.compListModel.addElement(it);
 		this.compList.setLayoutOrientation(JList.VERTICAL);
 		this.compList.setVisibleRowCount(-1);
 		this.compList.addListSelectionListener(this);
@@ -105,6 +113,26 @@ public class ALDSwingComponentList extends ALDSwingComponent
 		}
 	}
 	
+	/**
+	 * Updates the set of items managed by the list.
+	 * @param its	List of new items.
+	 */	
+	public void updateItems(Vector<ALDSwingComponentItem> sItems) {
+		this.compListModel.removeAllElements();
+		for (ALDSwingComponentItem si: sItems)
+			this.compListModel.addElement(si);
+		this.items = sItems;
+	}
+
+	/**
+	 * Clears the combo box, i.e. removes the current set of items.
+	 */
+	public void clearItems() {
+		this.compListModel.clear();
+		this.compList.updateUI();
+		this.items.clear();
+	}
+
 	/**
 	 * Selects the given items.
 	 * @param list		Objects which should be selected.
