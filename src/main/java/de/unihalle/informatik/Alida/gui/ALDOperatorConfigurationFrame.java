@@ -28,6 +28,10 @@ package de.unihalle.informatik.Alida.gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,6 +40,8 @@ import java.util.Set;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.text.DefaultCaret;
 
 import de.unihalle.informatik.Alida.operator.*;
@@ -43,6 +49,7 @@ import de.unihalle.informatik.Alida.operator.events.ALDOpParameterUpdateEvent;
 import de.unihalle.informatik.Alida.operator.events.ALDOpParameterUpdateEventListener;
 import de.unihalle.informatik.Alida.operator.events.ALDOpParameterUpdateEventReporter;
 import de.unihalle.informatik.Alida.version.ALDVersionProviderFactory;
+import de.unihalle.informatik.Alida.annotations.ALDAOperator;
 import de.unihalle.informatik.Alida.annotations.Parameter;
 import de.unihalle.informatik.Alida.dataio.ALDDataIOManagerSwing.ProviderInteractionLevel;
 import de.unihalle.informatik.Alida.dataio.ALDDataIOManagerXmlbeans;
@@ -505,9 +512,15 @@ public class ALDOperatorConfigurationFrame extends JFrame
 	 */
 	protected JMenu generateHelpMenu() {
 		JMenu helpM = new JMenu("Help");
-		JMenuItem itemHelp = new JMenuItem("Online Help");
-		itemHelp.addActionListener(OnlineHelpDisplayer.getHelpActionListener(
-				itemHelp, this.op.getClass().getName(), this));
+		JMenuItem itemHelp = new JMenuItem("Operator Documentation");
+		// add operator documentation entry if documentation available
+		if (this.op.getDocumentation() != null && !this.op.getDocumentation().isEmpty()) {
+			itemHelp.setActionCommand("helpM_docu");
+			itemHelp.addActionListener(this);
+		}
+		else {
+			itemHelp.setEnabled(false);
+		}
 		JMenuItem itemAbout = new JMenuItem("About Alida");
 		itemAbout.setActionCommand("helpM_about");
 		itemAbout.addActionListener(this);
@@ -818,6 +831,60 @@ public class ALDOperatorConfigurationFrame extends JFrame
 			this.setSize(this.getWidth(), 
 					this.getHeight() - oldMsgBoardHeight + newMsgBoardHeight);
 			this.messageBoardLineNumber = lineNumber;
+		}
+		else if (command.equals("helpM_docu")) {
+			String docText = this.op.getDocumentation();
+
+			if (docText != null && !docText.isEmpty()) {
+				JFrame docuWindow = new JFrame();
+				docuWindow.setTitle("Documentation - " + this.op.name);
+				docuWindow.setSize(750, 800);
+				JPanel docuPanel = new JPanel();
+				docuPanel.setLayout(new BorderLayout());
+				
+				JEditorPane textPane = new JEditorPane("text/html",
+						"<h1> Documentation of " + this.op.name + "</h1><br/>" + docText);
+				textPane.setEditable(false);
+				textPane.addHyperlinkListener(new HyperlinkListener() {
+			    public void hyperlinkUpdate(HyperlinkEvent e) {
+			        if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {			        	
+			    			if(Desktop.isDesktopSupported()) {
+			  			    try {
+										Desktop.getDesktop().browse(e.getURL().toURI());
+									} catch (IOException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									} catch (URISyntaxException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+			    			}
+			        }
+			    }
+				});
+
+				JScrollPane scrollPane = new JScrollPane(textPane);
+				docuPanel.add(scrollPane, BorderLayout.CENTER);
+				scrollPane.getVerticalScrollBar().setValue(0);
+				scrollPane.getHorizontalScrollBar().setValue(0);
+				
+				JPanel buttonPanel = new JPanel();
+				JButton closeButton = new JButton("Close");
+				closeButton.addActionListener(
+						new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								docuWindow.setVisible(false);
+								docuWindow.dispose();
+							}
+						});
+				buttonPanel.add(closeButton);
+				docuPanel.add(buttonPanel, BorderLayout.SOUTH);
+				docuPanel.updateUI();
+				
+				docuWindow.add(docuPanel);
+				docuWindow.setVisible(true);
+			}
 		}
 		else if (command.equals("helpM_about")) {
 			Object[] options = { "OK" };

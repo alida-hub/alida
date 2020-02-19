@@ -120,7 +120,7 @@ public abstract class ALDOperator
 	 * Name of the operator
 	 */
 	public String name;
-
+		
 	/**
 	 * Genuine object representing the operation. This may be used in operators,
 	 * wrapping another class implementing the actual operation. Reflections
@@ -500,6 +500,14 @@ public abstract class ALDOperator
 	 */
 	protected void setName( String name) {
 		this.name = name;
+	}
+
+	/**
+	 * Full description of the operator, e.g., to be shown as documentation in GUI.
+	 * @return	Full description of the operator, maybe null.
+	 */
+	public String getDocumentation() {
+		return null;
 	}
 
 	/** Return the <code>hidingMode</code> of this operator during execution
