@@ -107,4 +107,10 @@ public @interface ALDAOperator {
 	 * If true this operator may me invoked in batch mode within the gui oprunner
 	 */
 	boolean allowBatchMode() default true;
+
+	/**
+	 * A short string to describe the functionality of the operator.
+	 * @return	Short decription string.
+	 */
+	String shortDescription() default "";
 }

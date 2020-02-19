@@ -25,8 +25,12 @@
 
 package de.unihalle.informatik.Alida.gui;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import de.unihalle.informatik.Alida.annotations.ALDAOperator;
 import de.unihalle.informatik.Alida.operator.ALDOperatorLocation;
 /**
  * Class for managing nodes of the tree view. 	
@@ -45,6 +49,11 @@ public class ALDOperatorChooserTreeNode extends DefaultMutableTreeNode {
 	 */
 	private ALDOperatorLocation location;
 	
+	/**
+	 * Short description of operator.
+	 */
+	private final String shortDescription;
+
 	/** constructor
 	 * @param name    operator name without packages
 	 * @param _location  location object
@@ -53,11 +62,33 @@ public class ALDOperatorChooserTreeNode extends DefaultMutableTreeNode {
 	ALDOperatorChooserTreeNode(String name, ALDOperatorLocation _location) {
 		super(name);
 		this.location = _location;
-		
-		if ( ALDOperatorChooserTree.debug ) {
-			System.out.println("ALDOperatorChooserTreeNode::ALDOperatorChooserTreeNode name " + name + 
 
-					" location " + this.location);
+		// check if operator has a short description and store for later use
+		// as tooltip in the operator chooser
+		String shortInfo = null;
+		if ( this.location != null && this.location.getName() != null ) {
+			try {
+				Class<?> c = Class.forName( this.location.getName());
+				Annotation anno = c.getAnnotation(ALDAOperator.class);
+		
+				if (anno != null) {
+					Class<? extends Annotation> type = anno.annotationType();
+					// get the value of the short description
+					Method m = type.getDeclaredMethod("shortDescription");
+					Object value = m.invoke(anno, (Object[])null);
+					shortInfo = value.toString();
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		this.shortDescription = shortInfo;
+
+		if ( ALDOperatorChooserTree.debug ) {
+			System.out.println(
+					"ALDOperatorChooserTreeNode::ALDOperatorChooserTreeNode name " 
+							+ name + " location " + this.location);
 			if ( this.location != null ) 
 				System.out.println("        location.name " +this.location.getName());
 		}
@@ -72,6 +103,14 @@ public class ALDOperatorChooserTreeNode extends DefaultMutableTreeNode {
 		return this.location;
 	}
 	
+	/**
+	 * Get the short description of the operator as extracted from annotation.
+	 * @return Short description string.
+	 */
+	public String getShortDescription() {
+		return this.shortDescription;
+	}
+
 	/** Is this node a operator?
 	 * 
 	 * @return	True, if node is an operator class.

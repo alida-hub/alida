@@ -29,6 +29,7 @@ import javax.swing.*;
 import javax.swing.tree.*;
 
 import java.util.*;
+import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
@@ -126,6 +127,9 @@ public class ALDOperatorChooserTree extends JTree  {
 		}
 		
 		hideLeaves( new TreePath(this.getModel().getRoot()));
+				
+		ToolTipManager.sharedInstance().registerComponent(this);
+		this.setCellRenderer(new AlidaOpTreeCellRenderer());
 	}
 
 	/** Return current mode of usage.
@@ -501,5 +505,39 @@ public class ALDOperatorChooserTree extends JTree  {
 
 			return node;
 		}
+	}
+	/** 
+	 * Treerender for displaying the operator short descriptions as tool tips.
+	 * @author posch
+	 */
+	@SuppressWarnings("serial")
+	private class AlidaOpTreeCellRenderer extends DefaultTreeCellRenderer {
+
+		@Override
+		public Component getTreeCellRendererComponent(JTree tree, Object value,
+				boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+
+			Component cell = super.getTreeCellRendererComponent(
+					tree, value, sel, expanded, leaf, row, hasFocus);
+			if (cell instanceof JComponent) {
+				if (   value instanceof ALDOperatorChooserTreeNode 
+						&& cell instanceof JLabel) {
+					
+					ALDOperatorChooserTreeNode opTreeNode = 
+							((ALDOperatorChooserTreeNode) value);
+					if (    opTreeNode.isOperator() 
+							&&  opTreeNode.getShortDescription() != null 
+							&& !opTreeNode.getShortDescription().isEmpty()) {
+						((JComponent)cell).setToolTipText(opTreeNode.getShortDescription());
+					} else {
+						((JComponent) cell).setToolTipText(null);
+					}
+				} else {
+					((JComponent) cell).setToolTipText(null);
+				}
+			}
+			return cell;
+		}
+		
 	}
 }
