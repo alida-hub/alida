@@ -170,12 +170,22 @@
         <executions>
           <execution>
             <goals>
-              <goal>java</goal>
+              <goal>exec</goal>
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <mainClass>de.unihalle.informatik.Alida.tools.ALDOpRunnerGUI</mainClass>
+	<configuration>
+          <executable>java</executable>
+	  <classpathScope>runtime</classpathScope>
+          <arguments>
+	    <argument>-classpath</argument>
+            <classpath/>
+	    <argument>-Xms2048m</argument>
+	    <argument>-Xmx2048m</argument>
+	    <argument>-Dalida.oprunner.level=standard</argument>
+	    <argument>-Dalida.versionprovider_class=de.unihalle.informatik.MiToBo.core.operator.ALDVersionProviderReleaseFile</argument>
+            <argument>de.unihalle.informatik.Alida.tools.ALDOpRunnerGUI</argument>
+          </arguments>
         </configuration>
       </plugin>
     </plugins>
