@@ -72,7 +72,9 @@ public class ALDArrayMean extends ALDSummarizeArrayOp {
 
 	@Override
 	public String getDocumentation() {
-		return "<ul><li>\n" + 
+		return "<p>The operator calculates the mean value of all entries of the given array.</p>\n" +
+				"<p>It defines the following inputs and outputs:" +
+				"<ul><li>\n" + 
 				"<p><b>input:</b>\n" + 
 				"<ul><li>\n" + 
 				"<p>one-dimensional array of type <i>Double []</i></p>\n" + 
@@ -86,14 +88,13 @@ public class ALDArrayMean extends ALDSummarizeArrayOp {
 				"</p>\n" + 
 				"</li></ul>\n" + 
 				"\n" + 
-				"<p>The operator calculates the mean value of all entries of the given array.</p>\n" + 
 				"\n" + 
 				"<p>\n" + 
-				"It extends the class \n" + 
+				"The operator extends the class \n" + 
 				"<i>\n" + 
 				"<a href=\"de.unihalle.informatik.Alida.demo.ALDSummarizeArrayOp.html\">\n" + 
 				"ALDSummarizeArrayOp\n" + 
-				"</a>\n" + 
+				"</a>.\n" + 
 				"</i>\n" +
 				super.getDocumentation();
 	}

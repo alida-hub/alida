@@ -128,7 +128,10 @@ public class ALDCalcMeanArray extends ALDOperator {
 	
 	@Override
 	public String getDocumentation() {
-		return "<ul><li>\n" + 
+		return "<p>The operator calculates the mean value of all entries of the given array\n" + 
+				"and optionally also calculates mean-free data from the given input.</p>\n" +
+				"<p>It defines the following inputs and outputs:</p>\n" +
+				"<ul><li>\n" + 
 				"<p><b>input:</b>\n" + 
 				"<ul>\n" + 
 				"<li><p>one-dimensional array of type <i>Double []</i></p></li>\n" + 
@@ -147,8 +150,6 @@ public class ALDCalcMeanArray extends ALDOperator {
 				"</p>\n" + 
 				"</li></ul>\n" + 
 				"\n" + 
-				"<p>The operator calculates the mean value of all entries of the given array\n" + 
-				"and optionally also calculates mean-free data from the given input.</p>\n" + 
 				"\n";
 	}
 }

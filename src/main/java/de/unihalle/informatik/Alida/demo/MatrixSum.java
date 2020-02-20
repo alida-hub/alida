@@ -130,7 +130,9 @@ public class MatrixSum extends ALDOperator {
 	
 	@Override
 	public String getDocumentation() {
-		return "<ul><li>\n" + 
+		return "<p>The operator sums-up either all rows or columns of the given array.</p>\n" +
+				"<p>It defines the following inputs and outputs:\n" +
+				"<ul><li>\n" + 
 				"<p><b>input:</b>\n" + 
 				"<ul><li>\n" + 
 				"<p>two-dimensional array of type <i>Double [][]</i></p>\n" + 
@@ -142,8 +144,6 @@ public class MatrixSum extends ALDOperator {
 				"<p>one-dimensional array of type <i>Double []</i></p>\n" + 
 				"</li></ul>\n" + 
 				"</p>\n" + 
-				"</li></ul>\n" + 
-				"\n" + 
-				"<p>The operator sums-up either all rows or columns of the given array.</p>\n";
+				"</li></ul>\n";
 	}
 }

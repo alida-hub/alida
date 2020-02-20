@@ -87,7 +87,12 @@ abstract public class ALDSummarizeArrayOp extends ALDOperator {
 	
 	@Override
 	public String getDocumentation() {
-		return "<ul><li>\n" + 
+		return "<p>" +
+				"This class is an abstract super class for operators performing calculations \n" + 
+				"on 1D arrays. In particular, the operator defines as input a 1D array of \n" + 
+				"numerical values and as output a single numerical value, which, e.g., can be \n" + 
+				"the mean, minimum or maximum of the input array.\n" + 
+				"<ul><li>\n" + 
 				"<p><b>input:</b>\n" + 
 				"<ul>\n" + 
 				"<li><p>one-dimensional array of type <i>Double []</i></p>\n" + 
@@ -102,10 +107,6 @@ abstract public class ALDSummarizeArrayOp extends ALDOperator {
 				"</p>\n" + 
 				"</li></ul>\n" + 
 				"\n" + 
-				"<p>This class is an abstract super class for operators performing calculations\n" + 
-				"on 1D arrays. In particular, the operator defines as input a 1D array of \n" + 
-				"numerical values and as output a single numerical value, which, e.g., can be\n" + 
-				"the mean, minimum or maximum of the input array.\n" + 
 				"<p>\n";
 	}
 }

@@ -276,7 +276,10 @@ public class ApplyToMatrix extends ALDOperator {
 
     @Override
     public String getDocumentation() {
-    	return "<ul><li>\n" + 
+    	return "<p>The operator applies the selected operator to each row or " + 
+    			"column (depending on the chosen operator mode) of the input array. " + 
+    			"Optionally the time can be measured and verbose output provided.</p>\n" + 
+    			"<ul><li>\n" + 
     			"<p><b>inputs:</b>\n" + 
     			"<ul><li>\n" + 
     			"<p>two-dimensional array of type <i>Double [][]</i></p>\n" + 
@@ -292,8 +295,6 @@ public class ApplyToMatrix extends ALDOperator {
     			"<p>one-dimensional array of type <i>Double</i> with summarized values</p>\n" + 
     			"</li></ul>\n" + 
     			"</p>\n" + 
-    			"</li></ul>\n" + 
-    			"\n" + 
-    			"<p>The operator applies the selected operator to each row or column (depending on the chosen operator mode) of the input array. Optionally the time can be measured and verbose output provided.</p>\n";
+    			"</li></ul>\n";
     }    
 }

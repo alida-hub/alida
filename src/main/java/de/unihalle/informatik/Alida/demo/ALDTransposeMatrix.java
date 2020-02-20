@@ -86,7 +86,11 @@ public class ALDTransposeMatrix extends ALDOperator {
 	
 	@Override
 	public String getDocumentation() {
-		return "<ul><li>\n" + 
+		return "<p>The 2D input array is interpreted as matrix of size m x n.\n" + 
+				"The operator transposes this matrix and returns a transposed version sized\n" + 
+				"n x m.\n" +
+				"<p>It defines the following inputs and outputs:" +
+				"<ul><li>\n" + 
 				"<p><b>input:</b>\n" + 
 				"<ul>\n" + 
 				"<li><p>two-dimensional array of type <i>int [][]</i>\n" + 
@@ -98,10 +102,6 @@ public class ALDTransposeMatrix extends ALDOperator {
 				"<li><p>two-dimensional array of type <i>int [][]</i>\n" + 
 				"</li></ul>\n" + 
 				"</p>\n" + 
-				"</li></ul>\n" + 
-				"\n" + 
-				"<p>The 2D input array is interpreted as matrix of size m x n. \n" + 
-				"The operator transposes this matrix and returns a transposed version sized\n" + 
-				"n x m.\n";
+				"</li></ul>\n";
 	}
 }
