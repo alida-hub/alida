@@ -64,20 +64,4 @@ public class ALDGrappaRunner {
 
 		return allicationOps;
 	}
-	
 }
-
-/*BEGIN_MITOBO_ONLINE_HELP
-<h1 class="title">Grappa - the Workflow Editor</h1>
-<br>
-
-<p><img src="pics/Grappa_logo.png" alt="Grappa"></p>
-
-<p>Grappa is a graphical programming editor for Alida. It allows to 
-graphically combine operators into more complex workflows. To this end 
-operators are linked to nodes of a directed, acyclic graph. Each node has 
-several ports corresponding to the underlying operator's input and output 
-parameters. By drawing edges between ports a flow of data can be defined, 
-which in the end results in a complete workflow acting on given input data 
-and producing . </p>
-END_MITOBO_ONLINE_HELP*/

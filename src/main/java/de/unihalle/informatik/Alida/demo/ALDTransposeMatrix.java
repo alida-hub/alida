@@ -91,27 +91,25 @@ public class ALDTransposeMatrix extends ALDOperator {
 			}
 		}
 	}
+	
+	@Override
+	public String getDocumentation() {
+		return "<ul><li>\n" + 
+				"<p><b>input:</b>\n" + 
+				"<ul>\n" + 
+				"<li><p>two-dimensional array of type <i>int [][]</i>\n" + 
+				"</ul>\n" + 
+				"</p>\n" + 
+				"</li><li>\n" + 
+				"<p><b>output:</b>\n" + 
+				"<ul>\n" + 
+				"<li><p>two-dimensional array of type <i>int [][]</i>\n" + 
+				"</li></ul>\n" + 
+				"</p>\n" + 
+				"</li></ul>\n" + 
+				"\n" + 
+				"<p>The 2D input array is interpreted as matrix of size m x n. \n" + 
+				"The operator transposes this matrix and returns a transposed version sized\n" + 
+				"n x m.\n";
+	}
 }
-
-/*BEGIN_MITOBO_ONLINE_HELP
-
-<ul><li>
-<p><b>input:</b>
-<ul>
-<li><p>two-dimensional array of type <i>int [][]</i>
-</ul>
-</p>
-</li><li>
-<p><b>output:</b>
-<ul>
-<li><p>two-dimensional array of type <i>int [][]</i>
-</li></ul>
-</p>
-</li></ul>
-
-<p>The 2D input array is interpreted as matrix of size m x n. 
-The operator transposes this matrix and returns a transposed version sized
-n x m.
-
-END_MITOBO_ONLINE_HELP*/
-

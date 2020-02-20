@@ -34,9 +34,7 @@
 package de.unihalle.informatik.Alida.demo;
 
 import de.unihalle.informatik.Alida.exceptions.ALDOperatorException;
-import de.unihalle.informatik.Alida.operator.ALDOperator;
 import de.unihalle.informatik.Alida.operator.events.ALDOperatorExecutionProgressEvent;
-import de.unihalle.informatik.Alida.annotations.Parameter;
 import de.unihalle.informatik.Alida.annotations.ALDAOperator;
 import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
 
@@ -51,10 +49,10 @@ import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
 public class ALDArrayMin extends ALDSummarizeArrayOp {
 
 	@Override
-    protected void operate() {
+	protected void operate() {
 		this.fireOperatorExecutionProgressEvent(
 				new ALDOperatorExecutionProgressEvent(this, 
-					"Starting to compute minimum of a matrix..."));
+						"Starting to compute minimum of a matrix..."));
 
 		summary = data[0];
 		for ( int i = 1 ; i < data.length ; i++ )
@@ -77,31 +75,31 @@ public class ALDArrayMin extends ALDSummarizeArrayOp {
 	public ALDArrayMin( Double[] data) throws ALDOperatorException {
 		this.data = data;
 	}
+	
+	@Override
+	public String getDocumentation() {
+		return "<ul><li>\n" + 
+				"<p><b>input:</b>\n" + 
+				"<ul><li>\n" + 
+				"<p>one-dimensional array of type <i>Double []</i></p>\n" + 
+				"</li></ul>\n" + 
+				"</p>\n" + 
+				"</li><li>\n" + 
+				"<p><b>output:</b>\n" + 
+				"<ul><li>\n" + 
+				"<p>value of type <i>Double</i></p>\n" + 
+				"</li></ul>\n" + 
+				"</p>\n" + 
+				"</li></ul>\n" + 
+				"\n" + 
+				"<p>The operator extracts the minimum value from the given array.</p>\n" + 
+				"\n" + 
+				"<p>\n" + 
+				"It extends the class \n" + 
+				"<i>\n" + 
+				"<a href=\"de.unihalle.informatik.Alida.demo.ALDSummarizeArrayOp.html\">\n" + 
+				"ALDSummarizeArrayOp\n" + 
+				"</a>\n" + 
+				"</i>\n";
+	}
 }
-/*BEGIN_MITOBO_ONLINE_HELP
-
-<ul><li>
-<p><b>input:</b>
-<ul><li>
-<p>one-dimensional array of type <i>Double []</i></p>
-</li></ul>
-</p>
-</li><li>
-<p><b>output:</b>
-<ul><li>
-<p>value of type <i>Double</i></p>
-</li></ul>
-</p>
-</li></ul>
-
-<p>The operator extracts the minimum value from the given array.</p>
-
-<p>
-It extends the class 
-<i>
-<a href="de.unihalle.informatik.Alida.demo.ALDSummarizeArrayOp.html">
-ALDSummarizeArrayOp
-</a>
-</i>
-
-END_MITOBO_ONLINE_HELP*/

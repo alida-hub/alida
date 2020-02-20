@@ -152,13 +152,11 @@ public class ALDDemoOpControllableHandle extends ALDOperatorControllable {
     return;
   }
 
+  @Override
+  public String getDocumentation() {
+  	return "This operator demonstrates the capabilities of controllable operators in Alida.\n" + 
+  			"<p>\n" + 
+  			"Such operators allow for user interaction during execution, i.e. can be paused\n" + 
+  			"and interrupted.\n";
+  }
 }
-
-/*BEGIN_MITOBO_ONLINE_HELP
-
-This operator demonstrates the capabilities of controllable operators in Alida.
-<p>
-Such operators allow for user interaction during execution, i.e. can be paused
-and interrupted.
-
-END_MITOBO_ONLINE_HELP*/

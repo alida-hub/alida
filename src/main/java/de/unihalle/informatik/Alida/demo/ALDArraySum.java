@@ -79,31 +79,30 @@ public class ALDArraySum extends ALDSummarizeArrayOp {
         this.data = data;
     }
 
+    @Override
+    public String getDocumentation() {
+    	return "<ul><li>\n" + 
+    			"<p><b>input:</b>\n" + 
+    			"<ul><li>\n" + 
+    			"<p>one-dimensional array of type <i>Double []</i></p>\n" + 
+    			"</li></ul>\n" + 
+    			"</p>\n" + 
+    			"</li><li>\n" + 
+    			"<p><b>output:</b>\n" + 
+    			"<ul><li>\n" + 
+    			"<p>value of type <i>Double</i></p>\n" + 
+    			"</li></ul>\n" + 
+    			"</p>\n" + 
+    			"</li></ul>\n" + 
+    			"\n" + 
+    			"<p>The operator calculates the sum of all entries of the given array.</p>\n" + 
+    			"\n" + 
+    			"<p>\n" + 
+    			"It extends the class \n" + 
+    			"<i>\n" + 
+    			"<a href=\"de.unihalle.informatik.Alida.demo.ALDSummarizeArrayOp.html\">\n" + 
+    			"ALDSummarizeArrayOp\n" + 
+    			"</a>\n" + 
+    			"</i>\n";
+    }
 }
-/*BEGIN_MITOBO_ONLINE_HELP
-
-<ul><li>
-<p><b>input:</b>
-<ul><li>
-<p>one-dimensional array of type <i>Double []</i></p>
-</li></ul>
-</p>
-</li><li>
-<p><b>output:</b>
-<ul><li>
-<p>value of type <i>Double</i></p>
-</li></ul>
-</p>
-</li></ul>
-
-<p>The operator calculates the sum of all entries of the given array.</p>
-
-<p>
-It extends the class 
-<i>
-<a href="de.unihalle.informatik.Alida.demo.ALDSummarizeArrayOp.html">
-ALDSummarizeArrayOp
-</a>
-</i>
-
-END_MITOBO_ONLINE_HELP*/

@@ -123,30 +123,30 @@ public class ALDCalcMeanArray extends ALDOperator {
 	public Double getResultMean() {
 		return this.mean;
 	}
+	
+	@Override
+	public String getDocumentation() {
+		return "<ul><li>\n" + 
+				"<p><b>input:</b>\n" + 
+				"<ul>\n" + 
+				"<li><p>one-dimensional array of type <i>Double []</i></p></li>\n" + 
+				"<li><p>optional: flag of type <i>Boolean</i> to also return mean-free data</p>\n" + 
+				"</li>\n" + 
+				"</ul>\n" + 
+				"</p>\n" + 
+				"</li><li>\n" + 
+				"<p><b>output:</b>\n" + 
+				"<ul>\n" + 
+				"<li>\n" + 
+				"<p>value of type <i>Double</i>, i.e. the mean of the data</p>\n" + 
+				"<li>\n" + 
+				"<p>an array of type <i>Double []</i> containing the mean-free data</p>\n" + 
+				"</li></ul>\n" + 
+				"</p>\n" + 
+				"</li></ul>\n" + 
+				"\n" + 
+				"<p>The operator calculates the mean value of all entries of the given array\n" + 
+				"and optionally also calculates mean-free data from the given input.</p>\n" + 
+				"\n";
+	}
 }
-
-/*BEGIN_MITOBO_ONLINE_HELP
-
-<ul><li>
-<p><b>input:</b>
-<ul>
-<li><p>one-dimensional array of type <i>Double []</i></p></li>
-<li><p>optional: flag of type <i>Boolean</i> to also return mean-free data</p>
-</li>
-</ul>
-</p>
-</li><li>
-<p><b>output:</b>
-<ul>
-<li>
-<p>value of type <i>Double</i>, i.e. the mean of the data</p>
-<li>
-<p>an array of type <i>Double []</i> containing the mean-free data</p>
-</li></ul>
-</p>
-</li></ul>
-
-<p>The operator calculates the mean value of all entries of the given array
-and optionally also calculates mean-free data from the given input.</p>
-
-END_MITOBO_ONLINE_HELP*/

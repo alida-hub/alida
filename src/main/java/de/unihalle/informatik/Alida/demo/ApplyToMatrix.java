@@ -272,26 +272,26 @@ public class ApplyToMatrix extends ALDOperator {
         this.summaries = value;
     }
 
+    @Override
+    public String getDocumentation() {
+    	return "<ul><li>\n" + 
+    			"<p><b>inputs:</b>\n" + 
+    			"<ul><li>\n" + 
+    			"<p>two-dimensional array of type <i>Double [][]</i></p>\n" + 
+    			"</li><li>\n" + 
+    			"<p>mode of operation on array, i.e. row- or column-wise</p>\n" + 
+    			"</li><li>\n" + 
+    			"<p>operator to be applied to array</p>\n" + 
+    			"</li></ul>\n" + 
+    			"</p>\n" + 
+    			"</li><li>\n" + 
+    			"<p><b>output:</b>\n" + 
+    			"<ul><li>\n" + 
+    			"<p>one-dimensional array of type <i>Double</i> with summarized values</p>\n" + 
+    			"</li></ul>\n" + 
+    			"</p>\n" + 
+    			"</li></ul>\n" + 
+    			"\n" + 
+    			"<p>The operator applies the selected operator to each row or column (depending on the chosen operator mode) of the input array. Optionally the time can be measured and verbose output provided.</p>\n";
+    }    
 }
-/*BEGIN_MITOBO_ONLINE_HELP
-
-<ul><li>
-<p><b>inputs:</b>
-<ul><li>
-<p>two-dimensional array of type <i>Double [][]</i></p>
-</li><li>
-<p>mode of operation on array, i.e. row- or column-wise</p>
-</li><li>
-<p>operator to be applied to array</p>
-</li></ul>
-</p>
-</li><li>
-<p><b>output:</b>
-<ul><li>
-<p>one-dimensional array of type <i>Double</i> with summarized values</p>
-</li></ul>
-</p>
-</li></ul>
-
-<p>The operator applies the selected operator to each row or column (depending on the chosen operator mode) of the input array. Optionally the time can be measured and verbose output provided.</p>
-END_MITOBO_ONLINE_HELP*/

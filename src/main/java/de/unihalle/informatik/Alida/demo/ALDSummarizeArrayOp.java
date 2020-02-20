@@ -84,38 +84,37 @@ abstract public class ALDSummarizeArrayOp extends ALDOperator {
 	public Double getSummary() {
 		return this.summary;
 	}
+	
+	@Override
+	public String getDocumentation() {
+		return "<ul><li>\n" + 
+				"<p><b>input:</b>\n" + 
+				"<ul>\n" + 
+				"<li><p>one-dimensional array of type <i>Double []</i></p>\n" + 
+				"</ul>\n" + 
+				"</p>\n" + 
+				"</li><li>\n" + 
+				"<p><b>output:</b>\n" + 
+				"<ul>\n" + 
+				"<li>\n" + 
+				"<p>summary value in terms of a <i>Double</i>\n" + 
+				"</li></ul>\n" + 
+				"</p>\n" + 
+				"</li></ul>\n" + 
+				"\n" + 
+				"<p>This class is an abstract super class for operators performing calculations\n" + 
+				"on 1D arrays. In particular, the operator defines as input a 1D array of \n" + 
+				"numerical values and as output a single numerical value, which, e.g., can be\n" + 
+				"the mean, minimum or maximum of the input array.\n" + 
+				"<p>\n" + 
+				"The following operators extend this operator:\n" + 
+				"<ul>\n" + 
+				"<li><i><a href=\"de.unihalle.informatik.Alida.demo.ALDArrayMean.html\">\n" + 
+				"	ALDArrayMean</a></i>\n" + 
+				"<li><i><a href=\"de.unihalle.informatik.Alida.demo.ALDArrayMin.html\">\n" + 
+				"	ALDArrayMin</a></i>\n" + 
+				"<li><i><a href=\"de.unihalle.informatik.Alida.demo.ALDArraySum.html\">\n" + 
+				"	ALDArraySum</a></i>\n" + 
+				"</ul>\n";
+	}
 }
-
-/*BEGIN_MITOBO_ONLINE_HELP
-
-<ul><li>
-<p><b>input:</b>
-<ul>
-<li><p>one-dimensional array of type <i>Double []</i></p>
-</ul>
-</p>
-</li><li>
-<p><b>output:</b>
-<ul>
-<li>
-<p>summary value in terms of a <i>Double</i>
-</li></ul>
-</p>
-</li></ul>
-
-<p>This class is an abstract super class for operators performing calculations
-on 1D arrays. In particular, the operator defines as input a 1D array of 
-numerical values and as output a single numerical value, which, e.g., can be
-the mean, minimum or maximum of the input array.
-<p>
-The following operators extend this operator:
-<ul>
-<li><i><a href="de.unihalle.informatik.Alida.demo.ALDArrayMean.html">
-	ALDArrayMean</a></i>
-<li><i><a href="de.unihalle.informatik.Alida.demo.ALDArrayMin.html">
-	ALDArrayMin</a></i>
-<li><i><a href="de.unihalle.informatik.Alida.demo.ALDArraySum.html">
-	ALDArraySum</a></i>
-</ul>
-
-END_MITOBO_ONLINE_HELP*/

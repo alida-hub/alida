@@ -275,16 +275,15 @@ public class ALDParameterTester extends ALDOperator {
 		this.out_array_Integer = this.array_Integer;
 		this.outSelect = this.eSelect;
 	}
+	
+	@Override
+	public String getDocumentation() {
+		return "This operator has a huge amount of input and output parameters of various types.\n" + 
+				"<p>\n" + 
+				"It basically copies the given input data values to the corresponding output \n" + 
+				"parameter variables.\n" + 
+				"<p>\n" + 
+				"It is mainly intended to be used for testing the functionality of the \n" + 
+				"different data I/O providers.\n";
+	}
 }
-
-/*BEGIN_MITOBO_ONLINE_HELP
- 
-This operator has a huge amount of input and output parameters of various types.
-<p>
-It basically copies the given input data values to the corresponding output 
-parameter variables.
-<p>
-It is mainly intended to be used for testing the functionality of the 
-different data I/O providers.
-
-END_MITOBO_ONLINE_HELP*/

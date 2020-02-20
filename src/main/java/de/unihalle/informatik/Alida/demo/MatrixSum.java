@@ -126,22 +126,23 @@ public class MatrixSum extends ALDOperator {
 	public Double[] getSums() {
 		return this.sums;
 	}
+	
+	@Override
+	public String getDocumentation() {
+		return "<ul><li>\n" + 
+				"<p><b>input:</b>\n" + 
+				"<ul><li>\n" + 
+				"<p>two-dimensional array of type <i>Double [][]</i></p>\n" + 
+				"</li></ul>\n" + 
+				"</p>\n" + 
+				"</li><li>\n" + 
+				"<p><b>output:</b>\n" + 
+				"<ul><li>\n" + 
+				"<p>one-dimensional array of type <i>Double []</i></p>\n" + 
+				"</li></ul>\n" + 
+				"</p>\n" + 
+				"</li></ul>\n" + 
+				"\n" + 
+				"<p>The operator sums-up either all rows or columns of the given array.</p>\n";
+	}
 }
-/*BEGIN_MITOBO_ONLINE_HELP
-
-<ul><li>
-<p><b>input:</b>
-<ul><li>
-<p>two-dimensional array of type <i>Double [][]</i></p>
-</li></ul>
-</p>
-</li><li>
-<p><b>output:</b>
-<ul><li>
-<p>one-dimensional array of type <i>Double []</i></p>
-</li></ul>
-</p>
-</li></ul>
-
-<p>The operator sums-up either all rows or columns of the given array.</p>
-END_MITOBO_ONLINE_HELP*/
