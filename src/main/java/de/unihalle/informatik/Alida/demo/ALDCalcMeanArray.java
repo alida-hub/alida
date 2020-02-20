@@ -37,7 +37,9 @@ import de.unihalle.informatik.Alida.annotations.Parameter;
  * @author moeller
  */
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
-	level=ALDAOperator.Level.APPLICATION)
+	level=ALDAOperator.Level.APPLICATION,
+	shortDescription="Computes the mean of the input double array and " 
+			+ "optionally makes the data mean-free.")
 public class ALDCalcMeanArray extends ALDOperator {
 
   /**

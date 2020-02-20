@@ -106,15 +106,6 @@ abstract public class ALDSummarizeArrayOp extends ALDOperator {
 				"on 1D arrays. In particular, the operator defines as input a 1D array of \n" + 
 				"numerical values and as output a single numerical value, which, e.g., can be\n" + 
 				"the mean, minimum or maximum of the input array.\n" + 
-				"<p>\n" + 
-				"The following operators extend this operator:\n" + 
-				"<ul>\n" + 
-				"<li><i><a href=\"de.unihalle.informatik.Alida.demo.ALDArrayMean.html\">\n" + 
-				"	ALDArrayMean</a></i>\n" + 
-				"<li><i><a href=\"de.unihalle.informatik.Alida.demo.ALDArrayMin.html\">\n" + 
-				"	ALDArrayMin</a></i>\n" + 
-				"<li><i><a href=\"de.unihalle.informatik.Alida.demo.ALDArraySum.html\">\n" + 
-				"	ALDArraySum</a></i>\n" + 
-				"</ul>\n";
+				"<p>\n";
 	}
 }

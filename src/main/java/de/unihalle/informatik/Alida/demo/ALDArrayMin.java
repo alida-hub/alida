@@ -36,7 +36,8 @@ import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
  */
 @ALDDerivedClass
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
-		level=ALDAOperator.Level.STANDARD)
+		level=ALDAOperator.Level.STANDARD,
+		shortDescription="Computes the minimal value in a given 1D array.")
 public class ALDArrayMin extends ALDSummarizeArrayOp {
 
 	@Override
@@ -91,6 +92,7 @@ public class ALDArrayMin extends ALDSummarizeArrayOp {
 				"<a href=\"de.unihalle.informatik.Alida.demo.ALDSummarizeArrayOp.html\">\n" + 
 				"ALDSummarizeArrayOp\n" + 
 				"</a>\n" + 
-				"</i>\n";
+				"</i>\n" +
+				super.getDocumentation();
 	}
 }

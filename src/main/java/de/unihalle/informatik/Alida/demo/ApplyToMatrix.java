@@ -41,7 +41,9 @@ import de.unihalle.informatik.Alida.annotations.Parameter;
  * @author posch
  */
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
-            level=ALDAOperator.Level.APPLICATION)
+	level=ALDAOperator.Level.APPLICATION,
+	shortDescription="Applies the given summarizing operator either row- " 
+			+ "or column-wise to the input matrix.")
 public class ApplyToMatrix extends ALDOperator {
 
     /** Choose row or colum wise sum

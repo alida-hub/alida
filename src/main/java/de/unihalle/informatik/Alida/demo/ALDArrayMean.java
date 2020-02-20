@@ -38,7 +38,8 @@ import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
  */
 @ALDDerivedClass
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
-		level=ALDAOperator.Level.STANDARD)
+		level=ALDAOperator.Level.STANDARD,
+		shortDescription="Computes the mean of a given 1D array.")
 public class ALDArrayMean extends ALDSummarizeArrayOp {
 
 	@Override
@@ -93,6 +94,7 @@ public class ALDArrayMean extends ALDSummarizeArrayOp {
 				"<a href=\"de.unihalle.informatik.Alida.demo.ALDSummarizeArrayOp.html\">\n" + 
 				"ALDSummarizeArrayOp\n" + 
 				"</a>\n" + 
-				"</i>\n";
+				"</i>\n" +
+				super.getDocumentation();
 	}
 }

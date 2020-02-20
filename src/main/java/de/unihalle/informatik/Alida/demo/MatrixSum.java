@@ -38,7 +38,8 @@ import de.unihalle.informatik.Alida.annotations.Parameter;
  * @author posch
  */
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
-				level=ALDAOperator.Level.APPLICATION)
+	level=ALDAOperator.Level.APPLICATION,
+	shortDescription="Calculates the row or column sums of the matrix.")
 public class MatrixSum extends ALDOperator {
 //SNIPPETCODE:declareEnd
 

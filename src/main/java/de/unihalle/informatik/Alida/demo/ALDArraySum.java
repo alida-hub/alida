@@ -38,7 +38,8 @@ import de.unihalle.informatik.Alida.annotations.ALDDerivedClass;
  */
 //SNIPPETCODE:constructorBegin
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL,
-        level=ALDAOperator.Level.STANDARD)
+	level=ALDAOperator.Level.STANDARD,
+  shortDescription="Computes the sum of all elements in a given 1D array.")
 @ALDDerivedClass
 public class ALDArraySum extends ALDSummarizeArrayOp {
 //SNIPPETCODE:constructorEnd
@@ -94,6 +95,7 @@ public class ALDArraySum extends ALDSummarizeArrayOp {
     			"<a href=\"de.unihalle.informatik.Alida.demo.ALDSummarizeArrayOp.html\">\n" + 
     			"ALDSummarizeArrayOp\n" + 
     			"</a>\n" + 
-    			"</i>\n";
+    			"</i>\n" +
+    			super.getDocumentation();
     }
 }

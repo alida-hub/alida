@@ -35,7 +35,8 @@ import de.unihalle.informatik.Alida.annotations.Parameter;
  * @author moeller
  */
 @ALDAOperator(genericExecutionMode=ALDAOperator.ExecutionMode.ALL, 
-	allowBatchMode=false)
+	allowBatchMode=false, 
+	shortDescription="Transposes a given 2D integer data array.")
 public class ALDTransposeMatrix extends ALDOperator {
 
   /**

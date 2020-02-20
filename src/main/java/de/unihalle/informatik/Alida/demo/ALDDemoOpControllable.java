@@ -37,7 +37,9 @@ import de.unihalle.informatik.Alida.annotations.ALDAOperator.Level;
  * @author moeller
  */
 @ALDAOperator(genericExecutionMode=ExecutionMode.ALL,
-	level=Level.STANDARD)
+	level=Level.STANDARD,
+	shortDescription="Demonstrates the capabilities of controllable "
+		+ "operators in Alida.")
 public class ALDDemoOpControllable extends ALDOperatorControllable {
 
 	/**
