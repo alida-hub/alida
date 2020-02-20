@@ -23,15 +23,6 @@
  *
  */
 
-/*
- * Most recent change(s):
- * 
- * $Rev: 3376 $
- * $Date: 2011-03-11 11:21:44 +0100 (Fr, 11 Mrz 2011) $
- * $Author: moeller $
- * 
- */
-
 package de.unihalle.informatik.Alida.exceptions;
 
 

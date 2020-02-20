@@ -23,15 +23,6 @@
  *
  */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev: 4370 $
- * $Date: 2011/11/20 20:18:51 $
- * $Author: posch $
- * 
- */
-
 package de.unihalle.informatik.Alida.batch;
 
 import de.unihalle.informatik.Alida.annotations.ALDBatchInputProvider;

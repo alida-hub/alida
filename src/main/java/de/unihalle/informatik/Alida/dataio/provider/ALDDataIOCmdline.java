@@ -23,15 +23,6 @@
  *
  */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev$
- * $Date$
- * $Author$
- * 
- */
-
 package de.unihalle.informatik.Alida.dataio.provider;
 
 import java.lang.reflect.Field;

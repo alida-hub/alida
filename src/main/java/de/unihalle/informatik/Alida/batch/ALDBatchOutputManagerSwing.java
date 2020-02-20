@@ -23,15 +23,6 @@
  *
  */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev: 6309 $
- * $Date: 2012-11-23 17:19:53 +0100 (Fr, 23 Nov 2012) $
- * $Author: moeller $
- * 
- */
-
 package de.unihalle.informatik.Alida.batch;
 
 import de.unihalle.informatik.Alida.batch.provider.output.swing.ALDBatchOutputSummarizerSwing;

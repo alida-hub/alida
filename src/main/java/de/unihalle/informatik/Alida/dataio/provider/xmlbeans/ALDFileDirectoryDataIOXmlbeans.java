@@ -23,15 +23,6 @@
  *
  */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev: 4767 $
- * $Date: 2011-12-16 17:48:54 +0100 (Fr, 16 Dez 2011) $
- * $Author: moeller $
- * 
- */
-
 package de.unihalle.informatik.Alida.dataio.provider.xmlbeans;
 
 import de.unihalle.informatik.Alida.annotations.ALDDataIOProvider;

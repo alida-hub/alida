@@ -59,15 +59,6 @@
   09dec2002  dl               Fix interference checks.
 */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev$
- * $Date$
- * $Author$
- * 
- */
-
 package de.unihalle.informatik.Alida.helpers;
 
 import java.io.IOException;

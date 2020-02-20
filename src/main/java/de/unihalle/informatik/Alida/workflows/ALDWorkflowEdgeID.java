@@ -22,15 +22,6 @@
  *    http://www.informatik.uni-halle.de/alida/
  *
  */
-
-/* 
- * Most recent change(s):
- * 
- * $Rev$
- * $Date$
- * $Author$
- * 
- */
 package de.unihalle.informatik.Alida.workflows;
 
 import de.unihalle.informatik.Alida.exceptions.ALDWorkflowException;

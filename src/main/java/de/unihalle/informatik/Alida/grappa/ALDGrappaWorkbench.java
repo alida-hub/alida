@@ -23,15 +23,6 @@
  *
  */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev: 6237 $
- * $Date: 2012-11-14 19:10:54 +0100 (Mi, 14 Nov 2012) $
- * $Author: moeller $
- * 
- */
-
 package de.unihalle.informatik.Alida.grappa;
 
 import java.awt.event.ActionEvent;

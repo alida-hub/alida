@@ -23,15 +23,6 @@
  *
  */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev: 4370 $
- * $Date: 2011/11/18 14:02:18 $
- * $Author: posch $
- * 
- */
-
 package de.unihalle.informatik.Alida.batch.provider.input;
 
 import java.util.Collection;

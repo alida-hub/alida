@@ -23,15 +23,6 @@
  *
  */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev: 5825 $
- * $Date: 2012-07-24 09:35:34 +0200 (Di, 24 Jul 2012) $
- * $Author: moeller $
- * 
- */
-
 package de.unihalle.informatik.Alida.batch.provider.input.swing;
 
 import java.lang.reflect.Field;

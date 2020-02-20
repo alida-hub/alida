@@ -23,15 +23,6 @@
  *
  */
 
-/*
- * Most recent change(s):
- *
- * $Rev$
- * $Date$
- * $Author$
- *
- */
-
 package de.unihalle.informatik.Alida.batch.provider.input.swing;
 
 import de.unihalle.informatik.Alida.dataio.ALDDataIOManagerSwing;

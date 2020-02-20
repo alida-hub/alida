@@ -23,15 +23,6 @@
  *
  */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev: 6290 $
- * $Date: 2012-11-21 21:39:47 +0100 (Mi, 21 Nov 2012) $
- * $Author: moeller $
- * 
- */
-
 package de.unihalle.informatik.Alida.gui;
 
 import javax.swing.*;

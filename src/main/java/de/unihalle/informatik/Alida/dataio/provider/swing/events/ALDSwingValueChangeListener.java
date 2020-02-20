@@ -23,15 +23,6 @@
  *
  */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev: 5207 $
- * $Date: 2012-03-14 15:12:09 +0100 (Mi, 14 Mrz 2012) $
- * $Author: moeller $
- * 
- */
-
 package de.unihalle.informatik.Alida.dataio.provider.swing.events;
 
 import java.util.EventListener;

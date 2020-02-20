@@ -23,15 +23,6 @@
  *
  */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev: 5413 $
- * $Date: 2012-04-12 11:01:03 +0200 (Do, 12 Apr 2012) $
- * $Author: moeller $
- * 
- */
-
 package de.unihalle.informatik.Alida.dataio.provider.swing.components;
 
 import javax.swing.*;

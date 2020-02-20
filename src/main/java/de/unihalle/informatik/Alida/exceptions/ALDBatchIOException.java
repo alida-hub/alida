@@ -23,15 +23,6 @@
  *
  */
 
-/* 
- * Most recent change(s):
- * 
- * $Rev: 5195 $
- * $Date: 2012-03-11 09:24:51 +0100 (So, 11 Mrz 2012) $
- * $Author: posch $
- * 
- */
-
 package de.unihalle.informatik.Alida.exceptions;
 
 
