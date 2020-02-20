@@ -93,22 +93,10 @@
         </executions>
       </plugin>
 
-      <!-- prepare packaging, extract online help comments -->
-      <plugin>
-        <groupId>de.unihalle.informatik.AlidaMiToBo.maven.plugins.help</groupId>
-        <artifactId>comment-parser-maven-plugin</artifactId>
-      </plugin>
-
       <!-- copy dependencies incl. help jar to local folder -->
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-dependency-plugin</artifactId>
-      </plugin>
-
-      <!-- update helpset archive and copy files to target/classes -->
-      <plugin>
-        <groupId>de.unihalle.informatik.AlidaMiToBo.maven.plugins.help</groupId>
-        <artifactId>helpset-file-injector-maven-plugin</artifactId>
       </plugin>
 
       <plugin>
@@ -210,10 +198,6 @@
   <dependencies>
     <!-- Compile dependencies -->
     <dependency>
-      <groupId>javax.help</groupId>
-      <artifactId>javahelp</artifactId>
-    </dependency>
-    <dependency>
       <groupId>net.java.sezpoz</groupId>
       <artifactId>sezpoz</artifactId>
       <scope>compile</scope>
@@ -235,10 +219,6 @@
       <groupId>de.unihalle.informatik.Alida</groupId>
       <artifactId>alida-xml</artifactId>
       <version>${alida.xml.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>de.unihalle.informatik.AlidaMiToBo</groupId>
-      <artifactId>help-resources</artifactId>
     </dependency>
     <dependency> 
       <groupId>org.slf4j</groupId>
