@@ -14,6 +14,18 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 
 ### Fixed
 
+## [2.8.12] - 2020-02-20
+Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
+- Released Alida 2.7.13
+
+### Added
+- ALDAOperator: added field for short description shown in chooser tool tips
+- ALDSwingComponentList/ALDSwingComponentComboBox: added methods to update and clear managed items
+- ALDOperator: added member with documentation string
+
+### Changed
+- ALDOperatorConfigurationFrame: replaced general online help in configuration and control windows with operator-specific documentation
+
 ## [2.7.12] - 2019-12-19
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
 - Released Alida 2.7.12
