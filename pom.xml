@@ -183,7 +183,7 @@
 	    <argument>-Xms2048m</argument>
 	    <argument>-Xmx2048m</argument>
 	    <argument>-Dalida.oprunner.level=standard</argument>
-	    <argument>-Dalida.versionprovider_class=de.unihalle.informatik.MiToBo.core.operator.ALDVersionProviderReleaseFile</argument>
+	    <argument>-Dalida.versionprovider_class=de.unihalle.informatik.Alida.version.ALDVersionProviderReleaseJar</argument>
             <argument>de.unihalle.informatik.Alida.tools.ALDOpRunnerGUI</argument>
           </arguments>
         </configuration>
