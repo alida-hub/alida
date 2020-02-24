@@ -293,17 +293,65 @@ public class ALDChooseOpNameFrame extends JFrame
 	 */
 	protected JMenu generateHelpMenu() {
 		JMenu helpM = new JMenu("Help");
-		JMenuItem itemHelp = new JMenuItem("Online Help");
+		JMenuItem itemHelp = new JMenuItem("Documentation");
+		itemHelp.setActionCommand("showDocu");
+		itemHelp.addActionListener(this);
+//		itemHelp.addActionListener(
+//			OnlineHelpDisplayer.getHelpActionListener(itemHelp,
+//				"alida.guiOpRunner"	,this));
 		JMenuItem itemAbout = new JMenuItem("About Alida");
-		itemHelp.addActionListener(
-			OnlineHelpDisplayer.getHelpActionListener(itemHelp,
-				"alida.guiOpRunner"	,this));
 		itemAbout.setActionCommand("showAbout");
 		itemAbout.addActionListener(this);
 		helpM.add(itemHelp);
 		helpM.add(itemAbout);
 		return helpM;
 	}	
+	
+	/**
+	 * Show the documentation for the chooser.
+	 */
+	protected void showDocuFrame() {
+		String docText = 
+				"<p>The graphical operator runner of Alida welcomes you with a window to select the operator that you wish to execute. </p>\n" + 
+				"<h2>The window</h2>\n" + 
+				"\n" + 
+				"<p>The main component of the window is the tree view of all available operators. It is organized according to the package structure of the operators. On top of the window there is a menubar located with different menus:\n" + 
+				"<ul><li>\n" + 
+				"<p>\"File\", which allows to quit the application</p>\n" + 
+				"</li><li>\n" + 
+				"<p>\"Operator Level\", which allows you to select the level of the operators you wish to have displayed in the tree;  there are two levels available:\n" + 
+				"<ul><li>\n" + 
+				"<p>\"Application\" for operators suitable for non-expert use</p>\n" + 
+				"</li><li>\n" + 
+				"<p>\"Standard\" for all available operators</p>\n" + 
+				"</li></ul>\n" + 
+				"</p>\n" + 
+				"</li><li>\n" + 
+				"<p>\"Help\", where you have already found this online help and some additional meta information</p>\n" + 
+				"</li></ul>\n" + 
+				"</p>\n" + 
+				"<h2>Selecting an operator</h2>\n" + 
+				"\n" + 
+				"<p>To select an operator for execution you can...\n" + 
+				"<ul><li>\n" + 
+				"<p>double-click the corresponding leave in the tree</p>\n" + 
+				"</li><li>\n" + 
+				"<p>select the leave with the mouse and then click on the \"Configure Operator...\" button</p>\n" + 
+				"</li></ul>\n" + 
+				"</p>\n" + 
+				"\n" + 
+				"<p>Note that the name of the currently selected operator is shown below the tree panel.</p>\n" + 
+				"\n" + 
+				"<p>After selecting an operator a control window will pop-up that allows you to configure the parameters of your operator and let it run. On termination another frame will be shown with the results of your operator run.</p>\n" + 
+				"<h2>Terminating your session</h2>\n" + 
+				"\n" + 
+				"<p>To exit the current session, just click the \"Quit\" button or choose the corresponding menu entry from the menubar.</p>\n"; 
+		
+		ALDOperatorDocumentationFrame doc = 
+				new ALDOperatorDocumentationFrame("Alida Graphical Operator Runner",
+						this.getClass().getName(), docText);
+		doc.setVisible(true);
+	}
 	
 	/**
 	 * Show an about box window.
@@ -362,7 +410,7 @@ public class ALDChooseOpNameFrame extends JFrame
 			}
 		}
 		// close online help window
-		OnlineHelpDisplayer.closeWindow();
+//		OnlineHelpDisplayer.closeWindow();
 		
 		// close the chooser window itself
 		if (quitsOk)
@@ -395,7 +443,12 @@ public class ALDChooseOpNameFrame extends JFrame
 		else if (command.equals("viewStd")) {
 			this.opTree.setLevel( ALDAOperator.Level.STANDARD);
 		}
-		
+
+		/* display about box */
+		else if (command.equals("showDocu")) {
+			showDocuFrame();
+		}
+
 		/* display about box */
 		else if (command.equals("showAbout")) {
 			showAboutBox();
