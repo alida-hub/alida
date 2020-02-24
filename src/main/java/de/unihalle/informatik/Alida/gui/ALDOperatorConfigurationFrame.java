@@ -834,57 +834,9 @@ public class ALDOperatorConfigurationFrame extends JFrame
 		}
 		else if (command.equals("helpM_docu")) {
 			String docText = this.op.getDocumentation();
-
-			if (docText != null && !docText.isEmpty()) {
-				JFrame docuWindow = new JFrame();
-				docuWindow.setTitle("Documentation - " + this.op.name);
-				docuWindow.setSize(750, 800);
-				JPanel docuPanel = new JPanel();
-				docuPanel.setLayout(new BorderLayout());
-				
-				JEditorPane textPane = new JEditorPane("text/html",
-						"<h1> Documentation of " + this.op.name + "</h1><br/>" + docText);
-				textPane.setEditable(false);
-				textPane.addHyperlinkListener(new HyperlinkListener() {
-			    public void hyperlinkUpdate(HyperlinkEvent e) {
-			        if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {			        	
-			    			if(Desktop.isDesktopSupported()) {
-			  			    try {
-										Desktop.getDesktop().browse(e.getURL().toURI());
-									} catch (IOException e1) {
-										// TODO Auto-generated catch block
-										e1.printStackTrace();
-									} catch (URISyntaxException e1) {
-										// TODO Auto-generated catch block
-										e1.printStackTrace();
-									}
-			    			}
-			        }
-			    }
-				});
-
-				JScrollPane scrollPane = new JScrollPane(textPane);
-				docuPanel.add(scrollPane, BorderLayout.CENTER);
-				scrollPane.getVerticalScrollBar().setValue(0);
-				scrollPane.getHorizontalScrollBar().setValue(0);
-				
-				JPanel buttonPanel = new JPanel();
-				JButton closeButton = new JButton("Close");
-				closeButton.addActionListener(
-						new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								docuWindow.setVisible(false);
-								docuWindow.dispose();
-							}
-						});
-				buttonPanel.add(closeButton);
-				docuPanel.add(buttonPanel, BorderLayout.SOUTH);
-				docuPanel.updateUI();
-				
-				docuWindow.add(docuPanel);
-				docuWindow.setVisible(true);
-			}
+			ALDOperatorDocumentationFrame doc = 
+					new ALDOperatorDocumentationFrame(this.op, docText);
+			doc.setVisible(true);
 		}
 		else if (command.equals("helpM_about")) {
 			Object[] options = { "OK" };
