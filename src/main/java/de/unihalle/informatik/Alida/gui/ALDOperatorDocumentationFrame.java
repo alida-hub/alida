@@ -45,9 +45,14 @@ public class ALDOperatorDocumentationFrame extends JFrame
 	implements ActionListener {
 
 	/**
-	 * Associated operator.
+	 * Name of associated operator.
 	 */
-	protected ALDOperator op = null;
+	protected String opName = null;
+	
+	/**
+	 * Package of associated operator/tool.
+	 */
+	protected String opPackage = null;
 	
 	/**
 	 * Constructor with title parameter.
@@ -55,27 +60,29 @@ public class ALDOperatorDocumentationFrame extends JFrame
 	 * @param operator	Associated operator.
 	 * @param pLevel		Level of interaction the providers should obey to.
 	 */
-	public ALDOperatorDocumentationFrame(ALDOperator operator, String docText) {
+	public ALDOperatorDocumentationFrame(String name, String pack, 
+			String docText) {
 
 		// init the frame
 		super();
 		
 		// remember the operator
-		this.op = operator;
+		this.opName = name;
+		this.opPackage = pack;
 
-		this.setTitle("Documentation - " + this.op.name);
+		this.setTitle("Documentation - " + this.opName);
 		this.setSize(750, 800);
 		
 		JPanel docuPanel = new JPanel();
 		docuPanel.setLayout(new BorderLayout());
 		
-		String opPackage = this.op.getClass().getName().replace(".", "/");
+		String opPackage = this.opPackage.replace(".", "/");
 		opPackage += ".html";
 		
-		String text = "<h1> Documentation of " + this.op.name + "</h1><br/>" 
+		String text = "<h1> Documentation of " + this.opName + "</h1><br/>" 
 				+ docText + "<br/><p><hr>";
 		text += "<a href=\"http://alida.informatik.uni-halle.de/api/java/" + 
-				opPackage + "\">Operator class API at alida.informatik.uni-halle.de</a>";
+				opPackage + "\">Class API at alida.informatik.uni-halle.de</a>";
 		JEditorPane textPane = new JEditorPane("text/html", text);
 		
 		textPane.setEditable(false);

@@ -835,7 +835,8 @@ public class ALDOperatorConfigurationFrame extends JFrame
 		else if (command.equals("helpM_docu")) {
 			String docText = this.op.getDocumentation();
 			ALDOperatorDocumentationFrame doc = 
-					new ALDOperatorDocumentationFrame(this.op, docText);
+					new ALDOperatorDocumentationFrame(this.op.name, 
+							this.op.getClass().getName(), docText);
 			doc.setVisible(true);
 		}
 		else if (command.equals("helpM_about")) {
