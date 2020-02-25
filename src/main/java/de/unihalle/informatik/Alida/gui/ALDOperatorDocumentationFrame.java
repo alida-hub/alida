@@ -34,8 +34,6 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import de.unihalle.informatik.Alida.operator.*;
-
 /**
  * Frame to show documentation for operators and tools.
  * 
@@ -81,8 +79,8 @@ public class ALDOperatorDocumentationFrame extends JFrame
 		
 		String text = "<h1> Documentation of " + this.opName + "</h1><br/>" 
 				+ docText + "<br/><p><hr>";
-		text += "<a href=\"http://alida.informatik.uni-halle.de/api/java/" + 
-				opPackage + "\">Class API at alida.informatik.uni-halle.de</a><br/>";
+		text += "<a href=\"" + this.getAPIURL() + opPackage + "\">" 
+				+ this.getAPIText() + "</a><br/>";
 		text += "<p>";
 		text += "More information on Alida and MiToBo can be found here:<br/>";
 		text += "<ul>\n" + 
@@ -127,6 +125,22 @@ public class ALDOperatorDocumentationFrame extends JFrame
 		docuPanel.updateUI();
 		
 		this.add(docuPanel);
+	}
+	
+	/**
+	 * Returns the text to be shown as link to the API.
+	 * @return	API link text.
+	 */
+	protected String getAPIText() {
+		return "Class API at alida.informatik.uni-halle.de";
+	}
+	
+	/**
+	 * Returns the root URL to the API.
+	 * @return	API URL.
+	 */
+	protected String getAPIURL() {
+		return "https://alida.informatik.uni-halle.de/api/java/";
 	}
 	
 	/* (non-Javadoc)

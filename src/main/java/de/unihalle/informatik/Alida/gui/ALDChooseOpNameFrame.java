@@ -311,7 +311,19 @@ public class ALDChooseOpNameFrame extends JFrame
 	 * Show the documentation for the chooser.
 	 */
 	protected void showDocuFrame() {
-		String docText = "The acronyme Alida refers to our <b>Advanced Library " + 
+		String docText = this.getDocumentation();		
+		ALDOperatorDocumentationFrame doc = 
+				new ALDOperatorDocumentationFrame("Alida - Welcome!",
+						this.getClass().getName(), docText);
+		doc.setVisible(true);
+	}
+	
+	/**
+	 * Get class documentation.
+	 * @return	Documentation string in HTML format.
+	 */
+	protected String getDocumentation() {
+		return "The acronyme Alida refers to our <b>Advanced Library " + 
 				"for Integrated Development of Data Analysis Applications</b>. " + 
 				"Alida defines data analysis procedures in terms of <i>operators</i> " + 
 				"which subsequently or in parallel are applied to given data.\n" + 
@@ -436,11 +448,6 @@ public class ALDChooseOpNameFrame extends JFrame
 				"<p>At the bottom of the window a statusbar is located that displays " + 
 				"to you the current status of the control window, e.g. if the " + 
 				"operator is running.</p>"; 
-		
-		ALDOperatorDocumentationFrame doc = 
-				new ALDOperatorDocumentationFrame("Alida - Welcome!",
-						this.getClass().getName(), docText);
-		doc.setVisible(true);
 	}
 	
 	/**
