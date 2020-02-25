@@ -82,7 +82,16 @@ public class ALDOperatorDocumentationFrame extends JFrame
 		String text = "<h1> Documentation of " + this.opName + "</h1><br/>" 
 				+ docText + "<br/><p><hr>";
 		text += "<a href=\"http://alida.informatik.uni-halle.de/api/java/" + 
-				opPackage + "\">Class API at alida.informatik.uni-halle.de</a>";
+				opPackage + "\">Class API at alida.informatik.uni-halle.de</a><br/>";
+		text += "<p>";
+		text += "More information on Alida and MiToBo can be found here:<br/>";
+		text += "<ul>\n" + 
+				"<li> <a href=\"https://alida.informatik.uni-halle.de\">" + 
+				"Alida's website" + "</a><br/>" +
+				"<li> <a href=\"https://mitobo.informatik.uni-halle.de\">" + 
+				"MiToBo's website" + "</a><br/></ul>";
+		text += "Email contact: {alida,mitobo}@informatik.uni-halle.de</p>";
+				
 		JEditorPane textPane = new JEditorPane("text/html", text);
 		
 		textPane.setEditable(false);
