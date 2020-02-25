@@ -61,7 +61,7 @@ import de.unihalle.informatik.Alida.exceptions.ALDDataIOProviderException.ALDDat
 import de.unihalle.informatik.Alida.exceptions.ALDException;
 import de.unihalle.informatik.Alida.exceptions.ALDOperatorException;
 import de.unihalle.informatik.Alida.gui.ALDOperatorControlFrame;
-import de.unihalle.informatik.Alida.gui.OnlineHelpDisplayer;
+import de.unihalle.informatik.Alida.gui.ALDOperatorDocumentationFrame;
 import de.unihalle.informatik.Alida.helpers.ALDClassInfo;
 
 /**	
@@ -899,13 +899,17 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 
 			// generate help menu
 			JMenu helpM = new JMenu("Help");
-			JMenuItem itemHelp = new JMenuItem("Online Help");
-			itemHelp.addActionListener(OnlineHelpDisplayer.getHelpActionListener(
-					itemHelp,this.operator.getClass().getName(),this.window));
+			// only add documentation entry if operator documentation available
+			if (    this.operator.getDocumentation() != null
+					&& !this.operator.getDocumentation().isEmpty()) {
+				JMenuItem itemHelp = new JMenuItem("Operator Documentation");
+				itemHelp.setActionCommand("helpM_docu");
+				itemHelp.addActionListener(this);
+				helpM.add(itemHelp);
+			}
 			JMenuItem itemAbout = new JMenuItem("About Alida");
 			itemAbout.setActionCommand("helpM_about");
 			itemAbout.addActionListener(this);
-			helpM.add(itemHelp);
 			helpM.add(itemAbout);
 
 			mainWindowMenu.add(fileM);
@@ -993,6 +997,12 @@ public class ALDOperatorDataIOSwing implements ALDDataIOSwing {
 			else if (cmd.equals("viewM_advanced")) {
 				this.configPanel.changeViewMode(Parameter.ExpertMode.ADVANCED);
 				this.window.repaint();
+			}
+			else if (cmd.equals("helpM_docu")) {
+				ALDOperatorDocumentationFrame doc = 
+					new ALDOperatorDocumentationFrame(this.operator.name,
+						this.operator.getClass().getName(), this.operator.getDocumentation());
+				doc.setVisible(true);
 			}
 			else if (cmd.equals("helpM_about")) {
 				Object[] options = { "OK" };

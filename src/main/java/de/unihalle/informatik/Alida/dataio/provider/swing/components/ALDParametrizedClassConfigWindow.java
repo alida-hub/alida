@@ -25,6 +25,7 @@
 
 package de.unihalle.informatik.Alida.dataio.provider.swing.components;
 
+import de.unihalle.informatik.Alida.operator.ALDOperator;
 import de.unihalle.informatik.Alida.operator.ALDParameterDescriptor;
 import de.unihalle.informatik.Alida.annotations.ALDClassParameter;
 import de.unihalle.informatik.Alida.annotations.Parameter;
@@ -34,7 +35,7 @@ import de.unihalle.informatik.Alida.dataio.provider.swing.events.ALDSwingValueCh
 import de.unihalle.informatik.Alida.exceptions.ALDDataIOException;
 import de.unihalle.informatik.Alida.exceptions.ALDDataIOProviderException;
 import de.unihalle.informatik.Alida.exceptions.ALDDataIOProviderException.*;
-import de.unihalle.informatik.Alida.gui.OnlineHelpDisplayer;
+import de.unihalle.informatik.Alida.gui.ALDOperatorDocumentationFrame;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -371,13 +372,18 @@ public class ALDParametrizedClassConfigWindow
 
 		// generate help menu
 		JMenu helpM = new JMenu("Help");
-		JMenuItem itemHelp = new JMenuItem("Online Help");
-		itemHelp.addActionListener(OnlineHelpDisplayer.getHelpActionListener(
-				itemHelp,this.myclass.getName(),this.window));
+		// only add documentation entry if operator documentation available
+//		if (    this.myObj != null
+//				&&  ((ALDOperator)this.myObj).getDocumentation() != null
+//				&& !((ALDOperator)this.myObj).getDocumentation().isEmpty()) {
+//			JMenuItem itemHelp = new JMenuItem("Operator Documentation");
+//			itemHelp.setActionCommand("helpM_docu");
+//			itemHelp.addActionListener(this);
+//			helpM.add(itemHelp);
+//		}
 		JMenuItem itemAbout = new JMenuItem("About Alida");
 		itemAbout.setActionCommand("helpM_about");
 		itemAbout.addActionListener(this);
-		helpM.add(itemHelp);
 		helpM.add(itemAbout);
 
 		mainWindowMenu.add(fileM);
@@ -478,6 +484,12 @@ public class ALDParametrizedClassConfigWindow
 			this.parameterPanel.changeViewMode(Parameter.ExpertMode.ADVANCED);
 			this.window.repaint();
 		}
+//		else if (cmd.equals("helpM_docu")) {
+//			ALDOperatorDocumentationFrame doc = 
+//				new ALDOperatorDocumentationFrame(this.className,
+//					this.myclass.getName(), ((ALDOperator)myObj).getDocumentation());
+//			doc.setVisible(true);
+//		}
 		else if (cmd.equals("helpM_about")) {
 			Object[] options = { "OK" };
 			JOptionPane.showOptionDialog(null, 
