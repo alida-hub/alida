@@ -311,15 +311,79 @@ public class ALDChooseOpNameFrame extends JFrame
 	 * Show the documentation for the chooser.
 	 */
 	protected void showDocuFrame() {
-		String docText = 
-				"<p>The graphical operator runner of Alida welcomes you with a window to select the operator that you wish to execute. </p>\n" + 
+		String docText = "The acronyme Alida refers to our <b>Advanced Library " + 
+				"for Integrated Development of Data Analysis Applications</b>. " + 
+				"Alida defines data analysis procedures in terms of <i>operators</i> " + 
+				"which subsequently or in parallel are applied to given data.\n" + 
+				"\n" + 
+				"<p>All Alida operators implement a common interface which defines " + 
+				"operator input and output parameters as well as a unified invocation " + 
+				"procedure. Thus, all operators developed based on the Alida library " + 
+				"can be configured and invoked in a standardized manner. This lays " + 
+				"the fundament for integrating several very nice features in Alida " + 
+				"which significantly increase the usability of Alida-based libraries, " + 
+				"both for programmers as well as for users. In particular, the unified " + 
+				"operator interface, e.g., supports</p>\n" + 
+				"\n" + 
+				"<ul><li>\n" + 
+				"<p>automatic generation of graphical and commandline user interfaces</p>\n" + 
+				"</li><li>\n" + 
+				"<p>automatic process documentation by operator call graphs</p>\n" + 
+				"</li></ul>\n" + 
+				"\n" + 
+				"<p>The graphical operator runner that you have started already " + 
+				"presents you all properly annotated operators based on Alida that " + 
+				"are found in the classpath. Given the tree view of these operators " + 
+				"you can select the operator of your choice, configure it, execute it, " + 
+				"and finally inspect its results (for more details see below).</p>\n" + 
+				"\n" + 
+				"<p>Initially Alida ships with some demo operators that demonstrate " + 
+				"the broad range of features Alida incorporates, e.g.</p>\n" + 
+				"\n" + 
+				"<ul><li>\n" + 
+				"<p>inherent data I/O for the most common Java data types, like\n" + 
+				"<ul><li>\n" + 
+				"<p>native types (int, boolean, Double, String, etc.)</p>\n" + 
+				"</li><li>\n" + 
+				"<p>1D and 2D arrays</p>\n" + 
+				"</li><li>\n" + 
+				"<p>enumerations</p>\n" + 
+				"</li><li>\n" + 
+				"<p>collections</p>\n" + 
+				"</li></ul>\n" + 
+				"</p>\n" + 
+				"</li><li>\n" + 
+				"<p>support for operators as parameters</p>\n" + 
+				"</li><li>\n" + 
+				"<p>support for parametrized classes as parameters</p>\n" + 
+				"</li><li>\n" + 
+				"<p>ranking of operators, i.e. as standard or application</p>\n" + 
+				"</li><li>\n" + 
+				"<p>grading of parameters as standard or advanced</p>\n" + 
+				"</li><li>\n" + 
+				"<p>saving and loading of parameters</p>\n" + 
+				"</li></ul>\n" + 
+				"\n" + 
+				"<p>In parametrized classes members can be annotated as parameters. " + 
+				"Given that appropriate I/O providers are available, these classes " + 
+				"can then directly be used as operator parameters without additional " + 
+				"effort.</p>\n" + 
+				"<p>" +
+				"<h1>Graphical Operator Runner</h1>\n" +
+				"The graphical operator runner of Alida welcomes you with a window " + 
+				"to select the operator that you wish to execute. </p>\n" + 
 				"<h2>The window</h2>\n" + 
 				"\n" + 
-				"<p>The main component of the window is the tree view of all available operators. It is organized according to the package structure of the operators. On top of the window there is a menubar located with different menus:\n" + 
+				"The main component of the window is the tree view of all available " + 
+				"operators. It is organized according to the package structure of " + 
+				"the operators. On top of the window there is a menubar located " + 
+				"with different menus:\n" + 
 				"<ul><li>\n" + 
 				"<p>\"File\", which allows to quit the application</p>\n" + 
 				"</li><li>\n" + 
-				"<p>\"Operator Level\", which allows you to select the level of the operators you wish to have displayed in the tree;  there are two levels available:\n" + 
+				"<p>\"Operator Level\", which allows you to select the level of the " + 
+				"operators you wish to have displayed in the tree; " + 
+				"there are two levels available:\n" + 
 				"<ul><li>\n" + 
 				"<p>\"Application\" for operators suitable for non-expert use</p>\n" + 
 				"</li><li>\n" + 
@@ -327,28 +391,54 @@ public class ALDChooseOpNameFrame extends JFrame
 				"</li></ul>\n" + 
 				"</p>\n" + 
 				"</li><li>\n" + 
-				"<p>\"Help\", where you have already found this online help and some additional meta information</p>\n" + 
+				"<p>\"Help\", where you have already found this online help and " + 
+				"some additional meta information</p>\n" + 
 				"</li></ul>\n" + 
-				"</p>\n" + 
+				"</p>\n" +
 				"<h2>Selecting an operator</h2>\n" + 
 				"\n" + 
-				"<p>To select an operator for execution you can...\n" + 
+				"To select an operator for execution you can...\n" + 
 				"<ul><li>\n" + 
 				"<p>double-click the corresponding leave in the tree</p>\n" + 
 				"</li><li>\n" + 
 				"<p>select the leave with the mouse and then click on the \"Configure Operator...\" button</p>\n" + 
 				"</li></ul>\n" + 
-				"</p>\n" + 
 				"\n" + 
 				"<p>Note that the name of the currently selected operator is shown below the tree panel.</p>\n" + 
 				"\n" + 
-				"<p>After selecting an operator a control window will pop-up that allows you to configure the parameters of your operator and let it run. On termination another frame will be shown with the results of your operator run.</p>\n" + 
+				"<p>After selecting an operator a control window will pop-up that " + 
+				"allows you to configure the parameters of your operator and let it run (see below). " + 
+				"On termination another frame will be shown with the results of " + 
+				"your operator run.</p>\n" + 
 				"<h2>Terminating your session</h2>\n" + 
 				"\n" + 
-				"<p>To exit the current session, just click the \"Quit\" button or choose the corresponding menu entry from the menubar.</p>\n"; 
+				"To exit the current session, just click the \"Quit\" button or " + 
+				"choose the corresponding menu entry from the menubar.\n" + 
+				"<p>" +
+				"<h1 class=\"title\">Operator control window</h1>\n" + 
+				"\n" + 
+				"The operator control window that pops-up after selecting an operator " + 
+				"contains GUI elements for configuring the parameters of your operator. " + 
+				"In addition, it provides you with buttons to run the operator.\n" + 
+				"\n" + 
+				"<p>The menubar of the control window has the following items:</p>\n" + 
+				"\n" + 
+				"<ul><li>\n" + 
+				"<p><b>\"File\"</b>, where you can save and load the current parameter settings, and where you can close the window</p>\n" + 
+				"</li><li>\n" + 
+				"<p><b>\"Actions\"</b>, where you can run the operator and do a validation of the parameters, i.e. check if all parameters are properly configured and the operator is ready to run</p>\n" + 
+				"</li><li>\n" + 
+				"<p><b>\"View\"</b>,  where you can switch the view between displaying all parameters (\"advanced\") or just the basic parameters (\"standard\") of your operator</p>\n" + 
+				"</li><li>\n" + 
+				"<p><b>\"Help\"</b>, where you find operator-specific documentation</p>\n" + 
+				"</li></ul>\n" + 
+				"\n" + 
+				"<p>At the bottom of the window a statusbar is located that displays " + 
+				"to you the current status of the control window, e.g. if the " + 
+				"operator is running.</p>"; 
 		
 		ALDOperatorDocumentationFrame doc = 
-				new ALDOperatorDocumentationFrame("Alida Graphical Operator Runner",
+				new ALDOperatorDocumentationFrame("Alida - Welcome!",
 						this.getClass().getName(), docText);
 		doc.setVisible(true);
 	}
