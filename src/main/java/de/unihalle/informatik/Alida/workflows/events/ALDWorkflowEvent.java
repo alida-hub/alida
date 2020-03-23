@@ -132,7 +132,11 @@ public class ALDWorkflowEvent extends ALDEvent {
 	protected ALDWorkflowEventType eType;
 
 	/**
-	 * ID of work flow object
+	 * Object containing information about event.
+	 * <p>
+	 * In case of successful workflow operations the object contains the (node, edge, etc.)
+	 * ID of the related workflow object. In case of failure the member references an object 
+	 * of type {@link ALDWorkflowRunFailureInfo}.
 	 */
 	protected Object info;
 
