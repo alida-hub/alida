@@ -68,9 +68,9 @@ public class ALDOperatorCollectionEvent extends ALDEvent {
 	protected ALDOperatorCollectionEventType eType;
 
 	/**
-	 * Event object.
+	 * Info object.
 	 */
-	protected Object info;
+	protected ALDOperatorCollectionEventInfo info;
 
 	/**
 	 * This is not a real time stamp rather an integer incremented each time
@@ -103,7 +103,7 @@ public class ALDOperatorCollectionEvent extends ALDEvent {
 	 * @param i Information associated with this event.
 	 */
 	public ALDOperatorCollectionEvent(Object s, 
-			ALDOperatorCollectionEventType e, Object i) {
+			ALDOperatorCollectionEventType e, ALDOperatorCollectionEventInfo i) {
 		this( s, e, null, i);
 	}
 
@@ -114,10 +114,10 @@ public class ALDOperatorCollectionEvent extends ALDEvent {
 	 * @param s Source object of the event.
 	 * @param e Event type.
 	 * @param msg  Message for the event.
-	 * @param i	Id of work flow object associated with this event.
+	 * @param i Information associated with this event.
 	 */
 	public ALDOperatorCollectionEvent(Object s, 
-			ALDOperatorCollectionEventType e,String msg, Object i) {
+			ALDOperatorCollectionEventType e, String msg, ALDOperatorCollectionEventInfo i) {
 		super(s);
 		this.eType = e;
 		this.eventMessage = msg;
@@ -157,7 +157,7 @@ public class ALDOperatorCollectionEvent extends ALDEvent {
 	 * 
 	 * @return Info object linked to the event with additional information.
 	 */
-	public Object getInfo() {
+	public ALDOperatorCollectionEventInfo getInfo() {
 		return this.info;
 	}
 

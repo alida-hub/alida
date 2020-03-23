@@ -25,6 +25,7 @@
 
 package de.unihalle.informatik.Alida.operator;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -47,6 +48,7 @@ import de.unihalle.informatik.Alida.workflows.ALDWorkflowNode.ALDWorkflowNodeSta
 import de.unihalle.informatik.Alida.workflows.events.ALDWorkflowEvent;
 import de.unihalle.informatik.Alida.workflows.events.ALDWorkflowEvent.ALDWorkflowEventType;
 import de.unihalle.informatik.Alida.workflows.events.ALDWorkflowEventListener;
+import de.unihalle.informatik.Alida.workflows.events.ALDWorkflowRunFailureInfo;
 
 /**
  * Class to manage a set of operators.
@@ -129,11 +131,16 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 		ALDOperatorCollectionElement op;
 		for (Class<?> c: this.availableClasses) {
 			try {
-				op = (T)c.newInstance();
+				op = (T)c.getConstructor().newInstance();
 				classUID = op.getUniqueClassIdentifier();
 				this.idsToOperatorObjects.put(classUID, (T)op);
-				this.idsToRerunFlags.put(classUID, new Boolean(false));
-			} catch (IllegalAccessException e) {
+				this.idsToRerunFlags.put(classUID, false);
+			} catch (IllegalAccessException
+							|IllegalArgumentException
+							|InvocationTargetException
+							|NoSuchMethodException
+							|SecurityException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
 		}
@@ -228,7 +235,7 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 	 */
 	public void setRerunFlags(boolean flag) {
 		for (String k : this.idsToRerunFlags.keySet()) {
-			this.idsToRerunFlags.put(k, new Boolean(flag));
+			this.idsToRerunFlags.put(k, flag);
 		}
 	}
 	
@@ -241,7 +248,7 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 		for (String k : opIDs) {
 			if (!this.idsToRerunFlags.containsKey(k))
 				continue;
-			this.idsToRerunFlags.put(k, new Boolean(flag));
+			this.idsToRerunFlags.put(k, flag);
 		}
 	}
 
@@ -349,7 +356,8 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 					ALDOperatorCollectionEvent opce = 
 						new ALDOperatorCollectionEvent(this,
 							ALDOperatorCollectionEventType.INIT_FAILURE,
-								"Instantiation of operator \"" + uid + "\" failed!");
+								"Instantiation of operator \"" + uid + "\" failed!",
+									new ALDOperatorCollectionEventInfo(ex));
 					this.fireALDOperatorCollectionEvent(opce);
 				}
 			}
@@ -394,10 +402,11 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 
 				// check if operator can be executed
 				if (!op.isConfigured()) {
-					ALDOperatorCollectionEvent opce = 
-							new ALDOperatorCollectionEvent(this,
-									ALDOperatorCollectionEventType.OP_NOT_CONFIGURED,
-									"Operator \"" + uid + "\" is not ready to run!", uid);
+					ALDOperatorCollectionEvent opce =
+						new ALDOperatorCollectionEvent(this,
+							ALDOperatorCollectionEventType.OP_NOT_CONFIGURED,
+								"Operator \"" + uid + "\" is not ready to run!", 
+									new ALDOperatorCollectionEventInfo(null));
 					this.fireALDOperatorCollectionEvent(opce);
 				}
 				nid = this.workflowNodeIDs.get(uid);
@@ -423,7 +432,7 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 									new ALDOperatorCollectionEvent(this,
 											ALDOperatorCollectionEventType.RUN_FAILURE,
 											"Operator \"" + uid + "\" has already been executed " 
-												+ "with this configuration!", uid);
+												+ "with this configuration!", new ALDOperatorCollectionEventInfo(null));
 							this.fireALDOperatorCollectionEvent(opce);
 						}
 						else {
@@ -437,7 +446,8 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 				} catch (ALDWorkflowException e) {
 					ALDOperatorCollectionEvent opce = new ALDOperatorCollectionEvent(
 						this, ALDOperatorCollectionEventType.RUN_FAILURE,
-							"Operator execution failed! OpID = " + uid, e.getCommentString());
+							"Operator execution failed! OpID = " + uid, 
+								new ALDOperatorCollectionEventInfo(e));
 					this.fireALDOperatorCollectionEvent(opce);
 				}
 			}
@@ -473,21 +483,40 @@ public class ALDOperatorCollection<T extends ALDOperatorCollectionElement> {
 			switch(type) 
 			{
 			case RUN_FAILURE:
+			{
+				Exception ex = null;
+				if (event.getInfo() instanceof ALDWorkflowRunFailureInfo) {
+					ex = ((ALDWorkflowRunFailureInfo)event.getInfo()).getException();
+				}
 				opce = new ALDOperatorCollectionEvent(this,
 					ALDOperatorCollectionEventType.RUN_FAILURE,
-						"Operator execution failed!", event.getInfo());
+						"Operator execution failed!", new ALDOperatorCollectionEventInfo(ex));
 				break;
+			}
 			case SHOW_RESULTS:
+			{
+				String info = new String();
+				if (event.getInfo() instanceof String) {
+					info = (String)event.getInfo();
+				}
 				opce = new ALDOperatorCollectionEvent(this,
 					ALDOperatorCollectionEventType.RESULTS_AVAILABLE,
-						"Operator finished, results available!", event.getInfo());
+						"Operator finished, results available! " + info, 
+							new ALDOperatorCollectionEventInfo(null, (ALDWorkflowNodeID)event.getInfo()));
 				break;
+			}
 			default:
+			{
+				String info = new String();
+				if (event.getInfo() instanceof String) {
+					info = (String)event.getInfo();
+				}
 				opce = new ALDOperatorCollectionEvent(this,
 					ALDOperatorCollectionEventType.UNKNOWN,
-						"An unknown error occured!", event.getInfo());
+						"An unknown error occured! " + info, new ALDOperatorCollectionEventInfo(null));
 				break;
-			}				
+			}
+			}
 			this.fireALDOperatorCollectionEvent(opce);
 		}
 
