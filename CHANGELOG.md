@@ -14,6 +14,16 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 
 ### Fixed
 
+## [3.0] - 2020-05-15
+Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
+- Released Alida 3.0
+
+### Added
+- Operator collections: new event type to allow for more meaningful error reports
+
+### Changed
+- Online help: established new online help concept no longer relying on external JavaHelp library, but using operator class annotations
+
 ## [2.8.12] - 2020-02-20
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
 - Released Alida 2.7.13
