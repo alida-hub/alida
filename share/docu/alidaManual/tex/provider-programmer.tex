@@ -25,7 +25,7 @@ types (e.g., Integer, Double, Boolean), enumerations, arrays of primitive and wr
 and also all kinds of Java collections\footnote{The only exception are
 collections of collections which are not yet supported.} are supported
 out-of-the-box.
-Furthermore, operators may be used as input parameters of other operators, and by the concept 
+Also, operators may be used as input parameters of other operators, and by the concept 
 of parameterized classes (Sec.~\ref{subsubsec:datatypes}) \alida allows for easy extensibility. In some cases,
 however, it might be necessary to implement a data I/O provider for a certain 
 parameter data type from scratch. 
@@ -37,7 +37,7 @@ for a certain parameter data type at run-time.
 Additionally, they may give hints to the provider classes to adapt their
 functionality to the current mode of operation.
 The type of these hints is specific to the context, e.g., command line or GUI,
-and will be described in the following.
+and will be described below.
 
 To enable the managers to automatically register 
 all provider classes available on the classpath, it is necessary to annotate the
@@ -205,7 +205,7 @@ manager offers the following methods:
 \label{subsubsec:implProviderCmdline}
 
 In analogy to Swing providers each command line provider is required to
-implement the interface
+implement 
 \vspace*{0.5cm}
 \begin{code}
 	de.unihalle.informatik.Alida.dataio.provider.ALDDataIOCmdline

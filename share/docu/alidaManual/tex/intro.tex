@@ -68,14 +68,21 @@ results at later points in time, i.e., for long-term consistency and
 preservation of data analysis outcomes, another important aspect of algorithm
 development is the accessibility of algorithms and tools for programmers and users.
 Usually neither developers of algorithms nor users are willing or able to spend much time on the 
-implementation of user interfaces. \alida's operator concept and the
-standardized configuration and execution procedures also offer a solution to
-this problem by supporting the automatic generation of user interfaces for
-operators.
+implementation of user interfaces. Likewise a proper documentation for users covering the functions included in
+a library or toolbox and their usage is often neglected. While for API documentation of a library tools like
+\texttt{javadoc} are well-established to support developers with this task, less technical user
+documentation lacks such a support.
+
+\alida's operator concept and the
+standardized configuration and execution procedures also offer solutions to
+these problems. On the one hand \alida supports the automatic generation of user interfaces for
+operators, on the other hand its interfaces render it easy to programmatically integrate
+a basic user documentation for each operator.
 More specifically, \alida's concept yields a suitable fundament for
 automatically generating graphical and command line user interfaces which allow
-to configure and execute all operators implemented in the \alida framework, as
-well as to inspect the results of processing.
+to configure and execute all operators implemented in the \alida framework, provide a
+basic documentation of each operator's functionality to the user in terms of an online help,
+and offer options to inspect the results of processing.
 While a graphical interface mainly targets at immediate visual inspection of
 operator configurations and results, a command line interface is useful, e.g.,
 for parameter tuning or batch processing facilitated by scripts.
@@ -99,7 +106,7 @@ visualization tool \mtbc is available (see Appendix~\ref{app:chipory}).
 
 In general, the \alida concept enforces minimal restrictions for users and
 programmers, interferring as little as possible with usual software development
-cycles, and resulting in an automatic documentation with a minimum of overhead.
+cycles, and resulting in an automatic process documentation with a minimum of overhead.
 \alida's concept is applicable to any data analysis process. 
 
 %%Note that this manual is currently focused on the Java implementation of \alida,
@@ -107,4 +114,8 @@ cycles, and resulting in an automatic documentation with a minimum of overhead.
 
 Download of source code and binary bundels as well
 as installation instructions are available on \alida's web-page, 
-\url{http://www.informatik.uni-halle.de/alida}.
+\url{https://alida.informatik.uni-halle.de}.
+
+For developing own software based on the \alida library we operate a Maven repository server
+from where \alida artefacts can directly be included in your own code:
+\url{https://moon.informatik.uni-halle.de/archiva/#browse/de.unihalle.informatik.Alida}

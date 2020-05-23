@@ -98,6 +98,13 @@ provides two different view modes for either only operators annotated as
 \icode{'APPLICATION'}, or all operators registered according to the
 \texttt{@ALDAOperator} annotation.
 
+Optionally, a short documentation of the operator's functionality and usage can be
+defined using the parameter \icode{'shortDescription'} which takes a string as argument.
+The short description is for example used as tool tip text in the package tree shown in \alida'a main window
+(see Sec.~\ref{subsec:quickstart}). Note that this string should really be short and precise,
+a longer documentation to be included in \alida's online help system can be defined via a
+predefined operator method (see paragraph 'Online Help' on page \pageref{para:online-help} for more details). 
+
 Finally, the annotation also allows to enable batch
 processing for an operator. If the parameter \icode{'allowBatchMode'} is set to \icode{'true'},
 which is the default, the operator control frame triggered by the GUI operator
@@ -256,6 +263,19 @@ directly accessing the member fields if allowed.
 To invoke the processing within an operator, i.e., to run its \icode{operate()}
 routine, the final method \icode{runOp()} supplied by \icode{ALDOperator} needs to be called by the user of an operator.
 
+\paragraph{Online Help.}
+\label{para:online-help}
+\alida provides an online help system which allows to show documentation for an operator directly in a separate
+window in the GUI. While a short description can be defined via the parameter
+\icode{'shortDecription'} of the \texttt{@ALDAOperator} annotation (see above), a longer documentation can be provided
+by implementing the super class method\\
+\begin{lstlisting}[xrightmargin=.00\textwidth, xleftmargin=.0\textwidth,frame=single,numbers=none]
+  public String getDocumentation()
+\end{lstlisting} 
+which by default returns an empty string. The result string can contain HTML formattings and will be
+used to automatically generate the help text for the operator in the online help system.
+
+
 \paragraph{Constructors.}
 As noted above, 
 for automatic code generation and documentation capabilities as well as generic execution 
@@ -306,6 +326,14 @@ xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/ApplyToMatrix-parameters.sn
 \caption{\label{exa:operatorAsParameter}An example of an operator as a parameter in the operator \icode{ApplyToMatrix}}
 \end{figure}
 
+\begin{figure}
+\vspace{4mm}
+\lstinputlisting[xrightmargin=.\textwidth,
+xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/ALDArraySum-constructor.snippet}
+\caption{\label{exa:ALDArraySum}The operator \icode{ALDArraySum} as an operator in standard level.}
+\end{figure}
+
+\pagebreak
 \subsubsection{Implementing operators: Advanced techniques}
 \label{subsubsec:implOperators-advanced}
 
@@ -331,13 +359,6 @@ annotate the class with \icode{@ALDDerivedClass} in order to allow \alida's data
 I/O mechanisms to find the derived class in automatically generated user
 interfaces.
 This holds for other parameter types as well, see Sec.~\ref{subsubsec:datatypes}.
-
-\begin{figure}
-\vspace{4mm}
-\lstinputlisting[xrightmargin=.\textwidth,
-xleftmargin=.05\textwidth,frame=single]{\demoCodeDir/ALDArraySum-constructor.snippet}
-\caption{\label{exa:ALDArraySum}The operator \icode{ALDArraySum} as an operator in standard level.}
-\end{figure}
 
 \paragraph{Constraints on admissible parameter values.}
 
@@ -376,9 +397,10 @@ the \icode{ALDOperator} class.
 \paragraph{Progress events.} \alida provides a mechanism for operators
 to send status and progress messages to the user during execution. These messages
 are shown in the status bar of the operator control windows
-(Sec.~\ref{subsubsec:controlWin}) and also in Grappa's log panel
-(Sec.~\ref{subsec:grappa}). Accordingly, in constrast to output to standard out,
-which is not guaranteed to reach the user, these messages will always be visible
+(Sec.~\ref{subsubsec:controlWin}), in Grappa's log panel
+(Sec.~\ref{subsec:grappa}), and also on commandline if the parameter \texttt{'-s'} is used.
+Accordingly, in constrast to output to standard out,
+which is not guaranteed to reach the user in a graphical environment, these messages will always be visible
 to the user. For triggering such messages, an operator has to fire an event of
 type \icode{ALDOperatorExecutionProgressEvent} using the method\\
 \begin{lstlisting}[xrightmargin=.00\textwidth, xleftmargin=.0\textwidth,frame=single,numbers=none]
