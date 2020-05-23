@@ -43,6 +43,8 @@ import de.unihalle.informatik.Alida.operator.events.ALDOperatorExecutionProgress
 import net.java.sezpoz.Index;
 import net.java.sezpoz.IndexItem;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.*;
 
@@ -338,7 +340,23 @@ public class ALDOpRunner implements ALDOperatorExecutionProgressEventListener {
 			
 			ALDDataIOManagerCmdline.getInstance().setDoHistory(oldHistoryState);
     	} else {
-			this.op.printInterface();
+    		System.out.println("Name of ALDOperator: " + this.op.name);
+    		// check if operator has a short description
+    		String shortInfo = null;
+    		try {
+    			Annotation anno = this.op.getClass().getAnnotation(ALDAOperator.class);
+    			if (anno != null) {
+    				Class<? extends Annotation> type = anno.annotationType();
+    				// get the value of the short description
+    				Method m = type.getDeclaredMethod("shortDescription");
+    				Object value = m.invoke(anno, (Object[])null);
+    				shortInfo = value.toString();
+    			}
+    		} catch (Exception e) {}
+    		if (shortInfo != null && !shortInfo.isEmpty())
+    			System.out.println("Short decription: " + shortInfo);
+    		System.out.println();
+    		this.op.printInterface();
     	}
     }
 
