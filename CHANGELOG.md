@@ -5,8 +5,10 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 
 ## [Unreleased]
 ### Added
+- Manual: added paragraph on how to programmatically add online help contents for an operator
 
 ### Changed
+- ALDOpRunner: option '-n' now also prints short description of operator if available
 
 ### Deprecated
 
