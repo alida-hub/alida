@@ -7,7 +7,7 @@
 
   <name>alida</name>
   <description>Alida - Advanced Library for Integrated Development of Data Analysis Applications</description> 
-  <url>http://www.informatik.uni-halle.de/alida</url>
+  <url>https://www.informatik.uni-halle.de/alida</url>
   <inceptionYear>2010</inceptionYear>
 
   <parent>
@@ -208,7 +208,7 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.tinyjee.jgraphx</groupId>
+      <groupId>com.github.vlsi.mxgraph</groupId>
       <artifactId>jgraphx</artifactId>
     </dependency>
     <dependency>
