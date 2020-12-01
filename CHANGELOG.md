@@ -5,16 +5,25 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 
 ## [Unreleased]
 ### Added
-- Manual: added paragraph on how to programmatically add online help contents for an operator
 
 ### Changed
-- ALDOpRunner: option '-n' now also prints short description of operator if available
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
+
+## [3.0.1] - 2020-12-01
+Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
+- Released Alida 3.0.1
+
+### Added
+- Manual: added paragraph on how to programmatically add online help contents for an operator
+
+### Changed
+- ALDOpRunner: option '-n' now also prints short description of operator if available
+- GroupID for jgraphx library was updated
 
 ## [3.0] - 2020-05-15
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
