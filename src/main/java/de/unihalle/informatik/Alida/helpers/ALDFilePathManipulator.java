@@ -65,7 +65,7 @@ package de.unihalle.informatik.Alida.helpers;
 public class ALDFilePathManipulator {
 
 	/**
-	 * Removes preceding path elements and extension from filename, if any.
+	 * Removes extension from filename, if any.
 	 * 
 	 * @param str		Filename to process.
 	 * @return Filename without extension. 
