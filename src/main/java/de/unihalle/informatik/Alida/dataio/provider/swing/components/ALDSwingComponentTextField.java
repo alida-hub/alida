@@ -105,11 +105,7 @@ public class ALDSwingComponentTextField extends ALDSwingComponent
 	 * @param t		New text to be displayed.
 	 */
 	public void setText(String t) {
-		if (this.checkValue(t)) {
-			this.compTextField.setText(t);
-			// remember text for later reference and checks
-			this.value = t;
-		}
+		this.checkValue(t);
 	}
 	
 	/**
@@ -140,7 +136,8 @@ public class ALDSwingComponentTextField extends ALDSwingComponent
 	 * <p>
 	 * The method at first checks if the value of the text field has changed.
 	 * If so, it subsequently validates if the new value is valid with regard 
-	 * to the class linked to this GUI element. If both checks are passed
+	 * to the class linked to this GUI element. If both checks are passed, the
+	 * text field is updated if text is provided from somewhere else, and
 	 * a {@link ALDSwingValueChangeEvent} is triggered. If the new value is 
 	 * invalid, a warning is displayed to the user.
 	 * 
@@ -173,13 +170,15 @@ public class ALDSwingComponentTextField extends ALDSwingComponent
 			if (   this.value != null && !this.value.isEmpty()
 					|| this.value == null) {
 				this.value = newText;
+				if (textToCheck != null)
+					this.compTextField.setText(newText);
 				this.fireALDSwingValueChangeEvent(
 					new ALDSwingValueChangeEvent(this,this.paramDescriptor));
 			}
 			return true;
 		}
 		try {
-			// native types
+			// native types, do pseudo-casts to check for
 			if (this.objCl.equals(boolean.class))
 				Boolean.valueOf(newText);
 			else if (this.objCl.equals(byte.class))
@@ -234,6 +233,8 @@ public class ALDSwingComponentTextField extends ALDSwingComponent
 			return false;
 		}
 		this.value = newText;
+		if (textToCheck != null)
+			this.compTextField.setText(newText);
 		// only fire event if allowed by I/O manager
 		if (ALDDataIOManagerSwing.getInstance().isTriggerValueChangeEvents())
 			this.fireALDSwingValueChangeEvent(
