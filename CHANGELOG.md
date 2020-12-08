@@ -13,6 +13,7 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 ### Removed
 
 ### Fixed
+- ALDSwingComponentTextField: updated setText() method to ensure that text field is updated before event is triggered when new text is provided from internal and not via GUI
 
 ## [3.0.1] - 2020-12-01
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
