@@ -65,8 +65,8 @@ public class TestALDVersionProviderFactory {
 		String strClassPath = System.getProperty("java.class.path");
 		// make sure that corresponding java executable is used
 		String javaHome = System.getProperty("java.home");
-		javaHome = javaHome.substring(0,javaHome.lastIndexOf('/')+1);
-		String javaExec = javaHome + "bin/java";
+		javaHome = javaHome.substring(0,javaHome.lastIndexOf(File.separator)+1);
+		String javaExec = javaHome + "bin" + File.separator + "java";
 		
 		// define java command to test and build process
 		String[] myCmd = new String[]{
