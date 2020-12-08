@@ -57,6 +57,10 @@ public @interface ALDClassParameter {
 	 */
 	String label();
 	
+  /** Gives a potentially verbose explanation of this field.
+   */
+  String description() default "";
+
 	/**
 	 * Defines a function name to be called after changing the parameter's value.
 	 * <p>

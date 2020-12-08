@@ -405,6 +405,7 @@ public class ALDParametrizedClassConfigWindow
 		for (String key : keys) {
 			Field field = params.get(key);
 			int guiOrder = 0;
+			String description = null;
 			String label = field.getName();
 			Parameter.ExpertMode mode = Parameter.ExpertMode.STANDARD;
 			ALDClassParameter pAnnotation = 
@@ -413,9 +414,10 @@ public class ALDParametrizedClassConfigWindow
 				guiOrder = pAnnotation.dataIOOrder();
 				mode = pAnnotation.mode();
 				label = pAnnotation.label();
+				description = pAnnotation.description();
 			}
 			this.paramDescrips.add(new ALDParameterDescriptor(field.getName(),
-					field.getType(), null, label, true, 
+					field.getType(), description, label, true, 
 					field, guiOrder, mode, "", 
 					Parameter.ParameterModificationMode.MODIFIES_NOTHING, false));
 		}
