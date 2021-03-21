@@ -484,9 +484,11 @@ public class ALDOpRunner implements ALDOperatorExecutionProgressEventListener {
 				}
 			}
 		}
-		System.out.println( "nameParameterMap");
-		for ( String name : nameParameterMap.keySet() )
-			System.out.println( "\t " + name);
+		if ( debug) {
+			System.out.println("nameParameterMap");
+			for (String name : nameParameterMap.keySet())
+				System.out.println("\t " + name);
+		}
 	}
 
 	/** Set all parameters contained in <code>nameParameterMap</code> in <code>this.op</code>
