@@ -75,6 +75,12 @@ import java.util.regex.*;
  * operator will be printed to stdout (and potentially further information).
  * In addition the flag <code>--showProgress</code> or <code>-s</code> is 
  * available to switch on display of progress messages.
+ * <p>
+ * The values of IN and INOUT parameters are set in the following order: first existing modifying parameters are set.
+ * As their callback functions my add parameters to the interface of the operator, this process
+ * is repeated where only modifying parameters not already handled are considered. During this iteration the non-existence
+ * of a parameter specified on the command line is not considered as an error (as it may become visible during this
+ * iteration). Finally values for all non-modifying parameters are set.
  *
  * @author Stefan Posch
  *
@@ -129,7 +135,7 @@ public class ALDOpRunner implements ALDOperatorExecutionProgressEventListener {
     
 
 	/** Hashmap to collect parameter name as given on command line and 
-	 * correspnding value string
+	 * corresponding value string
      */
 	private HashMap<String,String> nameValueMap;
 
@@ -137,6 +143,11 @@ public class ALDOpRunner implements ALDOperatorExecutionProgressEventListener {
 	 * parameter name.
      */
 	private HashMap<String,String> nameParameterMap;
+
+	/** Names of modifying parameters which have already been set (i.e. values from commandline
+	 *
+	 */
+	LinkedList<String> modifyingParametersAlreadySet = new LinkedList<String>();
 
 	/** Print short usage to stderr.
 	 */
@@ -288,7 +299,6 @@ public class ALDOpRunner implements ALDOperatorExecutionProgressEventListener {
 		}
 
 		// instantiate the operator
-        this.op = null;
 		String opName = this.matchingClassNames.peek();
 		if ( this.verbose )
 			System.out.println( "About to instantiate the ALDOperator <" + opName + ">");
@@ -302,11 +312,16 @@ public class ALDOpRunner implements ALDOperatorExecutionProgressEventListener {
 		// do the work
 		if ( ! this.donotrun ) {
 			int firstIndex = i+1;
-			
-			// validate and get parameters which may modify parameter descriptors
+
+			// validate parameter format
+			validateParameternames( firstIndex);
+
+			// get parameters which may modify parameter descriptors
 			// and set their values from the value string
-			validateParameternames( firstIndex, true);
-			readParameterValues( firstIndex, true);
+			do {
+				collectParameternames(firstIndex, true);
+				setParameterValues(firstIndex);
+			} while ( ! nameValueMap.isEmpty());
 			
 			if ( verbose )
 				this.op.printInterface();
@@ -315,12 +330,11 @@ public class ALDOpRunner implements ALDOperatorExecutionProgressEventListener {
 			if ( ! this.noDefaultHistory ) {
 				ALDDataIOManagerCmdline.getInstance().setDoHistory(true);
 			}
-			
-			// validate and get parameters all
-			// and set their values from the value string if not already done
-			// (in case the do modify parameter descriptors)
-			validateParameternames( firstIndex, false);
-			readParameterValues( firstIndex, false);
+
+			// get non-modifying parameters
+			// and set their values from the value string
+			collectParameternames( firstIndex, false);
+			setParameterValues( firstIndex);
 			
 			try {
 				if (this.showProgressEvents)
@@ -361,41 +375,53 @@ public class ALDOpRunner implements ALDOperatorExecutionProgressEventListener {
     }
 
 	/** Validate the <code>parametername=valuestring</code> pairs with respect to syntax
-     *  and optionally validate the existence of the parameter in the operator interface.
-     *  <p>
-     *  If <code>modifyingParameters</code> is true, only parameters which indicate
-     *  they might modifyParameterDescriptors are considered and not existing
-     *  parameters are ignored.
-     *  <p>
-     *  The parameter names found and the corresponding value strings are collected
-     *  in the hash maps <code>nameParameterMap</code> and <code>nameValueMap</code> respectively
-     *  as a side effect.
-     * 
-     * @param firstIndex	index of first parametername in args
-     * @param modifyingParameters	if true only parameters which indicate
-     *  they might modifyParameterDescriptors are considered
+	 *
+	 * @param firstIndex	index of first parametername in args
+	 */
 
-     */
+	private void validateParameternames( int firstIndex) {
+		// first scan: validate parameter names
+		for (int i = firstIndex; i < this.args.length; i++) {
+			ArrayList<String> parts = new ArrayList<String>(ALDParser.split(this.args[i].trim(), '='));
+			if (parts.size() != 2) {
+				System.err.println("ERROR: found = sign " + (parts.size() - 1)
+						+ " times, instead of once");
+				System.err.println("");
+				printUsage();
+				System.exit(2);
+			}
+		}
+	}
 
-	private void validateParameternames( int firstIndex, boolean modifyingParameters) {
+	/** Collect IN and INOUT parameters to be set next.
+	 *  <p>
+	 *  If <code>modifyingParameters</code> is true, only parameters which indicate
+	 *  they might modifyParameterDescriptors and have not been already handled (i.e. contained in
+	 *  <code>modifyingParametersAlreadySet</code>) are considered. Non-existing parameters are ignored.
+	 *  <p>
+	 *  If <code>modifyingParameters</code> is false, all non-modifying parameters are considered and non-existence
+	 *  is considered an error.
+	 *  <p>
+	 *  The parameter names found to be set next and the corresponding value strings are collected
+	 *  in the hash maps <code>nameParameterMap</code> and <code>nameValueMap</code> respectively
+	 *  as a side effect.
+	 *
+	 * @param firstIndex	index of first parametername in args
+	 * @param modifyingParameters	if true only parameters which indicate they might modifyParameterDescriptors and have not been already handled (i.e. contained in
+	 * 	 *  <code>modifyingParametersAlreadySet</code>) are considered
+	 */
+
+	private void collectParameternames(int firstIndex, boolean modifyingParameters) {
 		this.nameParameterMap = new HashMap<String,String>();
 		this.nameValueMap = new HashMap<String,String>();
 		
-		// first scan: validate parameter names
 		for ( int i = firstIndex ; i < this.args.length ; i++ ) {
-			ArrayList<String> parts = new ArrayList<String>(ALDParser.split( this.args[i].trim(), '='));
-			if ( parts.size() != 2 ) {
-                	System.err.println("ERROR: found = sign " + (parts.size() -1)
-                        + " times, instead of once");
-				System.err.println( "");
-				printUsage();
-				System.exit(2);
-            }
-
+			ArrayList<String> parts = new ArrayList<String>(ALDParser.split(this.args[i].trim(), '='));
 			String name = parts.get(0);
 			LinkedList<String> pNames = ALDParametrizedClassDataIOCmdline.lookupParameternames( this.op, name);
 
 			if ( pNames.size() > 1 ) {
+				// Note: this case could be handled in validateParameternames
 				System.err.print( "ERROR:found more than one matching parameter names for " + name + ": ");
 				for ( String pName : pNames ) {
 					System.err.print( pName + "  ");
@@ -403,10 +429,14 @@ public class ALDOpRunner implements ALDOperatorExecutionProgressEventListener {
 				System.err.println();
 				this.op.printInterface();
 				System.exit(2);
-			} else if ( pNames.size() == 0 && ! modifyingParameters)  {
-				System.err.println( "ERROR:found no matching parameter names for <" + name + ">\n");
-				this.op.printInterface() ;
-				System.exit(2);
+			} else if ( pNames.size() == 0 ) {
+				if ( modifyingParameters)  {
+					continue;
+				} else {
+					System.err.println("ERROR:found no matching parameter names for <" + name + ">\n");
+					this.op.printInterface();
+					System.exit(2);
+				}
 			}
 	
 			if ( this.debug ) {
@@ -416,57 +446,67 @@ public class ALDOpRunner implements ALDOperatorExecutionProgressEventListener {
 				}
 				System.out.println();
 			}
-			
-			ALDOpParameterDescriptor descr = null;
-			if ( modifyingParameters) {
-				try {
-					descr = this.op.getParameterDescriptor(name);
-				} catch (ALDOperatorException e) {
-                     // this parameter might be created setting a modifying parameter
+			if (!modifyingParametersAlreadySet.contains(name)) {
+
+
+				if ( modifyingParameters) {
+					ALDOpParameterDescriptor descr = null;
+
+					try {
+						descr = this.op.getParameterDescriptor(name);
+						if (descr.parameterModificationMode() != Parameter.ParameterModificationMode.MODIFIES_NOTHING &&
+								descr.getDirection() == Parameter.Direction.IN ||
+								descr.getDirection() == Parameter.Direction.INOUT) {
+							this.nameParameterMap.put(parts.get(0), pNames.peek());
+							this.nameValueMap.put(parts.get(0), parts.get(1));
+							this.modifyingParametersAlreadySet.add(name);
+						}
+					} catch (ALDOperatorException e) {
+						// ignore non-existing parameters
+					}
+				} else {
+					ALDOpParameterDescriptor descr = null;
+					try {
+						descr = this.op.getParameterDescriptor(name);
+					} catch ( ALDOperatorException e) {
+						System.err.println("ERROR:found no descriptor for <" + name + ">\n");
+						this.op.printInterface();
+						System.exit(2);
+					}
+
+					if (  descr != null &&
+							descr.parameterModificationMode() == Parameter.ParameterModificationMode.MODIFIES_NOTHING &&
+							descr.getDirection() == Parameter.Direction.IN ||
+							descr.getDirection() == Parameter.Direction.INOUT) {
+						this.nameParameterMap.put(parts.get(0), pNames.peek());
+						this.nameValueMap.put(parts.get(0), parts.get(1));
+					}
 				}
 			}
-			
-			if ( ! modifyingParameters || 
-					(  descr != null 
-					&&    descr.parameterModificationMode() 
-					   != Parameter.ParameterModificationMode.MODIFIES_NOTHING) )
-				this.nameParameterMap.put( parts.get(0), pNames.peek());
-			this.nameValueMap.put( parts.get(0), parts.get(1));
 		}
+		System.out.println( "nameParameterMap");
+		for ( String name : nameParameterMap.keySet() )
+			System.out.println( "\t " + name);
 	}
 
-	/** Read all IN and INOUT parameters specified on the command line.
-     *
-     * @param firstIndex	index of first parametername in args
-     */
-
-	private void readParameterValues( int firstIndex, boolean modifyingParameters) {
+	/** Set all parameters contained in <code>nameParameterMap</code> in <code>this.op</code>
+	 * with values from commandline
+	 *
+     *  @param firstIndex    index of first parametername in args
+	 *
+	 */
+	private void setParameterValues(int firstIndex) {
 		StringBuffer buf = new StringBuffer("{   ");
 		for ( int i = firstIndex ; i < this.args.length ; i++) {
 			LinkedList<String> parts = ALDParser.split( this.args[i], '=');
-			if ( parts.peek() != null ) {
-				try {
-					String expandedParameterName  = this.nameParameterMap.get( parts.peek());
-					if ( expandedParameterName == null) {
+			String name = parts.peek();
+			if ( name != null ) {
+				if ( nameParameterMap.keySet().contains( name)) {
+					String expandedParameterName = this.nameParameterMap.get(name);
+					if (expandedParameterName == null) {
 						continue;
 					}
-					
-					ALDOpParameterDescriptor descr = this.op.getParameterDescriptor( expandedParameterName);
-
-					// modifying parameters have already been set thus skip them
-					if ( ! modifyingParameters &&
-							   descr.parameterModificationMode() 
-							!= Parameter.ParameterModificationMode.MODIFIES_NOTHING ) {
-						continue;
-					}
-					
-					if ( descr.getDirection() == Parameter.Direction.IN ||
-							descr.getDirection() == Parameter.Direction.INOUT ) {
-						buf.append( this.args[i] + " , ");
-					}
-				} catch ( ALDOperatorException e) {
-					printException(e);
-					System.exit(1);
+					buf.append(this.args[i] + " , ");
 				}
 			}
 		}
