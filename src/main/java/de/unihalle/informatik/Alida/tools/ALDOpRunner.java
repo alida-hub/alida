@@ -140,8 +140,8 @@ public class ALDOpRunner implements ALDOperatorExecutionProgressEventListener {
 	private HashMap<String,String> nameValueMap;
 
 	/** Hashmap to collect parameter name as given on command line and matching
-	 * parameter name.
-     */
+	 * parameter name to be handled next
+	 */
 	private HashMap<String,String> nameParameterMap;
 
 	/** Names of modifying parameters which have already been set (i.e. values from commandline
@@ -447,18 +447,16 @@ public class ALDOpRunner implements ALDOperatorExecutionProgressEventListener {
 				System.out.println();
 			}
 			if (!modifyingParametersAlreadySet.contains(name)) {
-
-
 				if ( modifyingParameters) {
 					ALDOpParameterDescriptor descr = null;
 
 					try {
-						descr = this.op.getParameterDescriptor(name);
+						descr = this.op.getParameterDescriptor( pNames.peek());
 						if (descr.parameterModificationMode() != Parameter.ParameterModificationMode.MODIFIES_NOTHING &&
 								descr.getDirection() == Parameter.Direction.IN ||
 								descr.getDirection() == Parameter.Direction.INOUT) {
-							this.nameParameterMap.put(parts.get(0), pNames.peek());
-							this.nameValueMap.put(parts.get(0), parts.get(1));
+							this.nameParameterMap.put( name, pNames.peek());
+							this.nameValueMap.put( name, parts.get(1));
 							this.modifyingParametersAlreadySet.add(name);
 						}
 					} catch (ALDOperatorException e) {
@@ -467,7 +465,7 @@ public class ALDOpRunner implements ALDOperatorExecutionProgressEventListener {
 				} else {
 					ALDOpParameterDescriptor descr = null;
 					try {
-						descr = this.op.getParameterDescriptor(name);
+						descr = this.op.getParameterDescriptor( pNames.peek());
 					} catch ( ALDOperatorException e) {
 						System.err.println("ERROR:found no descriptor for <" + name + ">\n");
 						this.op.printInterface();
@@ -537,6 +535,34 @@ public class ALDOpRunner implements ALDOperatorExecutionProgressEventListener {
      */
 
 	private void writeParameterValues( int firstIndex) {
+		// collect all parameters visible now
+		this.nameParameterMap = new HashMap<String,String>();
+		this.nameValueMap = new HashMap<String,String>();
+
+		for ( int i = firstIndex ; i < this.args.length ; i++ ) {
+			ArrayList<String> parts = new ArrayList<String>(ALDParser.split(this.args[i].trim(), '='));
+			String name = parts.get(0);
+
+			LinkedList<String> pNames = ALDParametrizedClassDataIOCmdline.lookupParameternames(this.op, name);
+			if (pNames.size() > 1) {
+				// Note: this case could be handled in validateParameternames
+				System.err.print("ERROR:found more than one matching parameter names for " + name + ": ");
+				for (String pName : pNames) {
+					System.err.print(pName + "  ");
+				}
+				System.err.println();
+				this.op.printInterface();
+				System.exit(2);
+			} else if (pNames.size() == 0) {
+				System.err.println("ERROR:found no matching parameter names for <" + name + ">\n");
+				this.op.printInterface();
+				System.exit(2);
+			} else {
+				nameParameterMap.put(name, pNames.peek());
+				this.nameValueMap.put( name, parts.get(1));
+			}
+		}
+
 		for ( String pName : this.nameParameterMap.keySet() ) {
 			ALDOpParameterDescriptor descr = null;
 			Object value = null;
@@ -563,7 +589,7 @@ public class ALDOpRunner implements ALDOperatorExecutionProgressEventListener {
 						descr.getDirection() == Parameter.Direction.INOUT ) {
 					value = this.op.getParameter( mappedPname);
 					String str = null;
-					
+
 					if ( this.debug ) {
 						System.out.println( "Write parameter " + mappedPname + ", value = " + value);
 					}
