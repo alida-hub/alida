@@ -5,6 +5,8 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 
 ## [Unreleased]
 ### Added
+- ALDClassParameter: added field for short description to parameter annotations for enhanced tooltips
+- ALDParametrizedClassConfigWindow: making use of new short descriptions in tooltips
 
 ### Changed
 
@@ -13,7 +15,9 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 ### Removed
 
 ### Fixed
+- ALDOpRunner: fixed and enhanced dynamic parameter handling with regard to dynamic operator interfaces
 - ALDSwingComponentTextField: updated setText() method to ensure that text field is updated before event is triggered when new text is provided from internal and not via GUI
+- TestALDVersionProviderFactory: fixed file separators for Windows systems
 
 ## [3.0.1] - 2020-12-01
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
