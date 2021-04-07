@@ -91,7 +91,7 @@ where the file data contains the string defining the matrix, e.g.,
 \icode{[[1,2,3],[4,5,6]]}
 
 
-\paragraph{Derived classes}
+\paragraph{Operators as parameters}
 The demo operator \icode{ApplyToMatrix} takes as one parameter another
 operator.
 In this case this operator needs to extend the abstract class \icode{ALDSummarizeArrayOp}.
@@ -104,8 +104,12 @@ with a derived class to be passed to the operator.
 This is necessary as \alida has, of course, no way to itself
 decide if and which derived class is to be used.
 \alida's syntax is to enclose the class name in a dollar sign and a colon.
-The value of the parameter is empty in this example as the operator \icode{ALDArrayMean}
-can be instantiated with out arguments.
+This mechanism is not confined to operators as a parameter (of another operator),
+but applies to all classes for which data I/O is handle in a standardized way
+(see Sec.~\ref{subsubsec:implProviderCmdline}).
+The value of the parameter behind the specified dervied class
+is empty in this example as the operator \icode{ALDArrayMean}
+can be instantiated without arguments.
 As evident in the following example, abbreviations of the fully
 qualified class name are accepted as long as they are unambiguous.
 \begin{code}
@@ -119,6 +123,34 @@ results in
 \begin{code}
 summaries = [2.0,5.0]
 \end{code}
+
+In case the operator, in this case \icode{ALDArrayMean}, is to be instantiate with additional arguments, this may be accomplished in curly brackets behind the specification of the dervided class:
+\begin{code}
+java de.unihalle.informatik.Alida.tools.ALDOpRunner ApplyToMatrix \
+	matrix='[[1,2,3],[4,5,6]]' \
+	summarizeMode=ROW \
+	summarizeOp='$ALDArrayMean:{verbose=true}' \
+	summaries=-
+\end{code}
+The result is the same in this case, as the standard verbose flag of all operators
+has no effect in this case. The syntax to pass arguments for instantiation to 
+an operator as a parameter is identical to the syntax of parameterized classes
+and is described in the next paragraph.
+If arguments are to be passed to an operator without using
+a derived class this may be accomplished using only curly brackets, again identical
+to parameterized classes. 
+In this example this would yield
+\begin{code}
+java de.unihalle.informatik.Alida.tools.ALDOpRunner ApplyToMatrix \
+	matrix='[[1,2,3],[4,5,6]]' \
+	summarizeMode=ROW \
+	summarizeOp='{verbose=true}' \
+	summaries=-
+\end{code}
+which however fails, as the \icode{ALDSummarizeArrayOp} is abstract.
+
+Note, that a dervided class is only available in the command line interface
+if it is programmatically annoted with \icode{@ALDDerivedClass}, see Sec.~\ref{subsubsec:implOperators-advanced}.
 
 
 \icode{ALDOpRunner} may be persuaded to show all operators derived from \icode{ALDSummarizeArrayOp}
