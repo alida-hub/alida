@@ -96,7 +96,7 @@ The demo operator \icode{ApplyToMatrix} takes as one parameter another
 operator.
 In this case this operator needs to extend the abstract class \icode{ALDSummarizeArrayOp}.
 When invoking the \icode{ApplyToMatrix} operator from command line
-we thus have to handle derived classes as value for parameters.
+we thus have to handled derived classes as value for parameters.
 In the graphical user interface \alida features a combo box where
 we may choose from.
 In the command line interface \alida allows to prefix the value of a parameter
@@ -107,7 +107,7 @@ decide if and which derived class is to be used.
 This mechanism is not confined to operators as a parameter (of another operator),
 but applies to all classes for which data I/O is handle in a standardized way
 (see Sec.~\ref{subsubsec:implProviderCmdline}).
-The value of the parameter behind the specified dervied class
+The value of the parameter behind the specified derived class
 is empty in this example as the operator \icode{ALDArrayMean}
 can be instantiated without arguments.
 As evident in the following example, abbreviations of the fully
@@ -124,7 +124,7 @@ results in
 summaries = [2.0,5.0]
 \end{code}
 
-In case the operator, in this case \icode{ALDArrayMean}, is to be instantiate with additional arguments, this may be accomplished in curly brackets behind the specification of the dervided class:
+In case the operator, in this case \icode{ALDArrayMean}, is to be instantiate with additional arguments, this may be accomplished in curly brackets behind the specification of the derived class:
 \begin{code}
 java de.unihalle.informatik.Alida.tools.ALDOpRunner ApplyToMatrix \
 	matrix='[[1,2,3],[4,5,6]]' \
@@ -186,8 +186,8 @@ gives
 	summaries = [1.0,2.0,3.0]
 	elapsedTime = 4
 \end{code}
-
-
+~\\
+\begin{minipage}{\textwidth}
 \paragraph{Parameterized classes}
 \alida supports so called \textit{parameterized classes}.
 A parameterized class is essentially just an ordinary class where
@@ -202,6 +202,7 @@ enclosed in curly brackets where names refer to annotated member variables of
 the parameterized class.
 This is shown for the class \icode{ExperimentalData1D}
 which holds an 1D array of experimental data and descriptive text as annotated member fields.
+\end{minipage}
 
 \begin{codecsh}
 java de.unihalle.informatik.Alida.tools.ALDOpRunner SmoothData1D \
