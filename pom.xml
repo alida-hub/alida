@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>alida</artifactId>
-  <version>3.1</version>
+  <version>3.1.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>alida</name>
@@ -13,11 +13,11 @@
   <parent>
     <groupId>de.unihalle.informatik.Alida</groupId>
     <artifactId>alida-pom</artifactId>
-    <version>2.3</version>
+    <version>2.4-SNAPSHOT</version>
   </parent>
   
   <properties>
-    <alida.xml.version>2.2</alida.xml.version>
+    <alida.xml.version>2.3-SNAPSHOT</alida.xml.version>
   </properties>
 
   <build>
