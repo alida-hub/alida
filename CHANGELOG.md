@@ -10,6 +10,14 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 ### Removed
 ### Fixed
 
+## [3.1] - 2023-07-31
+Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
+- Released Alida 3.1
+### Changed
+- updated Alida parent POM, depending on SciJava 36.0.0 now
+### Fixed
+- fixed Archiva repository URLs
+
 ## [3.0.2] - 2021-04-09
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
 - Released Alida 3.0.2
@@ -25,18 +33,18 @@ Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
 - Released Alida 3.0.1
 ### Added
-- Manual: added paragraph on how to programmatically add online help contents for an operator
+- manual: added paragraph on how to programmatically add online help contents for an operator
 ### Changed
 - ALDOpRunner: option '-n' now also prints short description of operator if available
-- GroupID for jgraphx library was updated
+- groupID for jgraphx library was updated
 
 ## [3.0] - 2020-05-15
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
 - Released Alida 3.0
 ### Added
-- Operator collections: new event type to allow for more meaningful error reports
+- operator collections: new event type to allow for more meaningful error reports
 ### Changed
-- Online help: established new online help concept no longer relying on external JavaHelp library, but using operator class annotations
+- online help: established new online help concept no longer relying on external JavaHelp library, but using operator class annotations
 
 ## [2.7.13] - 2020-02-20
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
@@ -109,9 +117,9 @@ Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
 - Released Alida 2.7.4
 ### Added
-- New data I/O provider for Java data type EnumSet
+- new data I/O provider for Java data type EnumSet
 ### Changed
-- Updated to JGraphX 3.4.1.3
+- updated to JGraphX 3.4.1.3
 ### Fixed
 - ALDNativeArrayXXDataIOSwing: loading table data for 1D/2D arrays from file now displays errors if data format does not fit instead of just failing silently
 - ALDVersionProviderGit: properly initializing provider even if environment variable is not set (issue #1)
