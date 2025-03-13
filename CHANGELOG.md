@@ -10,6 +10,12 @@ The format of the file is based on a template from [Keep a Changelog](http://kee
 ### Removed
 ### Fixed
 
+## [3.2] - 2025-03-13
+Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
+- Released Alida 3.2
+### Changed
+- did a big bump to SciJava 40.0.0 and several more dependency updates
+
 ## [3.1] - 2023-07-31
 Birgit Moeller - <birgit.moeller@informatik.uni-halle.de>
 - Released Alida 3.1
