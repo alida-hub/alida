@@ -26,13 +26,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-	<dependencies>
-	  <dependency>
-	    <groupId>org.apache.maven.shared</groupId>
-	    <artifactId>maven-filtering</artifactId>
-	    <version>${maven.plugin.filtering.version}</version>
-	  </dependency>
-	</dependencies>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.shared</groupId>
+            <artifactId>maven-filtering</artifactId>
+            <version>${maven.plugin.filtering.version}</version>
+          </dependency>
+        </dependencies>
         <executions>
           <!-- files needed for execution -->
           <execution>
@@ -42,26 +42,26 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-	      <delimiters>
-	        <delimiter>${*}</delimiter> <!-- to keep the default behavior --> 
-	        <delimiter>@*@</delimiter>  <!-- to add Ant-like tokens style --> 
-	      </delimiters>
+              <delimiters>
+                <delimiter>${*}</delimiter> <!-- to keep the default behavior --> 
+                <delimiter>@*@</delimiter>  <!-- to add Ant-like tokens style --> 
+              </delimiters>
               <outputDirectory>${project.build.outputDirectory}</outputDirectory>
               <resources>
                 <resource>
-	          <directory>src/main/resources</directory>
-	          <includes>
+                  <directory>src/main/resources</directory>
+                  <includes>
                     <include>revision.txt</include>
                     <include>LICENSE_alida.txt</include>
-	          </includes>
-	          <filtering>true</filtering>
-                  </resource>
+                  </includes>
+                  <filtering>true</filtering>
+                </resource>
                 <resource>
-	           <directory>src/main/resources</directory>
-	           <excludes>
-                     <exclude>revision.txt</exclude>
-	           </excludes>
-	           <filtering>false</filtering>
+                  <directory>src/main/resources</directory>
+                  <excludes>
+                    <exclude>revision.txt</exclude>
+                  </excludes>
+                  <filtering>false</filtering>
                 </resource>
               </resources>
             </configuration>
@@ -74,18 +74,18 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-	      <delimiters>
-	        <delimiter>${*}</delimiter> <!-- to keep the default behavior --> 
-	        <delimiter>@*@</delimiter>  <!-- to add Ant-like tokens style --> 
-	      </delimiters>
+              <delimiters>
+                <delimiter>${*}</delimiter> <!-- to keep the default behavior --> 
+                <delimiter>@*@</delimiter>  <!-- to add Ant-like tokens style --> 
+              </delimiters>
               <outputDirectory>${project.build.outputDirectory}</outputDirectory>
               <resources>
                 <resource>
-	          <directory>src/main/java</directory>
-	          <filtering>true</filtering>
-	          <includes>
+                  <directory>src/main/java</directory>
+                  <filtering>true</filtering>
+                  <includes>
                     <include>**/*.java</include>
-	          </includes>
+      	          </includes>
                 </resource>
               </resources>
             </configuration>
@@ -95,60 +95,60 @@
 
       <!-- copy dependencies incl. help jar to local folder -->
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-dependency-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-compiler-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
 
       <plugin>
-	<!-- run annotation processing -->
-	<groupId>org.bsc.maven</groupId>
-	<artifactId>maven-processor-plugin</artifactId>
+        <!-- run annotation processing -->
+        <groupId>org.bsc.maven</groupId>
+        <artifactId>maven-processor-plugin</artifactId>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-surefire-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-jar-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
       </plugin>
       
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-site-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
       </plugin>
 
       <plugin>
-	<!-- package binaries and sources into zip files;
-	     Attention: here we use our own assembly descriptors! -->
-	<artifactId>maven-assembly-plugin</artifactId>
-	<configuration>
-	  <descriptors>
-	    <descriptor>src/main/assembly/alida-bin.xml</descriptor>
-	    <descriptor>src/main/assembly/alida-src.xml</descriptor>
-	  </descriptors>
-	</configuration>
-	<executions>
-	  <execution>
-	    <id>assembly-distribution-Id</id>
-	    <phase>package</phase>
-	    <goals>
-	      <goal>single</goal>
-	    </goals>
-	  </execution>
-	</executions>
+        <!-- package binaries and sources into zip files;
+            Attention: here we use our own assembly descriptors! -->
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/alida-bin.xml</descriptor>
+            <descriptor>src/main/assembly/alida-src.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>assembly-distribution-Id</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-javadoc-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
       </plugin>
 
       <!-- allow GUI operator runner for execution with Maven -->
@@ -162,16 +162,16 @@
             </goals>
           </execution>
         </executions>
-	<configuration>
+        <configuration>
           <executable>java</executable>
-	  <classpathScope>runtime</classpathScope>
+          <classpathScope>runtime</classpathScope>
           <arguments>
-	    <argument>-classpath</argument>
+            <argument>-classpath</argument>
             <classpath/>
-	    <argument>-Xms2048m</argument>
-	    <argument>-Xmx2048m</argument>
-	    <argument>-Dalida.oprunner.level=standard</argument>
-	    <argument>-Dalida.versionprovider_class=de.unihalle.informatik.Alida.version.ALDVersionProviderReleaseJar</argument>
+            <argument>-Xms2048m</argument>
+            <argument>-Xmx2048m</argument>
+            <argument>-Dalida.oprunner.level=standard</argument>
+            <argument>-Dalida.versionprovider_class=de.unihalle.informatik.Alida.version.ALDVersionProviderReleaseJar</argument>
             <argument>de.unihalle.informatik.Alida.tools.ALDOpRunnerGUI</argument>
           </arguments>
         </configuration>
